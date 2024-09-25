@@ -1,5 +1,6 @@
 package org.example.database;
 
+import org.example.exceptions.MySqlCredentialsException;
 import org.example.exceptions.RunSqlFileException;
 import org.example.util.Properties;
 
@@ -56,15 +57,14 @@ public class MySQL implements Database {
         return getConnection("");
     }
 
-    public void createIfMissing(){
+    public void createIfMissing() throws MySqlCredentialsException {
 
         try {
             Connection connection = getConnection(Properties.DB_NAME.getValue());
         } catch (SQLException e) {
             if (e.getErrorCode() == 1045){
-                System.out.printf("Wrong credentials. Modify credentials at '%s'%n",
-                        Path.of(Properties.PROPERTIES_FILE_PATH.getValue()).toAbsolutePath());
-                throw new RuntimeException(e);
+                throw new MySqlCredentialsException(
+                        "Error connecting to MySQL server. Modify the credentials at '%s'%n",e);
             } else if (e.getErrorCode() == 1049){
                 System.out.println("Unknown database -> Creating Database...");
                 executeSqlFile(Properties.SQL_SCHEMA_CREATION_FILE.getValue());
