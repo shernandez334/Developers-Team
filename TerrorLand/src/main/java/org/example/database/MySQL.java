@@ -41,7 +41,7 @@ public class MySQL implements Database {
 
             try {
                 Connection connection = DriverManager.getConnection(url, user, password);
-                System.out.printf("Connected to %s.", dbName.isEmpty() ? "DB" : dbName);
+                System.out.printf("Connected to %s.%n", dbName.isEmpty() ? "DB" : dbName);
                 return connection;
 
             }catch (SQLException e){
