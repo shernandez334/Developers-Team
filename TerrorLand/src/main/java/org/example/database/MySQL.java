@@ -68,7 +68,7 @@ public class MySQL implements Database {
             } else if (e.getErrorCode() == 1049){
                 System.out.println("Unknown database -> Creating Database...");
                 executeSqlFile(Properties.SQL_SCHEMA_CREATION_FILE.getValue());
-            }else {
+            } else {
                 throw new RuntimeException(e);
             }
         }
