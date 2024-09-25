@@ -11,7 +11,7 @@ public enum Properties {
     DEFAULT_DB_URL("jdbc:mysql://localhost:3306/"),
     DEFAULT_DB_USER("root"),
     DEFAULT_DB_PASSWORD("1234"),
-    SQL_SCHEMA_CREATION_FILE("..\\diagrams\\mySQL\\scape-room.sql"),
+    SQL_SCHEMA_CREATION_FILE("diagrams\\mySQL\\scape-room.sql"),
     DB_NAME("escape_room");
 
     private final String value;

@@ -75,9 +75,11 @@ public class MySQL implements Database {
     }
 
     private static void executeSqlFile(String file) {
+        Path path = Path.of(file);
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement();
-             BufferedReader input = Files.newBufferedReader(Path.of(file))){
+             BufferedReader input = Files.newBufferedReader(path.toRealPath())
+        ){
 
             StringBuilder sql = new StringBuilder();
             input.lines().filter(s->!s.isEmpty() && !s.matches("^--.*")).forEach(sql::append);
