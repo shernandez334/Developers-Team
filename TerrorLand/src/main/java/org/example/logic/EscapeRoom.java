@@ -8,6 +8,9 @@ import org.example.util.IO;
 import org.example.util.Menu;
 import org.example.util.Properties;
 
+import java.math.BigDecimal;
+import java.util.regex.Pattern;
+
 public class EscapeRoom {
 
     private static User user;
@@ -39,18 +42,37 @@ public class EscapeRoom {
 
     private void adminMenu() {
         int option = Menu.readSelection("Welcome Administrator! Select an option.", ">",
-                "1. Create Element", "2. Delete Element", "3. Logout");
+                "1. Create Element", "2. Delete Element", "3. Set ticket price", "4. Logout");
         switch (option) {
+            case 3 -> setTicketPriceMenu();
+            case 4 -> EscapeRoom.user = null;
+        }
+    }
+
+    private void setTicketPriceMenu() {
+        System.out.printf("Each ticket costs %.2f.%n", Ticket.getPurchasePrice());
+        String price = "";
+        do {
+            if (!price.isEmpty()) System.out.println("Wrong format, values between 0 and 99 accepted.");
+            price = IO.readString("New price: ");
+        }while(!Pattern.matches("^\\d{1,2}(\\.\\d{1,2})?$", price));
+        Ticket.setPurchasePrice(BigDecimal.valueOf(Double.parseDouble(price)));
+    }
+
+    private void playerMenu() {
+        System.out.printf("Welcome %s! You've got %d tickets.%n", user.getName(), user.getTotalTickets());
+        int option = Menu.readSelection("Select an option.", ">",
+                "1. Play Room", "2. Buy a Ticket", "3. Logout");
+        switch (option) {
+            case 1 -> System.out.println(user.cashTicket() ? "You played a room!" : "Get some tickets first!");
+            case 2 -> buyTicketMenu();
             case 3 -> EscapeRoom.user = null;
         }
     }
 
-    private void playerMenu() {
-        int option = Menu.readSelection("Welcome Player! Select an option.", ">",
-                "1. Play Room", "2. Buy a Ticket", "3. Logout");
-        switch (option) {
-            case 3 -> EscapeRoom.user = null;
-        }
+    private void buyTicketMenu(){
+        System.out.printf("Each ticket costs %.2f.%n", Ticket.getPurchasePrice());
+        user.purchaseTickets(IO.readInt("How Many Tickets do you wish to buy?\n>"));
     }
 
     private void initialSetup() throws MySqlCredentialsException {
@@ -109,7 +131,7 @@ public class EscapeRoom {
         };
         assert user != null;
         try {
-            if (new MySQL().addUser(user)){
+            if (new MySQL().createUser(user)){
                 System.out.println("User created successfully, you can log in now!");
             } else {
                 System.out.println("The user was not created...");
