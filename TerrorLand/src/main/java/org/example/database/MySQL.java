@@ -5,14 +5,17 @@ import org.example.exceptions.MySqlCredentialsException;
 import org.example.exceptions.RunSqlFileException;
 import org.example.logic.Admin;
 import org.example.logic.Player;
+import org.example.logic.Ticket;
 import org.example.logic.User;
 import org.example.util.Properties;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 
@@ -106,7 +109,7 @@ public class MySQL implements Database {
     }
 
 
-    public boolean addUser(User user) throws ExistingEmailException {
+    public boolean createUser(User user) throws ExistingEmailException {
 
         try (Connection connection = getConnection(Properties.DB_NAME.getValue());
              Statement statement = connection.createStatement()) {
@@ -140,6 +143,50 @@ public class MySQL implements Database {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } catch (MySqlCredentialsException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static boolean createTicket(User user, BigDecimal price){
+        try (Connection connection = getConnection(Properties.DB_NAME.getValue());
+             Statement statement = connection.createStatement()) {
+            String str = String.format("INSERT INTO ticket (user_id, price, cashed) VALUES('%s', '%s', '%s');",
+                    user.getId(), price, 0);
+            statement.execute(str);
+            return statement.getUpdateCount() == 1;
+        } catch (SQLException | MySqlCredentialsException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static ArrayList<Ticket> getTickets(User user, boolean onlyNotCashed){
+        ArrayList<Ticket> tickets = new ArrayList<>();
+        try (Connection connection = getConnection(Properties.DB_NAME.getValue());
+             Statement statement = connection.createStatement()) {
+            String str = String.format("SELECT ticket_id, cashed FROM ticket WHERE user_id = '%d';", user.getId());
+            ResultSet result = statement.executeQuery(str);
+            while (result.next()){
+                if (onlyNotCashed){
+                    if(!result.getBoolean("cashed")){
+                        tickets.add(new Ticket(result.getInt("ticket_id")));
+                    }
+                }else {
+                    tickets.add(new Ticket(result.getInt("ticket_id")));
+                }
+            }
+            return tickets;
+        } catch (SQLException | MySqlCredentialsException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void cashTicket(int ticketId) {
+        try (Connection connection = getConnection(Properties.DB_NAME.getValue());
+             Statement statement = connection.createStatement()) {
+            String str = String.format("UPDATE ticket SET cashed = 1 WHERE ticket_id = %d;",
+                    ticketId);
+            statement.executeUpdate(str);
+        } catch (SQLException | MySqlCredentialsException e) {
             throw new RuntimeException(e);
         }
     }
