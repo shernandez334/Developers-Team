@@ -190,4 +190,19 @@ public class MySQL implements Database {
             throw new RuntimeException(e);
         }
     }
+
+    public static BigDecimal getTotalIncome(){
+        try (Connection connection = getConnection(Properties.DB_NAME.getValue());
+             Statement statement = connection.createStatement()) {
+            String str = "SELECT SUM(price) FROM ticket;";
+            ResultSet result = statement.executeQuery(str);
+            if (result.next()){
+                return result.getBigDecimal(1);
+            }else {
+                return null;
+            }
+        } catch (SQLException | MySqlCredentialsException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
