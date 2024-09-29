@@ -1,5 +1,6 @@
 package org.example.database;
 
+import org.example.enums.Difficulty;
 import org.example.exceptions.ExistingEmailException;
 import org.example.exceptions.MySqlCredentialsException;
 import org.example.exceptions.RunSqlFileException;
@@ -41,7 +42,7 @@ public class MySQL implements Database {
             String password = Properties.getProperty("db.password");
 
             try {
-                Connection connection = DriverManager.getConnection(url, user, password);
+                MySQL.connection = DriverManager.getConnection(url, user, password);
                 System.out.printf("Connected to %s.%n", dbName.isEmpty() ? "DB" : dbName);
                 return connection;
 
@@ -65,9 +66,8 @@ public class MySQL implements Database {
     }
 
     public void createIfMissing() throws MySqlCredentialsException {
-
         try {
-            Connection connection = getConnection(Properties.DB_NAME.getValue());
+            MySQL.connection = getConnection(Properties.DB_NAME.getValue());
         } catch (SQLException e) {
             if (e.getErrorCode() == 1049) {
                 System.out.println("Unknown database -> Creating Database...");
@@ -79,15 +79,14 @@ public class MySQL implements Database {
     }
 
     private static void executeSqlFile(String file) throws MySqlCredentialsException {
-        Path path = Path.of(file);
+        Path path = Path.of(file.replace("\\", "/"));
+        System.out.printf("Attempting to read SQL file from: %s%n", path);
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement();
              BufferedReader input = Files.newBufferedReader(path.toRealPath())
         ) {
-
             StringBuilder sql = new StringBuilder();
             input.lines().filter(s -> !s.isEmpty() && !s.matches("^--.*")).forEach(sql::append);
-
             Arrays.stream(sql.toString().split(";")).forEach(s -> {
                 try {
                     System.out.println(s);
@@ -141,6 +140,15 @@ public class MySQL implements Database {
             throw new RuntimeException(e);
         } catch (MySqlCredentialsException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void execute(Element e) {
+        try (Connection connection = getConnection(Properties.DB_NAME.getValue());
+             Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(String.valueOf(e.dataInfo()));
+        } catch (SQLException | MySqlCredentialsException err) {
+            err.printStackTrace();
         }
     }
 }

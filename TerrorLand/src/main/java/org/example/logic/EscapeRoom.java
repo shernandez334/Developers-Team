@@ -1,21 +1,32 @@
 package org.example.logic;
 
 import org.example.database.Database;
+import org.example.database.Element;
 import org.example.database.MySQL;
 import org.example.exceptions.ExistingEmailException;
 import org.example.exceptions.MySqlCredentialsException;
+import org.example.persistence.Room;
 import org.example.util.IO;
 import org.example.util.Menu;
 import org.example.util.Properties;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.example.database.Element.createAnElement;
 
 public class EscapeRoom {
-
+    private String name;
     private static User user;
     private static boolean quit;
+    private Database db;
 
     static{
         user = null;
         quit = false;
+    }
+
+    public EscapeRoom(String name){
+        this.name = name;
     }
 
     public void run() {
@@ -38,12 +49,18 @@ public class EscapeRoom {
     }
 
     private void adminMenu() {
+        Element e = null;
         int option = Menu.readSelection("Welcome Administrator! Select an option.", ">",
-                "1. Create Element", "2. Delete Element", "3. Logout");
+                "1. Create an Element", "2. Delete an Element", "3. Logout");
         switch (option) {
+            case 1 -> {
+                e = createAnElement();
+                db.execute(e);
+            }
             case 3 -> EscapeRoom.user = null;
         }
     }
+
 
     private void playerMenu() {
         int option = Menu.readSelection("Welcome Player! Select an option.", ">",
@@ -55,7 +72,7 @@ public class EscapeRoom {
 
     private void initialSetup() throws MySqlCredentialsException {
         Properties.createFileIfMissing();
-        Database db = new MySQL();
+        this.db = new MySQL();
         db.createIfMissing();
     }
 
