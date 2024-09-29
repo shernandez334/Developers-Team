@@ -1,7 +1,10 @@
 package org.example;
 
+import org.example.logic.EscapeRoom;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        EscapeRoom escapeRoom = new EscapeRoom();
+        escapeRoom.run();
     }
 }
