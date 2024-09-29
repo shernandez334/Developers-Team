@@ -116,6 +116,14 @@ public class MySQL implements Database {
             String str = String.format("INSERT INTO user (name, email, password, role) VALUES('%s', '%s', '%s', '%s');",
                     user.getName(), user.getEmail(), user.getPassword(), user instanceof Player ? "player" : "admin");
             statement.execute(str);
+            if (user instanceof Player) {
+                Statement statement2 = connection.createStatement();
+                str = "SELECT LAST_INSERT_ID();";
+                ResultSet lastId = statement2.executeQuery(str);
+                lastId.next();
+                subscribePlayer(lastId.getInt(1));
+                statement2.close();
+            }
             return statement.getUpdateCount() == 1;
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new ExistingEmailException(e);
@@ -201,6 +209,37 @@ public class MySQL implements Database {
             }else {
                 return null;
             }
+        } catch (SQLException | MySqlCredentialsException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void subscribePlayer(int playerId){
+        try (Connection connection = getConnection(Properties.DB_NAME.getValue());
+             Statement statement = connection.createStatement()) {
+            String str = String.format("INSERT INTO subscription (user_id) VALUES (%d);", playerId);
+            statement.executeUpdate(str);
+        } catch (SQLException | MySqlCredentialsException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void unsubscribePlayer(int playerId){
+        try (Connection connection = getConnection(Properties.DB_NAME.getValue());
+             Statement statement = connection.createStatement()) {
+            String str = String.format("DELETE FROM subscription WHERE user_id = %d;", playerId);
+            statement.execute(str);
+        } catch (SQLException | MySqlCredentialsException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static boolean isSubscribed(int playerId){
+        try (Connection connection = getConnection(Properties.DB_NAME.getValue());
+             Statement statement = connection.createStatement()) {
+            String str = String.format("SELECT * FROM subscription WHERE user_id = %d;", playerId);
+            ResultSet result = statement.executeQuery(str);
+            return result.next();
         } catch (SQLException | MySqlCredentialsException e) {
             throw new RuntimeException(e);
         }
