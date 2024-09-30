@@ -34,13 +34,14 @@ public class EscapeRoom {
                 adminMenu();
             }
         }while (!EscapeRoom.quit);
-        System.out.println("bye");
+        System.out.println("You've exited the program.");
     }
 
     private void adminMenu() {
         int option = Menu.readSelection("Welcome Administrator! Select an option.", ">",
                 "1. Create Element", "2. Delete Element", "3. Logout");
         switch (option) {
+            case 1 -> System.out.println();
             case 3 -> EscapeRoom.user = null;
         }
     }
