@@ -11,6 +11,6 @@ public class Notification implements Storable{
 
     @Override
     public String insertString() {
-        return String.format("INSERT INTO notification VALUES (%d, %s);", this.userId, this.message);
+        return String.format("INSERT INTO notification (user_id, message) VALUES (%d, '%s');", this.userId, this.message);
     }
 }

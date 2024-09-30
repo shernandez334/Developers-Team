@@ -267,6 +267,24 @@ CREATE TABLE IF NOT EXISTS `escape_room`.`room_has_decor_items` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `escape_room`.`notification`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `escape_room`.`notification` (
+  `notification_id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `message` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`notification_id`, `user_id`),
+  UNIQUE INDEX `notification_id_UNIQUE` (`notification_id` ASC) VISIBLE,
+  INDEX `fk_user5_idx` (`user_id` ASC) VISIBLE,
+  CONSTRAINT `fk_user5`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `escape_room`.`user` (`user_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

@@ -252,13 +252,13 @@ public class MySQL implements Database {
         }
     }
 
-    public static <E extends Retrievable> ArrayList<Integer> retrieveIdsFromDatabase(String query, E element){
+    public static ArrayList<Integer> retrieveIdsFromDatabase(String query){
         ArrayList<Integer> response = new ArrayList<>();
         try (Connection connection = getConnection(Properties.DB_NAME.getValue());
              Statement statement = connection.createStatement()) {
             ResultSet result = statement.executeQuery(query);
             while (result.next()){
-                response.add(element.retrieve(result.getInt(1)));
+                response.add(result.getInt(1));
             }
         } catch (SQLException | MySqlCredentialsException e) {
             throw new RuntimeException(e);
@@ -267,6 +267,6 @@ public class MySQL implements Database {
     }
 
     public static ArrayList<Integer> getSubscribers() {
-        return MySQL.retrieveIdsFromDatabase("To do", new Player());
+        return MySQL.retrieveIdsFromDatabase("SELECT user_id FROM subscription;");
     }
 }
