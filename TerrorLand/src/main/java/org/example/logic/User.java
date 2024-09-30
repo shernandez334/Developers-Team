@@ -9,11 +9,7 @@ public class User {
     private final String name;
     private final String password;
     private final String email;
-    private final ArrayList<Ticket> tickets;
 
-    {
-        tickets = new  ArrayList<>();
-    }
 
     public User(String name, String password, String email) {
         this.id = -1;
@@ -27,7 +23,6 @@ public class User {
         this.name = name;
         this.password = "";
         this.email = email;
-        loadTicketsFromDatabase();
     }
 
     public int getId(){
@@ -56,26 +51,5 @@ public class User {
                 '}';
     }
 
-    public void purchaseTickets(int quantity){
-        for (int i = 0; i < quantity; i++){
-            Ticket.createTicket(this);
-        }
-        tickets.clear();
-        loadTicketsFromDatabase();
-    }
 
-    private void loadTicketsFromDatabase(){
-        this.tickets.addAll(MySQL.getTickets(this, true));
-    }
-
-    public int getTotalTickets(){
-        return this.tickets.size();
-    }
-
-    public boolean cashTicket(){
-        if (tickets.isEmpty()) return false;
-        Ticket ticket = tickets.removeFirst();
-        ticket.cash();
-        return true;
-    }
 }
