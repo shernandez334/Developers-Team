@@ -43,11 +43,12 @@ public class EscapeRoom {
     private void adminMenu() {
         int option = Menu.readSelection("Welcome Administrator! Select an option.", ">",
                 "1. Create Element", "2. Delete Element", "3. Set ticket price", "4. Get total income",
-                "5. Logout");
+                "5. Send Notification" ,"6. Logout");
         switch (option) {
             case 3 -> setTicketPriceMenu();
             case 4 -> System.out.printf("The total income is %.2f€.%n", MySQL.getTotalIncome());
-            case 5 -> EscapeRoom.user = null;
+            case 5 -> ((Admin) user).NotifyAll(MySQL.getSubscribers(), IO.readString("Insert the message: "));
+            case 6 -> EscapeRoom.user = null;
         }
     }
 

@@ -1,6 +1,9 @@
 package org.example.logic;
 
-public class Player extends User{
+public class Player extends User implements Retrievable{
+    public Player(){
+        super(null, null, null);
+    }
     public Player(String name, String password, String email) {
         super(name, password, email);
     }
