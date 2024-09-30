@@ -48,5 +48,4 @@ public enum Properties {
             throw new RuntimeException(e);
         }
     }
-
 }
