@@ -6,7 +6,7 @@ import org.example.exceptions.RunSqlFileException;
 import org.example.logic.Admin;
 import org.example.logic.Player;
 import org.example.logic.User;
-import org.example.util.Properties;
+import org.example.enums.Properties;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -79,7 +79,8 @@ public class MySQL implements Database {
     }
 
     private static void executeSqlFile(String file) throws MySqlCredentialsException {
-        Path path = Path.of(file);
+        Path path = Path.of(file.replace("\\", "/"));
+        System.out.printf("Attempting to read SQL file from: %s%n", path);
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement();
              BufferedReader input = Files.newBufferedReader(path.toRealPath())
@@ -105,6 +106,14 @@ public class MySQL implements Database {
         }
     }
 
+    public void execute(Element e) {
+        try (Connection connection = getConnection(Properties.DB_NAME.getValue());
+             Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(String.valueOf(e.dataInfo()));
+        } catch (SQLException | MySqlCredentialsException err) {
+            err.printStackTrace();
+        }
+    }
 
     public boolean addUser(User user) throws ExistingEmailException {
 
