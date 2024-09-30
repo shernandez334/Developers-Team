@@ -64,6 +64,8 @@ public class MySQL implements Database {
         return getConnection("");
     }
 
+
+
     public void createIfMissing() throws MySqlCredentialsException {
 
         try {
@@ -252,13 +254,19 @@ public class MySQL implements Database {
         }
     }
 
-    public static ArrayList<Integer> retrieveIdsFromDatabase(String query){
-        ArrayList<Integer> response = new ArrayList<>();
+    public static <T> ArrayList<T> retrieveColumnFromDatabase(String query, Class<T> type){
+        ArrayList<T> response = new ArrayList<>();
         try (Connection connection = getConnection(Properties.DB_NAME.getValue());
              Statement statement = connection.createStatement()) {
             ResultSet result = statement.executeQuery(query);
             while (result.next()){
-                response.add(result.getInt(1));
+                if (type == Integer.class){
+                    response.add(type.cast(result.getInt(1)));
+                } else if (type == String.class){
+                    response.add(type.cast(result.getString(1)));
+                }else {
+                    throw new RuntimeException("Type argument in retrieveColumnFromDatabase doesn't match accepted types.");
+                }
             }
         } catch (SQLException | MySqlCredentialsException e) {
             throw new RuntimeException(e);
@@ -267,6 +275,12 @@ public class MySQL implements Database {
     }
 
     public static ArrayList<Integer> getSubscribers() {
-        return MySQL.retrieveIdsFromDatabase("SELECT user_id FROM subscription;");
+        return MySQL.retrieveColumnFromDatabase("SELECT user_id FROM subscription;", Integer.class);
+    }
+
+    public static ArrayList<String> getNotifications(int userId) {
+        return MySQL.retrieveColumnFromDatabase(
+                String.format("SELECT message FROM notification WHERE user_id = %d;", userId),
+                String.class);
     }
 }

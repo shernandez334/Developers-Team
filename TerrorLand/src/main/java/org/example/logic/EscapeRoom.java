@@ -72,7 +72,7 @@ public class EscapeRoom {
         switch (option) {
             case 1 -> System.out.println(((Player) user).cashTicket() ? "You played a room!" : "Get some tickets first!");
             case 2 -> buyTicketMenu();
-            case 3 -> System.out.println("To be implemented.");
+            case 3 -> System.out.println(((Player) user).readNotifications());
             case 4 -> {
                 if (((Player) user).isSubscribed()) {
                     ((Player) user).unsubscribe();

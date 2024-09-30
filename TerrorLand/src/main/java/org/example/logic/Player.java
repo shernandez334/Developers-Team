@@ -3,6 +3,7 @@ package org.example.logic;
 import org.example.database.MySQL;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class Player extends User implements Retrievable{
 
@@ -58,5 +59,9 @@ public class Player extends User implements Retrievable{
     public void subscribe() {
         MySQL.subscribePlayer(super.getId());
         this.isSubscribed = true;
+    }
+
+    public String readNotifications() {
+        return String.join("\n", MySQL.getNotifications(super.getId()));
     }
 }
