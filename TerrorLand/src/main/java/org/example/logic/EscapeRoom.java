@@ -63,12 +63,24 @@ public class EscapeRoom {
 
     private void playerMenu() {
         System.out.printf("Welcome %s! You've got %d tickets.%n", user.getName(), user.getTotalTickets());
+        boolean isSubscribed = MySQL.isSubscribed(user.getId());
         int option = Menu.readSelection("Select an option.", ">",
-                "1. Play Room", "2. Buy a Ticket", "3. Logout");
+                "1. Play Room", "2. Buy a Ticket",
+                isSubscribed ? "3. Stop receiving notifications" : "3. Subscribe to get notifications",
+                "4. Logout");
         switch (option) {
             case 1 -> System.out.println(user.cashTicket() ? "You played a room!" : "Get some tickets first!");
             case 2 -> buyTicketMenu();
-            case 3 -> EscapeRoom.user = null;
+            case 3 -> {
+                if (isSubscribed) {
+                    MySQL.unsubscribePlayer(user.getId());
+                    System.out.println("You are no longer subscribed to the notifications.");
+                }else {
+                    MySQL.subscribePlayer(user.getId());
+                    System.out.println("You have subscribed successfully.");
+                }
+            }
+            case 4 -> EscapeRoom.user = null;
         }
     }
 
