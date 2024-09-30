@@ -3,10 +3,7 @@ package org.example.database;
 import org.example.exceptions.ExistingEmailException;
 import org.example.exceptions.MySqlCredentialsException;
 import org.example.exceptions.RunSqlFileException;
-import org.example.logic.Admin;
-import org.example.logic.Player;
-import org.example.logic.Ticket;
-import org.example.logic.User;
+import org.example.logic.*;
 import org.example.util.Properties;
 
 import java.io.BufferedReader;
@@ -240,6 +237,16 @@ public class MySQL implements Database {
             String str = String.format("SELECT * FROM subscription WHERE user_id = %d;", playerId);
             ResultSet result = statement.executeQuery(str);
             return result.next();
+        } catch (SQLException | MySqlCredentialsException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static boolean insertIntoDatabase(Storable storable){
+        try (Connection connection = getConnection(Properties.DB_NAME.getValue());
+             Statement statement = connection.createStatement()) {
+            statement.execute(storable.insertString());
+            return statement.getUpdateCount() == 1;
         } catch (SQLException | MySqlCredentialsException e) {
             throw new RuntimeException(e);
         }
