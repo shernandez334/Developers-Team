@@ -9,7 +9,6 @@ import org.example.util.Menu;
 import org.example.util.Properties;
 
 public class EscapeRoom {
-
     private static User user;
     private static boolean quit;
 

@@ -6,4 +6,5 @@ public interface Database {
 
     public void createIfMissing() throws MySqlCredentialsException;
 
+    public void execute(Element e);
 }
