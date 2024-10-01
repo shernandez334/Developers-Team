@@ -1,4 +1,4 @@
-package org.example.logic;
+package org.example.model;
 
 import org.example.database.MySQL;
 
