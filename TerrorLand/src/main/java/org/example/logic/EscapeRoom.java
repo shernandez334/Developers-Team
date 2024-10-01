@@ -9,12 +9,17 @@ import org.example.util.Menu;
 import org.example.util.Properties;
 
 public class EscapeRoom {
+    private String name;
     private static User user;
     private static boolean quit;
 
     static{
         user = null;
         quit = false;
+    }
+
+    public EscapeRoom(String name){
+        this.name = name;
     }
 
     public void run() {

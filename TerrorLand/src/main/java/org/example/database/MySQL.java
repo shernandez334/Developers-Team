@@ -114,6 +114,7 @@ public class MySQL implements Database {
         }
     }
 
+
     public boolean addUser(User user) throws ExistingEmailException {
 
         try (Connection connection = getConnection(Properties.DB_NAME.getValue());
