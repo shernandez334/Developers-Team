@@ -3,17 +3,20 @@ package org.example.database;
 import org.example.exceptions.ExistingEmailException;
 import org.example.exceptions.MySqlCredentialsException;
 import org.example.exceptions.RunSqlFileException;
+import org.example.exceptions.UnsupportedTypeException;
 import org.example.logic.*;
 import org.example.util.Properties;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 
 public class MySQL implements Database {
@@ -63,8 +66,6 @@ public class MySQL implements Database {
     public static Connection getConnection() throws SQLException, MySqlCredentialsException {
         return getConnection("");
     }
-
-
 
     public void createIfMissing() throws MySqlCredentialsException {
 
@@ -245,13 +246,31 @@ public class MySQL implements Database {
     }
 
     public static boolean insertIntoDatabase(Storable storable){
+        return executeQuery(storable.insertString());
+    }
+
+    public static boolean deleteFromDatabase(Deletable deletable){
+        return executeQuery(deletable.deleteString());
+    }
+
+    public static boolean executeQuery(String query){
         try (Connection connection = getConnection(Properties.DB_NAME.getValue());
              Statement statement = connection.createStatement()) {
-            statement.execute(storable.insertString());
+            statement.execute(query);
             return statement.getUpdateCount() == 1;
         } catch (SQLException | MySqlCredentialsException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static ArrayList<Integer> getSubscribers() {
+        return MySQL.retrieveColumnFromDatabase("SELECT user_id FROM subscription;", Integer.class);
+    }
+
+    public static ArrayList<String> getNotifications(int userId) {
+        return MySQL.retrieveColumnFromDatabase(
+                String.format("SELECT message FROM notification WHERE user_id = %d;", userId),
+                String.class);
     }
 
     public static <T> ArrayList<T> retrieveColumnFromDatabase(String query, Class<T> type){
@@ -265,7 +284,8 @@ public class MySQL implements Database {
                 } else if (type == String.class){
                     response.add(type.cast(result.getString(1)));
                 }else {
-                    throw new RuntimeException("Type argument in retrieveColumnFromDatabase doesn't match accepted types.");
+                    throw new UnsupportedTypeException(
+                            String.format("RetrieveColumnFromDatabase() doesn't accept %s as argument.", type));
                 }
             }
         } catch (SQLException | MySqlCredentialsException e) {
@@ -274,13 +294,39 @@ public class MySQL implements Database {
         return response;
     }
 
-    public static ArrayList<Integer> getSubscribers() {
-        return MySQL.retrieveColumnFromDatabase("SELECT user_id FROM subscription;", Integer.class);
+    public static Collection<? extends Notification> getNotificationsObject(int playerId) {
+        ArrayList<Notification> response = new ArrayList<>();
+        ArrayList<ArrayList<Object>> items = retrieveMultipleColumnsFromDatabase(
+                String.format("SELECT notification_id, message FROM notification WHERE user_id = %d;", playerId),
+                (new Object() {Integer id; String message;}).getClass());
+        items.forEach(e -> response.add(new Notification((int) e.getFirst(), playerId, (String) e.get(1))));
+        return response;
     }
 
-    public static ArrayList<String> getNotifications(int userId) {
-        return MySQL.retrieveColumnFromDatabase(
-                String.format("SELECT message FROM notification WHERE user_id = %d;", userId),
-                String.class);
+
+    public static <T> ArrayList<ArrayList<Object>> retrieveMultipleColumnsFromDatabase(String query, Class<T> type){
+        ArrayList<ArrayList<Object>> response = new ArrayList<>();
+        Field[] fields = type.getDeclaredFields();
+        try (Connection connection = getConnection(Properties.DB_NAME.getValue());
+             Statement statement = connection.createStatement()) {
+            ResultSet result = statement.executeQuery(query);
+            while (result.next()){
+                response.add(new ArrayList<>());
+                for (int i = 0; i < fields.length; i++){
+                    if (fields[i].getGenericType() == Integer.class){
+                        response.getLast().add((result.getInt(i + 1)));
+                    } else if (fields[i].getGenericType() == String.class){
+                        response.getLast().add(result.getString(i + 1));
+                    }else {
+                        throw new UnsupportedTypeException(
+                                String.format("retrieveMultipleColumnsFromDatabase() can't process %s's.",
+                                        fields[i].getGenericType()));
+                    }
+                }
+            }
+        } catch (SQLException | MySqlCredentialsException e) {
+            throw new RuntimeException(e);
+        }
+        return response;
     }
 }

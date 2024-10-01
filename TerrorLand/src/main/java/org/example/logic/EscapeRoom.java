@@ -41,13 +41,14 @@ public class EscapeRoom {
     }
 
     private void adminMenu() {
+        Admin admin = (Admin) user;
         int option = Menu.readSelection("Welcome Administrator! Select an option.", ">",
                 "1. Create Element", "2. Delete Element", "3. Set ticket price", "4. Get total income",
                 "5. Send Notification" ,"6. Logout");
         switch (option) {
             case 3 -> setTicketPriceMenu();
             case 4 -> System.out.printf("The total income is %.2f€.%n", MySQL.getTotalIncome());
-            case 5 -> ((Admin) user).NotifyAll(MySQL.getSubscribers(), IO.readString("Insert the message: "));
+            case 5 -> admin.NotifyAll(MySQL.getSubscribers(), IO.readString("Insert the message: "));
             case 6 -> EscapeRoom.user = null;
         }
     }
@@ -63,22 +64,23 @@ public class EscapeRoom {
     }
 
     private void playerMenu() {
-        System.out.printf("Welcome %s! You've got %d tickets.%n", user.getName(), ((Player) user).getTotalTickets());
+        Player player = (Player) user;
+        System.out.printf("Welcome %s! You've got %d tickets.%n", player.getName(), player.getTotalTickets());
         int option = Menu.readSelection("Select an option.", ">",
                 "1. Play Room", "2. Buy a Ticket",
                 "3. Read notifications",
-                "4. " + (((Player) user).isSubscribed() ? "Stop receiving notifications" : "Subscribe to get notifications"),
+                "4. " + (player.isSubscribed() ? "Stop receiving notifications" : "Receive notifications"),
                 "5. Logout");
         switch (option) {
-            case 1 -> System.out.println(((Player) user).cashTicket() ? "You played a room!" : "Get some tickets first!");
+            case 1 -> System.out.println(player.cashTicket() ? "You played a room!" : "Get some tickets first!");
             case 2 -> buyTicketMenu();
-            case 3 -> System.out.println(((Player) user).readNotifications());
+            case 3 -> player.readNotifications();
             case 4 -> {
-                if (((Player) user).isSubscribed()) {
-                    ((Player) user).unsubscribe();
+                if (player.isSubscribed()) {
+                    player.unsubscribe();
                     System.out.println("You are no longer subscribed to the notifications.");
                 }else {
-                    ((Player) user).subscribe();
+                    player.subscribe();
                     System.out.println("You have subscribed successfully.");
                 }
             }
