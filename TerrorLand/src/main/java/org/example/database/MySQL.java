@@ -345,4 +345,9 @@ public class MySQL implements Database {
         }
         return response;
     }
+
+    @Override
+    public void execute(Element e) {
+
+    }
 }
