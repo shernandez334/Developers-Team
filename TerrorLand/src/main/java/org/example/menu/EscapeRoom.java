@@ -15,7 +15,7 @@ import org.example.util.Properties;
 import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
-public class EscapeRoomMenu {
+public class EscapeRoom {
 
     private static User user;
     private static boolean quit;
@@ -33,14 +33,14 @@ public class EscapeRoomMenu {
             return;
         }
         do{
-            if (EscapeRoomMenu.user == null){
-                EscapeRoomMenu.user = loginMenu();
-            } else if (EscapeRoomMenu.user instanceof Player){
+            if (EscapeRoom.user == null){
+                EscapeRoom.user = loginMenu();
+            } else if (EscapeRoom.user instanceof Player){
                 playerMenu();
             }else {
                 adminMenu();
             }
-        }while (!EscapeRoomMenu.quit);
+        }while (!EscapeRoom.quit);
         System.out.println("bye");
     }
 
@@ -53,7 +53,7 @@ public class EscapeRoomMenu {
             case 3 -> setTicketPriceMenu();
             case 4 -> System.out.printf("The total income is %.2f€.%n", MySQL.getTotalIncome());
             case 5 -> admin.NotifyAll(MySQL.getSubscribers(), IO.readString("Insert the message: "));
-            case 6 -> EscapeRoomMenu.user = null;
+            case 6 -> EscapeRoom.user = null;
         }
     }
 
@@ -88,7 +88,7 @@ public class EscapeRoomMenu {
                     System.out.println("You have subscribed successfully.");
                 }
             }
-            case 5 -> EscapeRoomMenu.user = null;
+            case 5 -> EscapeRoom.user = null;
         }
     }
 
@@ -113,7 +113,7 @@ public class EscapeRoomMenu {
                 System.out.println(user == null ? "Wrong credentials." : "You successfully logged as " + user.getName());
             }
             case 2 -> registerUser();
-            case 3 -> EscapeRoomMenu.quit = true;
+            case 3 -> EscapeRoom.quit = true;
         }
         return user;
     }
