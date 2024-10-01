@@ -25,4 +25,11 @@ public class Ticket {
         Ticket.purchasePrice = purchasePrice;
     }
 
+    public static void createTicket(User user){
+        MySQL.createTicket(user, Ticket.purchasePrice);
+    }
+
+    public void cash(){
+        MySQL.cashTicket(this.id);
+    }
 }

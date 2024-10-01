@@ -105,15 +105,6 @@ public class MySQL implements Database {
         }
     }
 
-    public void execute(Element e) {
-        try (Connection connection = getConnection(Properties.DB_NAME.getValue());
-             Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(String.valueOf(e.dataInfo()));
-        } catch (SQLException | MySqlCredentialsException err) {
-            err.printStackTrace();
-        }
-    }
-
 
     public boolean addUser(User user) throws ExistingEmailException {
 
