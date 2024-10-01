@@ -1,8 +1,4 @@
-package org.example.logic;
-
-import org.example.database.MySQL;
-
-import java.util.ArrayList;
+package org.example.model;
 
 public class User {
     private final int id;

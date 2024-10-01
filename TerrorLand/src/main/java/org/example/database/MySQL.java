@@ -1,15 +1,11 @@
 package org.example.database;
 
-import org.example.exceptions.ExistingEmailException;
-import org.example.exceptions.MySqlCredentialsException;
-import org.example.exceptions.RunSqlFileException;
-import org.example.exceptions.UnsupportedTypeException;
-import org.example.logic.*;
+import org.example.exceptions.*;
+import org.example.model.*;
 import org.example.util.Properties;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -189,17 +185,11 @@ public class MySQL implements Database {
     }
 
     public static void cashTicket(int ticketId) {
-        try (Connection connection = getConnection(Properties.DB_NAME.getValue());
-             Statement statement = connection.createStatement()) {
-            String str = String.format("UPDATE ticket SET cashed = 1 WHERE ticket_id = %d;",
-                    ticketId);
-            statement.executeUpdate(str);
-        } catch (SQLException | MySqlCredentialsException e) {
-            throw new RuntimeException(e);
-        }
+        executeQuery(String.format("UPDATE ticket SET cashed = 1 WHERE ticket_id = %d;", ticketId));
     }
 
-    public static BigDecimal getTotalIncome(){
+    @Deprecated
+    public static BigDecimal getTotalIncomeOldVersion(){
         try (Connection connection = getConnection(Properties.DB_NAME.getValue());
              Statement statement = connection.createStatement()) {
             String str = "SELECT SUM(price) FROM ticket;";
@@ -214,27 +204,25 @@ public class MySQL implements Database {
         }
     }
 
-    public static void subscribePlayer(int playerId){
-        try (Connection connection = getConnection(Properties.DB_NAME.getValue());
-             Statement statement = connection.createStatement()) {
-            String str = String.format("INSERT INTO subscription (user_id) VALUES (%d);", playerId);
-            statement.executeUpdate(str);
-        } catch (SQLException | MySqlCredentialsException e) {
-            throw new RuntimeException(e);
+    public static BigDecimal getTotalIncome() {
+        String query = "SELECT SUM(price) FROM ticket;";
+        try {
+            return retrieveSingleValueFromDatabase(query, BigDecimal.class);
+        } catch (MySqlEmptyResultSetException e) {
+            throw new RuntimeException(String.format("The query '%s' didn't yield a result.%n", query));
         }
+    }
+
+    public static void subscribePlayer(int playerId){
+        executeQuery(String.format("INSERT INTO subscription (user_id) VALUES (%d);", playerId));
     }
 
     public static void unsubscribePlayer(int playerId){
-        try (Connection connection = getConnection(Properties.DB_NAME.getValue());
-             Statement statement = connection.createStatement()) {
-            String str = String.format("DELETE FROM subscription WHERE user_id = %d;", playerId);
-            statement.execute(str);
-        } catch (SQLException | MySqlCredentialsException e) {
-            throw new RuntimeException(e);
-        }
+        executeQuery(String.format("DELETE FROM subscription WHERE user_id = %d;", playerId));
     }
 
-    public static boolean isSubscribed(int playerId){
+    @Deprecated
+    public static boolean isSubscribedOldVersion(int playerId){
         try (Connection connection = getConnection(Properties.DB_NAME.getValue());
              Statement statement = connection.createStatement()) {
             String str = String.format("SELECT * FROM subscription WHERE user_id = %d;", playerId);
@@ -245,35 +233,63 @@ public class MySQL implements Database {
         }
     }
 
-    public static boolean insertIntoDatabase(Storable storable){
-        return executeQuery(storable.insertString());
+    public static boolean isSubscribed(int playerId){
+        String query = String.format("SELECT user_id FROM subscription WHERE user_id = %d;", playerId);
+        try{
+            retrieveSingleValueFromDatabase(query, Integer.class);
+            return true;
+        }catch (MySqlEmptyResultSetException e){
+            return false;
+        }
     }
 
-    public static boolean deleteFromDatabase(Deletable deletable){
-        return executeQuery(deletable.deleteString());
+    public static <T> T retrieveSingleValueFromDatabase(String query, Class<T> type) throws MySqlEmptyResultSetException {
+        T response;
+        try (Connection connection = getConnection(Properties.DB_NAME.getValue());
+             Statement statement = connection.createStatement()) {
+            ResultSet result = statement.executeQuery(query);
+            if (result.next()){
+                if (type == Integer.class){
+                    response = (T) Integer.valueOf(result.getInt(1));
+                } else if (type == String.class) {
+                    response = (T) result.getString(1);
+                } else if (type == BigDecimal.class){
+                    response = (T) result.getBigDecimal(1);
+                }else {
+                    throw new UnsupportedTypeException(
+                            String.format("RetrieveColumnFromDatabase() doesn't accept %s as argument.", type));
+                }
+            }else {
+                throw new MySqlEmptyResultSetException("Query results in an empty ResultSet.");
+            }
+        } catch (SQLException | MySqlCredentialsException e) {
+            throw new RuntimeException(e);
+        }
+        return response;
     }
 
-    public static boolean executeQuery(String query){
+    public static void insertIntoDatabase(Storable storable){
+        executeQuery(storable.insertQuery());
+    }
+
+    public static void deleteFromDatabase(Deletable deletable){
+        executeQuery(deletable.deleteQuery());
+    }
+
+    public static void executeQuery(String query){
         try (Connection connection = getConnection(Properties.DB_NAME.getValue());
              Statement statement = connection.createStatement()) {
             statement.execute(query);
-            return statement.getUpdateCount() == 1;
         } catch (SQLException | MySqlCredentialsException e) {
             throw new RuntimeException(e);
         }
     }
 
     public static ArrayList<Integer> getSubscribers() {
-        return MySQL.retrieveColumnFromDatabase("SELECT user_id FROM subscription;", Integer.class);
+        return MySQL.retrieveSingleColumnFromDatabase("SELECT user_id FROM subscription;", Integer.class);
     }
 
-    public static ArrayList<String> getNotifications(int userId) {
-        return MySQL.retrieveColumnFromDatabase(
-                String.format("SELECT message FROM notification WHERE user_id = %d;", userId),
-                String.class);
-    }
-
-    public static <T> ArrayList<T> retrieveColumnFromDatabase(String query, Class<T> type){
+    public static <T> ArrayList<T> retrieveSingleColumnFromDatabase(String query, Class<T> type){
         ArrayList<T> response = new ArrayList<>();
         try (Connection connection = getConnection(Properties.DB_NAME.getValue());
              Statement statement = connection.createStatement()) {
@@ -294,34 +310,34 @@ public class MySQL implements Database {
         return response;
     }
 
-    public static Collection<? extends Notification> getNotificationsObject(int playerId) {
+    public static Collection<? extends Notification> retrieveNotifications(int playerId) {
         ArrayList<Notification> response = new ArrayList<>();
         ArrayList<ArrayList<Object>> items = retrieveMultipleColumnsFromDatabase(
                 String.format("SELECT notification_id, message FROM notification WHERE user_id = %d;", playerId),
-                (new Object() {Integer id; String message;}).getClass());
+                new String[] {"Integer", "String"});
         items.forEach(e -> response.add(new Notification((int) e.getFirst(), playerId, (String) e.get(1))));
         return response;
     }
 
 
-    public static <T> ArrayList<ArrayList<Object>> retrieveMultipleColumnsFromDatabase(String query, Class<T> type){
+    public static <T> ArrayList<ArrayList<Object>> retrieveMultipleColumnsFromDatabase(String query, String[] types) {
         ArrayList<ArrayList<Object>> response = new ArrayList<>();
-        Field[] fields = type.getDeclaredFields();
         try (Connection connection = getConnection(Properties.DB_NAME.getValue());
              Statement statement = connection.createStatement()) {
             ResultSet result = statement.executeQuery(query);
             while (result.next()){
                 response.add(new ArrayList<>());
-                for (int i = 0; i < fields.length; i++){
-                    if (fields[i].getGenericType() == Integer.class){
+                for (int i = 0; i < types.length; i++){
+                    if (types[i].equalsIgnoreCase("Integer")){
                         response.getLast().add((result.getInt(i + 1)));
-                    } else if (fields[i].getGenericType() == String.class){
+                    } else if (types[i].equalsIgnoreCase("String")){
                         response.getLast().add(result.getString(i + 1));
                     }else {
                         throw new UnsupportedTypeException(
                                 String.format("retrieveMultipleColumnsFromDatabase() can't process %s's.",
-                                        fields[i].getGenericType()));
+                                        types[i]));
                     }
+
                 }
             }
         } catch (SQLException | MySqlCredentialsException e) {

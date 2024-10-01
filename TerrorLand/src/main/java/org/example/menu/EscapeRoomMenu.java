@@ -1,9 +1,13 @@
-package org.example.logic;
+package org.example.menu;
 
 import org.example.database.Database;
 import org.example.database.MySQL;
 import org.example.exceptions.ExistingEmailException;
 import org.example.exceptions.MySqlCredentialsException;
+import org.example.model.Admin;
+import org.example.model.Player;
+import org.example.model.Ticket;
+import org.example.model.User;
 import org.example.util.IO;
 import org.example.util.Menu;
 import org.example.util.Properties;
@@ -11,7 +15,7 @@ import org.example.util.Properties;
 import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
-public class EscapeRoom {
+public class EscapeRoomMenu {
 
     private static User user;
     private static boolean quit;
@@ -29,14 +33,14 @@ public class EscapeRoom {
             return;
         }
         do{
-            if (EscapeRoom.user == null){
-                EscapeRoom.user = loginMenu();
-            } else if (EscapeRoom.user instanceof Player){
+            if (EscapeRoomMenu.user == null){
+                EscapeRoomMenu.user = loginMenu();
+            } else if (EscapeRoomMenu.user instanceof Player){
                 playerMenu();
             }else {
                 adminMenu();
             }
-        }while (!EscapeRoom.quit);
+        }while (!EscapeRoomMenu.quit);
         System.out.println("bye");
     }
 
@@ -49,7 +53,7 @@ public class EscapeRoom {
             case 3 -> setTicketPriceMenu();
             case 4 -> System.out.printf("The total income is %.2f€.%n", MySQL.getTotalIncome());
             case 5 -> admin.NotifyAll(MySQL.getSubscribers(), IO.readString("Insert the message: "));
-            case 6 -> EscapeRoom.user = null;
+            case 6 -> EscapeRoomMenu.user = null;
         }
     }
 
@@ -58,7 +62,7 @@ public class EscapeRoom {
         String price = "";
         do {
             if (!price.isEmpty()) System.out.println("Wrong format, values between 0 and 99 accepted.");
-            price = IO.readString("New price: ");
+            price = IO.readString("New price: ").replace(',', '.');
         }while(!Pattern.matches("^\\d{1,2}(\\.\\d{1,2})?$", price));
         Ticket.setPurchasePrice(BigDecimal.valueOf(Double.parseDouble(price)));
     }
@@ -68,7 +72,7 @@ public class EscapeRoom {
         System.out.printf("Welcome %s! You've got %d tickets.%n", player.getName(), player.getTotalTickets());
         int option = Menu.readSelection("Select an option.", ">",
                 "1. Play Room", "2. Buy a Ticket",
-                "3. Read notifications",
+                "3. Read notifications " + player.getNotificationWarning(),
                 "4. " + (player.isSubscribed() ? "Stop receiving notifications" : "Receive notifications"),
                 "5. Logout");
         switch (option) {
@@ -84,7 +88,7 @@ public class EscapeRoom {
                     System.out.println("You have subscribed successfully.");
                 }
             }
-            case 5 -> EscapeRoom.user = null;
+            case 5 -> EscapeRoomMenu.user = null;
         }
     }
 
@@ -109,7 +113,7 @@ public class EscapeRoom {
                 System.out.println(user == null ? "Wrong credentials." : "You successfully logged as " + user.getName());
             }
             case 2 -> registerUser();
-            case 3 -> EscapeRoom.quit = true;
+            case 3 -> EscapeRoomMenu.quit = true;
         }
         return user;
     }

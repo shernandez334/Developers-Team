@@ -1,12 +1,13 @@
-package org.example.logic;
+package org.example.model;
 
 import org.example.database.MySQL;
+import org.example.database.Retrievable;
 import org.example.util.IO;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-public class Player extends User implements Retrievable{
+public class Player extends User implements Retrievable {
 
     private final ArrayList<Ticket> tickets;
     private final ArrayList<Notification> notifications;
@@ -17,14 +18,15 @@ public class Player extends User implements Retrievable{
         notifications = new ArrayList<>();
     }
 
-
     public Player(String name, String password, String email) {
         super(name, password, email);
     }
+
     public Player(String name, String email, int id) {
         super(name, email, id);
         loadTicketsFromDatabase();
         this.isSubscribed = MySQL.isSubscribed(super.getId());
+        loadNotificationsFromDatabase();
     }
 
     public Boolean isSubscribed() {
@@ -65,32 +67,32 @@ public class Player extends User implements Retrievable{
     }
 
     public void readNotifications() {
-        printAllNotifications();
-        ArrayList<String> notifications = MySQL.getNotifications(super.getId());
+        loadNotificationsFromDatabase();
         if (notifications.isEmpty()){
             System.out.println("You have no messages.");
             return;
         }
-        ListIterator<String> item = notifications.listIterator();
+        ListIterator<Notification> item = this.notifications.listIterator();
         char option = ' ';
-        String rawMessage = item.next();
+        Notification notification = item.next();
         boolean backed = false;
         do {
             if (option == 'p' && item.previousIndex() > 0){
                 item.previous();
-                rawMessage = item.previous();
+                notification = item.previous();
                 backed = true;
             }else if (option == 'n' && item.hasNext()){
-                rawMessage = item.next();
+                notification = item.next();
             }else if (option == 'd'){
+                notification.deleteFromDatabase();
                 item.remove();
                 if (notifications.isEmpty()) {
                     System.out.println("You have no messages left.");
                     return;
                 } else if (item.hasNext()){
-                    rawMessage = item.next();
+                    notification = item.next();
                 } else if (item.previousIndex() >= 0) {
-                    rawMessage = item.previous();
+                    notification = item.previous();
                     backed = true;
                 }
             }
@@ -98,7 +100,7 @@ public class Player extends User implements Retrievable{
                 item.next();
                 backed = false;
             }
-            System.out.printf("%n%s%n", IO.indentText(rawMessage, "**  "));
+            System.out.printf("%n%s%n", IO.indentText(notification.getMessage(), "**  "));
             System.out.printf("Previous(p)  -- %d/%d --  Next(n), Delete(d), Quit(q)%n",
                     item.nextIndex(), notifications.size());
             do{
@@ -107,12 +109,12 @@ public class Player extends User implements Retrievable{
         } while(option != 'q' && !notifications.isEmpty());
     }
 
-    private void printAllNotifications() {
-        loadNotificationsFromDatabase();
-        this.notifications.forEach(System.out::println);
+    public void loadNotificationsFromDatabase(){
+        this.notifications.clear();
+        this.notifications.addAll(MySQL.retrieveNotifications(super.getId()));
     }
 
-    public void loadNotificationsFromDatabase(){
-        this.notifications.addAll(MySQL.getNotificationsObject(super.getId()));
+    public String getNotificationWarning(){
+        return this.notifications.isEmpty() ? "(no messages)" : String.format("(%d Total)", this.notifications.size());
     }
 }
