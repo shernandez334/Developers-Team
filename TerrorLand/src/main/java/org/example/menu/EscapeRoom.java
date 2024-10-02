@@ -65,7 +65,7 @@ public class EscapeRoom {
             price = IO.readString("New price: ").replace(',', '.');
         }while(!Pattern.matches("^\\d{1,2}(\\.\\d{1,2})?$", price));
         //REGEX: Number up to 99 with optional 1 or 2 digit decimal
-        Ticket.setPurchasePrice(BigDecimal.valueOf(Double.parseDouble(price)));
+        Ticket.setPurchasePrice(price);
     }
 
     private void playerMenu() {

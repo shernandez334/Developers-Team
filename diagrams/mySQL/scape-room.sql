@@ -285,6 +285,27 @@ CREATE TABLE IF NOT EXISTS `escape_room`.`notification` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `escape_room`.`property`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `escape_room`.`property` (
+  `property_id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(20) NOT NULL,
+  `value` VARCHAR(45) NULL,
+  PRIMARY KEY (`property_id`))
+ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+-- -----------------------------------------------------
+-- Data for table `escape_room`.`property`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `escape_room`;
+INSERT INTO `escape_room`.`property` (`property_id`, `name`, `value`) VALUES (, 'ticket_price', '9,99');
+
+COMMIT;
+
