@@ -39,8 +39,9 @@ public class Notification implements Storable, Deletable {
 
     @Override
     public String insertQuery() {
+        String message = this.message.replaceAll("'", "''");
         return String.format("INSERT INTO notification (user_id, message) VALUES (%d, '%s');",
-                this.userId, this.message);
+                this.userId, message);
     }
 
     @Override
