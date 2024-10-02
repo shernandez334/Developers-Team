@@ -1,12 +1,12 @@
 package org.example.database;
 
+import org.example.enums.Properties;
 import org.example.exceptions.ExistingEmailException;
 import org.example.exceptions.MySqlCredentialsException;
 import org.example.exceptions.RunSqlFileException;
 import org.example.logic.Admin;
 import org.example.logic.Player;
 import org.example.logic.User;
-import org.example.util.Properties;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
 import java.util.Arrays;
+
 
 
 public class MySQL implements Database {
@@ -102,6 +103,15 @@ public class MySQL implements Database {
             throw new RuntimeException("Unable to execute the .sql script: MySQL error.", e);
         } catch (IOException e) {
             throw new RunSqlFileException("Unable to execute the .sql script: error reading the '.sql' file.", e);
+        }
+    }
+
+    public void execute(Element e) {
+        try (Connection connection = getConnection(Properties.DB_NAME.getValue());
+             Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(String.valueOf(e.dataInfo()));
+        } catch (SQLException | MySqlCredentialsException err) {
+            err.printStackTrace();
         }
     }
 

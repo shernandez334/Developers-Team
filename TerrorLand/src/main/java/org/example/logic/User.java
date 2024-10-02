@@ -27,7 +27,7 @@ public class User {
         this.name = name;
         this.password = "";
         this.email = email;
-        loadTicketsFromDatabase();
+        //loadTicketsFromDatabase();
     }
 
     public int getId(){
@@ -56,7 +56,7 @@ public class User {
                 '}';
     }
 
-    public void purchaseTickets(int quantity){
+    /*public void purchaseTickets(int quantity){
         for (int i = 0; i < quantity; i++){
             Ticket.createTicket(this);
         }
@@ -77,5 +77,5 @@ public class User {
         Ticket ticket = tickets.removeFirst();
         ticket.cash();
         return true;
-    }
+    }*/
 }
