@@ -64,6 +64,7 @@ public class EscapeRoom {
             if (!price.isEmpty()) System.out.println("Wrong format, values between 0 and 99 accepted.");
             price = IO.readString("New price: ").replace(',', '.');
         }while(!Pattern.matches("^\\d{1,2}(\\.\\d{1,2})?$", price));
+        //REGEX: Number up to 99 with optional 1 or 2 digit decimal
         Ticket.setPurchasePrice(BigDecimal.valueOf(Double.parseDouble(price)));
     }
 
@@ -131,6 +132,7 @@ public class EscapeRoom {
             }
             userName = IO.readString("username: ");
         }while(userName.matches(".*\\s.*") || userName.length()<4 || userName.length()>16);
+        //Regex: has blank spaces
         do{
             if (!password.isEmpty()){
                 System.out.println("Error: " +
@@ -138,12 +140,13 @@ public class EscapeRoom {
             }
             password = IO.readString("password: ");
         }while(password.matches(".*\\s.*") || password.length()<4 || password.length()>16);
+        //Regex: has blank spaces
         do{
             if (!email.isEmpty()){
                 System.out.println("Error: not a valid email address.");
             }
             email = IO.readString("email: ");
-        }while(email.matches(".*\\s.*") || !email.matches(".+@.+\\..+"));
+        }while(email.matches(".*\\s.*") || !email.matches(".+@.+\\..+")); //Regex: has blank spaces
 
         int option = Menu.readSelection("Select your role:", ">", "1. Player", "2. Admin");
         user = switch (option) {
@@ -173,12 +176,13 @@ public class EscapeRoom {
             }
             email = IO.readString("email: ");
         }while(email.matches(".*\\s.*") || !email.matches(".+@.+\\..+"));
+        //Regex: has blank spaces. 2nd Regex: contains somenthing + @ + something + . +something
         do{
             if (!password.isEmpty()){
                 System.out.println("Error: input a valid password.");
             }
             password = IO.readString("password: ");
-        }while(password.matches(".*\\s.*") || password.length()<4);
+        }while(password.matches(".*\\s.*") || password.length()<4); //Regex: has blank spaces
         user = MySQL.getUser(email, password);
         return user;
     }
