@@ -9,7 +9,7 @@ import org.example.util.IO;
 import org.example.util.Menu;
 import org.example.enums.Properties;
 
-import static org.example.database.Element.createAnElement;
+import static org.example.persistence.CreateElements.createAnElement;
 
 public class EscapeRoom {
     private String name;

@@ -57,7 +57,7 @@ CREATE TABLE `element`(
     `type` ENUM('') NOT NULL,
     `quantity` INT NOT NULL,
     `status` INT NOT NULL,
-    `price` INT NOT NULL
+    `price` FLOAT NOT NULL
 );
 ALTER TABLE
     `ticket` ADD CONSTRAINT `ticket_user_id_foreign` FOREIGN KEY(`user_id`) REFERENCES `User`(`user_id`);
