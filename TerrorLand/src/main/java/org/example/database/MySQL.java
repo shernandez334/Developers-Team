@@ -1,12 +1,13 @@
 package org.example.database;
 
+import org.example.enums.Properties;
 import org.example.exceptions.ExistingEmailException;
 import org.example.exceptions.MySqlCredentialsException;
 import org.example.exceptions.RunSqlFileException;
 import org.example.logic.Admin;
 import org.example.logic.Player;
 import org.example.logic.User;
-import org.example.enums.Properties;
+import org.example.persistence.Element;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
 import java.util.Arrays;
+
 
 
 public class MySQL implements Database {
@@ -41,7 +43,7 @@ public class MySQL implements Database {
             String password = Properties.getProperty("db.password");
 
             try {
-                Connection connection = DriverManager.getConnection(url, user, password);
+                MySQL.connection = DriverManager.getConnection(url, user, password);
                 System.out.printf("Connected to %s.%n", dbName.isEmpty() ? "DB" : dbName);
                 return connection;
 
@@ -67,7 +69,7 @@ public class MySQL implements Database {
     public void createIfMissing() throws MySqlCredentialsException {
 
         try {
-            Connection connection = getConnection(Properties.DB_NAME.getValue());
+            MySQL.connection = getConnection(Properties.DB_NAME.getValue());
         } catch (SQLException e) {
             if (e.getErrorCode() == 1049) {
                 System.out.println("Unknown database -> Creating Database...");
@@ -85,7 +87,9 @@ public class MySQL implements Database {
              Statement statement = connection.createStatement();
              BufferedReader input = Files.newBufferedReader(path.toRealPath())
         ) {
-
+            String createDatabaseSql = String.format("CREATE DATABASE IF NOT EXISTS %s;", Properties.DB_NAME.getValue());
+            statement.execute(createDatabaseSql);
+            statement.execute("USE " + Properties.DB_NAME.getValue());
             StringBuilder sql = new StringBuilder();
             input.lines().filter(s -> !s.isEmpty() && !s.matches("^--.*")).forEach(sql::append);
 
@@ -109,11 +113,12 @@ public class MySQL implements Database {
     public void execute(Element e) {
         try (Connection connection = getConnection(Properties.DB_NAME.getValue());
              Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(String.valueOf(e.dataInfo()));
+            stmt.executeUpdate(String.valueOf(e.inputDataInfo()));
         } catch (SQLException | MySqlCredentialsException err) {
             err.printStackTrace();
         }
     }
+
 
     public boolean addUser(User user) throws ExistingEmailException {
 

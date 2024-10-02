@@ -29,6 +29,24 @@ public class IO {
         return myInt;
     }
 
+    public static float readFloat(String message) {
+        boolean isFloat = false;
+        float f = 0f;
+        do {
+            try {
+               System.out.println(message);
+               f = input.nextFloat();
+               isFloat = true;
+            } catch (InputMismatchException err) {
+                System.out.println("Format error.");
+                input.nextLine();
+            }
+        } while(!isFloat);
+        input.nextLine();
+        return f;
+    }
+
+
     public static double readDouble(String message) {
         boolean success = false;
         double myDouble = 0;

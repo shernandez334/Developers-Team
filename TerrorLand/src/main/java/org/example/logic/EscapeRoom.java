@@ -1,7 +1,7 @@
 package org.example.logic;
 
 import org.example.database.Database;
-import org.example.database.Element;
+import org.example.persistence.Element;
 import org.example.database.MySQL;
 import org.example.exceptions.ExistingEmailException;
 import org.example.exceptions.MySqlCredentialsException;
@@ -9,7 +9,7 @@ import org.example.util.IO;
 import org.example.util.Menu;
 import org.example.enums.Properties;
 
-import static org.example.database.Element.createAnElement;
+import static org.example.persistence.ElementCreator.createAnElement;
 
 public class EscapeRoom {
     private String name;

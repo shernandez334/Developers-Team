@@ -1,8 +1,7 @@
 package org.example.database;
 
-import org.example.enums.Difficulty;
 import org.example.exceptions.MySqlCredentialsException;
-
+import org.example.persistence.Element;
 
 public interface Database {
 
