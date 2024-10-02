@@ -45,10 +45,10 @@ public class MySQL implements Database {
                 return connection;
 
             } catch (SQLException e) {
-                System.out.printf("Error connecting to '%s' as user '%s' and password '%s'%n", url, user, password);
+                System.out.printf("Error connecting to '%s' as user '%s' and password '%s'.%n", url, user, password);
                 if (e.getErrorCode() == 1045) {
                     throw new MySqlCredentialsException(String.format(
-                            "Error connecting to MySQL server. Modify the credentials at '%s'%n",
+                            "Possible action: modify the credentials at '%s' if necessary.%n",
                             Path.of(Properties.PROPERTIES_FILE_PATH.getValue()).toAbsolutePath()),
                             e);
                 }
