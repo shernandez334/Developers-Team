@@ -305,7 +305,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `escape_room`;
-INSERT INTO `escape_room`.`property` (`property_id`, `name`, `value`) VALUES (, 'ticket_price', '9,99');
+INSERT INTO `escape_room`.`property` (`property_id`, `name`, `value`) VALUES (1 , 'ticket_price', '9,99');
 
 COMMIT;
 
