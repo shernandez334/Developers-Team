@@ -21,7 +21,7 @@ USE `escape_room` ;
 -- Table `escape_room`.`element`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `escape_room`.`element` (
-  `element_id` INT NOT NULL AUTO_INCREMENT,
+  `element_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `type` ENUM('room', 'clue', 'object') NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `quantity` INT NOT NULL DEFAULT 1,
