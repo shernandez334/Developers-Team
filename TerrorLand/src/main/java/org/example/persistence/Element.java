@@ -1,17 +1,15 @@
 package org.example.persistence;
 
-import org.example.enums.Type;
+import org.example.enums.ElementType;
 
 public abstract class Element {
     private String name;
-    private Type type;
     private int quantity;
     private double price;
     private String theme;
 
-    public Element(String name, Type type, int quantity, double price, String theme){
+    public Element(String name, int quantity, double price, String theme){
         this.name = name;
-        this.type = type;
         this.quantity = quantity;
         this.price = price;
         this.theme = theme;
@@ -19,9 +17,6 @@ public abstract class Element {
 
     public String getName(){
         return this.name;
-    }
-    public Type getType(){
-        return this.type;
     }
     public int getQuantity(){
         return this.quantity;

@@ -9,16 +9,13 @@ import static org.example.util.IO.readString;
 public enum Difficulty {
     EASY, MEDIUM, HARD, EPIC;
 
-    public static Difficulty getDifficultyLevel(String message) {
-        Difficulty d = null;
-        while (d == null) {
-            String difficulty = readString(message);
-            try {
-                d = Difficulty.valueOf(difficulty.toUpperCase());
+    public static String getDifficultyLevel(String message) {
+            String difficulty = readString(message).toUpperCase();
+            /*try {
+                System.out.println(difficulty);
             } catch (IllegalArgumentException e){
                 System.out.println(difficulty + " is not a level of difficulty.");
-            }
-        }
-        return d;
+            }*/
+        return difficulty;
     }
 }

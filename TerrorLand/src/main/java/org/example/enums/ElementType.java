@@ -1,11 +1,9 @@
 package org.example.enums;
 
-import static org.example.util.IO.readString;
-
-public enum Type {
+public enum ElementType {
     ROOM, CLUE, DECOR_ITEM;
 
-    public static Type getElementType(String message){
+    /*public static Type getElementType(String message){
         Type t = null;
         while (t == null){
             String type = readString(message);
@@ -16,5 +14,5 @@ public enum Type {
             }
         }
         return t;
-    }
+    }*/
 }

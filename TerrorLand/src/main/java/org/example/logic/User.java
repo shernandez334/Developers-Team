@@ -1,7 +1,5 @@
 package org.example.logic;
 
-import org.example.database.MySQL;
-
 import java.util.ArrayList;
 
 public class User {

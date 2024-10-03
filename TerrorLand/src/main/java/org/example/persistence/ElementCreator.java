@@ -1,17 +1,15 @@
 package org.example.persistence;
 
 import org.example.enums.Difficulty;
-import org.example.enums.Type;
+import org.example.enums.ElementType;
 import org.example.util.Menu;
 import static org.example.enums.Difficulty.getDifficultyLevel;
-import static org.example.enums.Type.getElementType;
 import static org.example.persistence.Clue.createClue;
 import static org.example.persistence.Decoration.createDecoration;
 import static org.example.persistence.Room.createRoom;
 import static org.example.util.IO.*;
 
 public class ElementCreator {
-    private static final String ELEMENT_TYPE_PROMPT = "Please choose an element type:\nROOM, CLUE, DECOR_ITEM\n>";
     private static final String DIFFICULTY_LEVEL_PROMPT = "Please choose a difficulty level:\nEASY, MEDIUM, HARD, EPIC\n>";
 
     public static Element createAnElement(){
@@ -26,35 +24,33 @@ public class ElementCreator {
         return e;
     }
 
-    public static Element createElementRoom(){
+    public static Room createElementRoom(){
         String nameElem = readString("Name of the room:\n>");
-        Type type = getElementType(ELEMENT_TYPE_PROMPT);
-        int quantity = readInt("Quantity of the element:\n>");
         double price = readFloat("Price of the element:\n>");
-        Difficulty difficulty = getDifficultyLevel(DIFFICULTY_LEVEL_PROMPT);
+        String difficulty = readString("Difficulty");
         String theme = readString("Theme of the element\n>");
 
-        return createRoom(nameElem, type, quantity, price, theme, difficulty);
+        return createRoom(nameElem, 1, price, theme, difficulty);
     }
 
     public static Element createElementDecoration(){
         String nameElem = readString("Name of the decoration:");
-        Type type = getElementType(ELEMENT_TYPE_PROMPT);
+        ElementType elementType = ElementType.DECOR_ITEM;
         int quantity = readInt("Quantity of the element:");
         double price = readFloat("Price of the element:");
         String theme = readString("Theme of the element:");
         String material = readString("Material of the element:");
 
-        return createDecoration(nameElem, type, quantity, price, theme, material);
+        return createDecoration(nameElem, quantity, price, theme, material);
     }
 
     public static Element createElementClue(){
         String nameElem = readString("Clue:");
-        Type type = getElementType(ELEMENT_TYPE_PROMPT);
+        ElementType elementType = ElementType.CLUE;
         int quantity = readInt("Quantity of the element:");
         double price = readFloat("Price of the element:");
         String theme = readString("Theme of the element:");
 
-        return createClue(nameElem, type, quantity, price, theme);
+        return createClue(nameElem, quantity, price, theme);
     }
 }

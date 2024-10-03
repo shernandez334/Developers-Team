@@ -16,12 +16,12 @@ CREATE TABLE `User`(
     `name` VARCHAR(255) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
-    `role` ENUM('') NOT NULL
+    `role` ENUM('player', 'admin') NOT NULL
 );
 CREATE TABLE `clue`(
     `element_id` INT NOT NULL,
     `name` VARCHAR(255) NOT NULL,
-    `type` ENUM('') NOT NULL,
+    `type`  VARCHAR(255) NOT NULL,
     `quantity` INT NOT NULL,
     `price` DOUBLE NOT NULL,
     `theme` VARCHAR(255) NOT NULL
@@ -31,7 +31,7 @@ ALTER TABLE
 CREATE TABLE `decor_item`(
     `element_id` INT  NOT NULL,
     `name` VARCHAR(255) NOT NULL,
-    `type` ENUM('') NOT NULL,
+    `type` VARCHAR(255) NOT NULL,
     `quantity` INT NOT NULL,
     `price` DOUBLE NOT NULL,
     `theme` VARCHAR(255) NOT NULL,
@@ -52,11 +52,11 @@ CREATE TABLE `room`(
     `room_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `element_id` INT NOT NULL,
     `name` VARCHAR(255) NOT NULL,
-    `type` ENUM('') NOT NULL,
+    `type` VARCHAR(255) NOT NULL,
     `quantity` INT NOT NULL,
     `price` DOUBLE NOT NULL,
     `theme` VARCHAR(255) NOT NULL,
-    `difficulty` ENUM('') NOT NULL
+    `difficulty` VARCHAR(255) NOT NULL
 );
 ALTER TABLE
     `room` ADD INDEX `room_element_id_index`(`element_id`);
