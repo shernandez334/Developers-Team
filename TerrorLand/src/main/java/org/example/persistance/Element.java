@@ -1,15 +1,16 @@
-package org.example.persistence;
+package org.example.persistance;
 
-import org.example.enums.ElementType;
 
 public abstract class Element {
     private String name;
     private int quantity;
     private double price;
     private String theme;
+    private final int element_id;
 
-    public Element(String name, int quantity, double price, String theme){
+    public Element(String name, int element_id, int quantity, double price, String theme){
         this.name = name;
+        this.element_id = element_id;
         this.quantity = quantity;
         this.price = price;
         this.theme = theme;
@@ -28,5 +29,9 @@ public abstract class Element {
         return this.theme;
     }
 
-    public abstract String inputDataInfo();
+    public int getElement_id(){
+        return this.element_id;
+    }
+
+    public abstract String dataInfo();
 }

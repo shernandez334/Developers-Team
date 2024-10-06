@@ -7,7 +7,7 @@ import org.example.exceptions.RunSqlFileException;
 import org.example.logic.Admin;
 import org.example.logic.Player;
 import org.example.logic.User;
-import org.example.persistence.Element;
+import org.example.persistance.Element;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -110,15 +110,54 @@ public class MySQL implements Database {
         }
     }
 
-    public void execute(Element e) {
-        try (Connection connection = getConnection(Properties.DB_NAME.getValue());
+    public static void inputDataInfo(String elementTypeQuery) {
+        try (Connection connection = getConnection("escape_room");
              Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(String.valueOf(e.inputDataInfo()));
+            String sql = elementTypeQuery;
+            System.out.println("Executing SQL: " + sql);
+            stmt.executeUpdate(sql);
         } catch (SQLException | MySqlCredentialsException err) {
             err.printStackTrace();
         }
     }
 
+    public static void displayStock(String showEnabledElemsQuery){
+        try (Connection conn = getConnection("escape_room");
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(showEnabledElemsQuery)) {
+            System.out.println("Enabled Elements Information:");
+            while (rs.next()) {
+                int elementId = rs.getInt("element_id");
+                String type = rs.getString("type");
+                String name = rs.getString("name");
+                String theme = rs.getString("theme");
+                System.out.println("ID: " + elementId + " | Type: " + type + " | Name: " + name + " | theme: " + theme);
+            }
+
+        } catch (SQLException | MySqlCredentialsException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public static void disableElement(int elementId){
+        String query = "UPDATE stock_manager SET enabled = 0 WHERE element_id = ?";
+
+        try (Connection conn = getConnection("escape_room"); // Replace with your database name
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, elementId); // Set the element ID in the query
+            int affectedRows = pstmt.executeUpdate(); // Execute the update
+
+            if (affectedRows > 0) {
+                System.out.println("Element with ID " + elementId + " has been disabled.");
+            } else {
+                System.out.println("No element found with ID " + elementId + ".");
+            }
+        } catch (SQLException | MySqlCredentialsException e) {
+            System.out.println("Error disabling element: " + e.getMessage());
+        }
+
+    }
 
     public boolean addUser(User user) throws ExistingEmailException {
 

@@ -1,7 +1,7 @@
 package org.example.logic;
 
 import org.example.database.Database;
-import org.example.persistence.Element;
+import org.example.persistance.Element;
 import org.example.database.MySQL;
 import org.example.exceptions.ExistingEmailException;
 import org.example.exceptions.MySqlCredentialsException;
@@ -9,7 +9,9 @@ import org.example.util.IO;
 import org.example.util.Menu;
 import org.example.enums.Properties;
 
-import static org.example.persistence.ElementCreator.createAnElement;
+import static org.example.persistance.ElementCreator.createAnElement;
+import static org.example.persistance.ElementEraser.deleteAnElement;
+
 
 public class EscapeRoom {
     private String name;
@@ -46,14 +48,11 @@ public class EscapeRoom {
     }
 
     private void adminMenu() {
-        Element e = null;
         int option = Menu.readSelection("Welcome Administrator! Select an option.", ">",
                 "1. Create Element", "2. Delete Element", "3. Logout");
         switch (option) {
-            case 1 -> {
-                e = createAnElement();
-                db.execute(e);
-            }
+            case 1 -> createAnElement();
+            case 2 -> deleteAnElement();
             case 3 -> EscapeRoom.user = null;
         }
     }
