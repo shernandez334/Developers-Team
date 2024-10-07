@@ -10,15 +10,19 @@ import org.example.model.Ticket;
 import org.example.model.User;
 import org.example.util.IO;
 import org.example.util.Menu;
-import org.example.util.Properties;
+import org.example.enums.Properties;
 
-import java.math.BigDecimal;
+
 import java.util.regex.Pattern;
 
-public class EscapeRoom {
+import static org.example.persistance.ElementCreator.createAnElement;
+import static org.example.persistance.ElementEraser.deleteAnElement;
+
+public class EscapeRoomMenu {
 
     private static User user;
     private static boolean quit;
+    private Database db;
 
     static{
         user = null;
@@ -33,14 +37,14 @@ public class EscapeRoom {
             return;
         }
         do{
-            if (EscapeRoom.user == null){
-                EscapeRoom.user = loginMenu();
-            } else if (EscapeRoom.user instanceof Player){
+            if (EscapeRoomMenu.user == null){
+                EscapeRoomMenu.user = loginMenu();
+            } else if (EscapeRoomMenu.user instanceof Player){
                 playerMenu();
             }else {
                 adminMenu();
             }
-        }while (!EscapeRoom.quit);
+        }while (!EscapeRoomMenu.quit);
         System.out.println("bye");
     }
 
@@ -50,10 +54,12 @@ public class EscapeRoom {
                 "1. Create Element", "2. Delete Element", "3. Set ticket price", "4. Get total income",
                 "5. Send Notification" ,"6. Logout");
         switch (option) {
+            case 1 -> createAnElement();
+            case 2 -> deleteAnElement();
             case 3 -> setTicketPriceMenu();
             case 4 -> System.out.printf("The total income is %.2f€.%n", MySQL.getTotalIncome());
             case 5 -> admin.NotifyAll(MySQL.getSubscribers(), IO.readString("Insert the message: "));
-            case 6 -> EscapeRoom.user = null;
+            case 6 -> EscapeRoomMenu.user = null;
         }
     }
 
@@ -89,7 +95,7 @@ public class EscapeRoom {
                     System.out.println("You have subscribed successfully.");
                 }
             }
-            case 5 -> EscapeRoom.user = null;
+            case 5 -> EscapeRoomMenu.user = null;
         }
     }
 
@@ -100,7 +106,7 @@ public class EscapeRoom {
 
     private void initialSetup() throws MySqlCredentialsException {
         Properties.createFileIfMissing();
-        Database db = new MySQL();
+        this.db = new MySQL();
         db.createIfMissing();
     }
 
@@ -114,7 +120,7 @@ public class EscapeRoom {
                 System.out.println(user == null ? "Wrong credentials." : "You successfully logged as " + user.getName());
             }
             case 2 -> registerUser();
-            case 3 -> EscapeRoom.quit = true;
+            case 3 -> EscapeRoomMenu.quit = true;
         }
         return user;
     }

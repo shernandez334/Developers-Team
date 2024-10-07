@@ -2,7 +2,7 @@ package org.example.database;
 
 import org.example.exceptions.*;
 import org.example.model.*;
-import org.example.util.Properties;
+import org.example.enums.Properties;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,7 +40,7 @@ public class MySQL implements Database {
             String password = Properties.getProperty("db.password");
 
             try {
-                Connection connection = DriverManager.getConnection(url, user, password);
+                MySQL.connection = DriverManager.getConnection(url, user, password);
                 System.out.printf("Connected to %s.%n", dbName.isEmpty() ? "DB" : dbName);
                 return connection;
 
@@ -66,7 +66,7 @@ public class MySQL implements Database {
     public void createIfMissing() throws MySqlCredentialsException {
 
         try {
-            Connection connection = getConnection(Properties.DB_NAME.getValue());
+            MySQL.connection = getConnection(Properties.DB_NAME.getValue());
         } catch (SQLException e) {
             if (e.getErrorCode() == 1049) {
                 System.out.println("Unknown database -> Creating Database...");
@@ -104,6 +104,53 @@ public class MySQL implements Database {
         }
     }
 
+    public static void inputDataInfo(String elementTypeQuery) {
+        try (Connection connection = getConnection("escape_room");
+             Statement stmt = connection.createStatement()) {
+            System.out.println("Executing SQL: " + elementTypeQuery);
+            stmt.executeUpdate(elementTypeQuery);
+        } catch (SQLException | MySqlCredentialsException err) {
+            err.printStackTrace();
+        }
+    }
+
+    public static void displayStock(String showEnabledElemsQuery){
+        try (Connection conn = getConnection("escape_room");
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(showEnabledElemsQuery)) {
+            System.out.println("Enabled Elements Information:");
+            while (rs.next()) {
+                int elementId = rs.getInt("element_id");
+                String type = rs.getString("type");
+                String name = rs.getString("name");
+                String theme = rs.getString("theme");
+                System.out.println("ID: " + elementId + " | Type: " + type + " | Name: " + name + " | theme: " + theme);
+            }
+
+        } catch (SQLException | MySqlCredentialsException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public static void disableElement(int elementId){
+        String query = "UPDATE stock_manager SET enabled = 0 WHERE element_id = ?";
+
+        try (Connection conn = getConnection("escape_room"); // Replace with your database name
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, elementId); // Set the element ID in the query
+            int affectedRows = pstmt.executeUpdate(); // Execute the update
+
+            if (affectedRows > 0) {
+                System.out.println("Element with ID " + elementId + " has been disabled.");
+            } else {
+                System.out.println("No element found with ID " + elementId + ".");
+            }
+        } catch (SQLException | MySqlCredentialsException e) {
+            System.out.println("Error disabling element: " + e.getMessage());
+        }
+
+    }
 
     public boolean createUser(User user) throws ExistingEmailException {
 
@@ -112,7 +159,8 @@ public class MySQL implements Database {
             String str = String.format("INSERT INTO user (name, email, password, role) VALUES('%s', '%s', '%s', '%s');",
                     user.getName(), user.getEmail(), user.getPassword(), user instanceof Player ? "player" : "admin");
             statement.execute(str);
-            if (user instanceof Player) {
+            boolean success = statement.getUpdateCount() == 1;
+            if (success && user instanceof Player) {
                 Statement statement2 = connection.createStatement();
                 str = "SELECT LAST_INSERT_ID();";
                 ResultSet lastId = statement2.executeQuery(str);
@@ -120,7 +168,7 @@ public class MySQL implements Database {
                 subscribePlayer(lastId.getInt(1));
                 statement2.close();
             }
-            return statement.getUpdateCount() == 1;
+            return success;
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new ExistingEmailException(e);
         } catch (SQLException e) {
@@ -346,8 +394,4 @@ public class MySQL implements Database {
         return response;
     }
 
-    @Override
-    public void execute(Element e) {
-
-    }
 }

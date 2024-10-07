@@ -12,6 +12,6 @@ public class Menu {
             selection = IO.readInt(closing);
         }while (selection <= 0 || selection > options.length);
         return selection;
-    };
+    }
 
 }

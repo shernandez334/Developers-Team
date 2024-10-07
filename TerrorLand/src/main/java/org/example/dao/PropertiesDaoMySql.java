@@ -5,6 +5,7 @@ import org.example.exceptions.MySqlEmptyResultSetException;
 import org.example.exceptions.MySqlPropertyNotFoundException;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormatSymbols;
 
 public class PropertiesDaoMySql {
     public BigDecimal getTicketPrice() {
@@ -15,7 +16,13 @@ public class PropertiesDaoMySql {
         } catch (MySqlEmptyResultSetException e) {
             throw new MySqlPropertyNotFoundException("Error: ticket-price not found.", e);
         }
-        return BigDecimal.valueOf(Double.parseDouble(response));
+        double price;
+        try{
+            price = Double.parseDouble(response);
+        }catch (NumberFormatException e){
+            price = Double.parseDouble(response.replace(",", "."));
+        }
+        return BigDecimal.valueOf(price);
     }
 
     public void setTicketPrice(String price){

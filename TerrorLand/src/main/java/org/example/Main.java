@@ -1,10 +1,10 @@
 package org.example;
 
-import org.example.menu.EscapeRoom;
+import org.example.menu.EscapeRoomMenu;
 
 public class Main {
     public static void main(String[] args) {
-        EscapeRoom escapeRoom = new EscapeRoom();
+        EscapeRoomMenu escapeRoom = new EscapeRoomMenu();
         escapeRoom.run();
     }
 }
