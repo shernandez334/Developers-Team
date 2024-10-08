@@ -1,11 +1,9 @@
-package org.example.dao;
+package org.example.database;
 
-import org.example.database.MySQL;
 import org.example.exceptions.MySqlEmptyResultSetException;
 import org.example.exceptions.MySqlPropertyNotFoundException;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormatSymbols;
 
 public class PropertiesDaoMySql {
     public BigDecimal getTicketPrice() {

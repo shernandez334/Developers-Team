@@ -1,6 +1,6 @@
 package org.example.model;
 
-import org.example.dao.PropertiesDaoMySql;
+import org.example.database.PropertiesDaoMySql;
 import org.example.database.MySQL;
 
 import java.math.BigDecimal;
