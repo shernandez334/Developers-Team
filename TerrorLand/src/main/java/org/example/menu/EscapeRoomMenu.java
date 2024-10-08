@@ -8,17 +8,15 @@ import org.example.model.Admin;
 import org.example.model.Player;
 import org.example.model.Ticket;
 import org.example.model.User;
+import org.example.dao.ElementDaoMySql;
 import org.example.util.IO;
 import org.example.util.Menu;
 import org.example.enums.Properties;
-
-
 import java.util.regex.Pattern;
 
-import static org.example.persistance.ElementCreator.createAnElement;
-import static org.example.persistance.ElementEraser.deleteAnElement;
 
 public class EscapeRoomMenu {
+    private final ElementDaoMySql elementDaoMySql = new ElementDaoMySql();
 
     private static User user;
     private static boolean quit;
@@ -54,8 +52,8 @@ public class EscapeRoomMenu {
                 "1. Create Element", "2. Delete Element", "3. Set ticket price", "4. Get total income",
                 "5. Send Notification" ,"6. Logout");
         switch (option) {
-            case 1 -> createAnElement();
-            case 2 -> deleteAnElement();
+            case 1 -> elementDaoMySql.createAnElement();
+            case 2 -> elementDaoMySql.deleteAnElement();
             case 3 -> setTicketPriceMenu();
             case 4 -> System.out.printf("The total income is %.2f€.%n", MySQL.getTotalIncome());
             case 5 -> admin.NotifyAll(MySQL.getSubscribers(), IO.readString("Insert the message: "));
