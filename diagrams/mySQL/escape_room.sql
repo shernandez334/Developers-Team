@@ -15,6 +15,18 @@ CREATE SCHEMA IF NOT EXISTS `escape_room` DEFAULT CHARACTER SET utf8mb4 ;
 USE `escape_room` ;
 
 -- -----------------------------------------------------
+-- Table `escape_room`.`room`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `escape_room`.`room` (
+  `room_id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `difficulty` ENUM('easy', 'medium', 'hard') NOT NULL,
+  PRIMARY KEY (`room_id`),
+  UNIQUE INDEX `room_id_UNIQUE` (`room_id` ASC) VISIBLE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `escape_room`.`element`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `escape_room`.`element` (
@@ -25,24 +37,6 @@ CREATE TABLE IF NOT EXISTS `escape_room`.`element` (
   PRIMARY KEY (`element_id`),
   UNIQUE INDEX `element_id_UNIQUE` (`element_id` ASC) VISIBLE,
   UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `escape_room`.`room`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `escape_room`.`room` (
-  `room_id` INT NOT NULL AUTO_INCREMENT,
-  `element_id` INT NOT NULL,
-  `difficulty` ENUM('easy', 'medium', 'hard') NOT NULL,
-  PRIMARY KEY (`room_id`, `element_id`),
-  UNIQUE INDEX `element_id_UNIQUE` (`element_id` ASC) VISIBLE,
-  UNIQUE INDEX `room_id_UNIQUE` (`room_id` ASC) VISIBLE,
-  CONSTRAINT `fk_element3`
-    FOREIGN KEY (`element_id`)
-    REFERENCES `escape_room`.`element` (`element_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
@@ -144,21 +138,23 @@ ENGINE = InnoDB;
 -- Table `escape_room`.`user_plays_room`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `escape_room`.`user_plays_room` (
+  `user_plays_room_id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
   `room_id` INT NOT NULL,
   `solved` TINYINT NOT NULL,
   `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`user_id`, `room_id`),
   INDEX `fk_user1_idx` (`user_id` ASC) VISIBLE,
-  INDEX `fk_room3_idx` (`room_id` ASC) VISIBLE,
+  PRIMARY KEY (`user_plays_room_id`, `room_id`, `user_id`),
+  UNIQUE INDEX `user_plays_room_id_UNIQUE` (`user_plays_room_id` ASC) VISIBLE,
+  INDEX `fk_room1_idx` (`room_id` ASC) VISIBLE,
   CONSTRAINT `fk_user1`
     FOREIGN KEY (`user_id`)
     REFERENCES `escape_room`.`user` (`user_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_room3`
+  CONSTRAINT `fk_room1`
     FOREIGN KEY (`room_id`)
-    REFERENCES `escape_room`.`room` (`element_id`)
+    REFERENCES `escape_room`.`room` (`room_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -168,12 +164,14 @@ ENGINE = InnoDB;
 -- Table `escape_room`.`user_has_reward`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `escape_room`.`user_has_reward` (
+  `user_has_reward_id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
   `reward_id` INT NOT NULL,
   `date` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`user_id`, `reward_id`),
+  PRIMARY KEY (`user_has_reward_id`, `user_id`, `reward_id`),
   INDEX `fk_reward1_idx` (`reward_id` ASC) VISIBLE,
   INDEX `fk_user2_idx` (`user_id` ASC) VISIBLE,
+  UNIQUE INDEX `user_has_reward_id_UNIQUE` (`user_has_reward_id` ASC) VISIBLE,
   CONSTRAINT `fk_user2`
     FOREIGN KEY (`user_id`)
     REFERENCES `escape_room`.`user` (`user_id`)
@@ -222,50 +220,6 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `escape_room`.`room_has_clue`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `escape_room`.`room_has_clue` (
-  `room_id` INT NOT NULL,
-  `clue_id` INT NOT NULL,
-  `quantity` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`room_id`, `clue_id`),
-  INDEX `fk_clue1_idx` (`clue_id` ASC) VISIBLE,
-  CONSTRAINT `fk_room1`
-    FOREIGN KEY (`room_id`)
-    REFERENCES `escape_room`.`room` (`room_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_clue1`
-    FOREIGN KEY (`clue_id`)
-    REFERENCES `escape_room`.`clue` (`element_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `escape_room`.`room_has_decor_items`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `escape_room`.`room_has_decor_items` (
-  `room_id` INT NOT NULL,
-  `decor_item_id` INT NOT NULL,
-  `quantity` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`room_id`, `decor_item_id`),
-  INDEX `fk_decor_items1_idx` (`decor_item_id` ASC) VISIBLE,
-  CONSTRAINT `fk_room2`
-    FOREIGN KEY (`room_id`)
-    REFERENCES `escape_room`.`room` (`room_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_decor_items1`
-    FOREIGN KEY (`decor_item_id`)
-    REFERENCES `escape_room`.`decor_item` (`element_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `escape_room`.`notification`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `escape_room`.`notification` (
@@ -307,6 +261,29 @@ CREATE TABLE IF NOT EXISTS `escape_room`.`stock_manager` (
   UNIQUE INDEX `element_element_id_UNIQUE` (`element_element_id` ASC) VISIBLE,
   CONSTRAINT `fk_stock_manager_element1`
     FOREIGN KEY (`element_element_id`)
+    REFERENCES `escape_room`.`element` (`element_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `escape_room`.`room_has_element`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `escape_room`.`room_has_element` (
+  `room_id` INT NOT NULL,
+  `element_id` INT NOT NULL,
+  `quantity` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`room_id`, `element_id`),
+  INDEX `fk_element3_idx` (`element_id` ASC) VISIBLE,
+  INDEX `fk_room2_idx` (`room_id` ASC) VISIBLE,
+  CONSTRAINT `fk_room2`
+    FOREIGN KEY (`room_id`)
+    REFERENCES `escape_room`.`room` (`room_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_element3`
+    FOREIGN KEY (`element_id`)
     REFERENCES `escape_room`.`element` (`element_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
