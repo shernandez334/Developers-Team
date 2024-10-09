@@ -10,6 +10,8 @@ import static org.example.util.IO.*;
 import static org.example.util.IO.readInt;
 
 public class ElementDaoMySql implements ElementDao{
+    private final RoomDaoMySql roomDaoMySql = new RoomDaoMySql();
+    private final StoreElementDao storeElementDao = new StoreElementDaoMySql();
 
     @Override
     public void createAnElement(){
@@ -17,7 +19,7 @@ public class ElementDaoMySql implements ElementDao{
         int op = Menu.readSelection("What element would you like to create?", ">",
                 "1. Room", "2. Decoration", "3. Clue");
         switch (op){
-            case 1 -> query = createElementRoom();
+            case 1 -> query = roomDaoMySql.createElementRoom();
             case 2 -> query = createElementDecoration();
             case 3 -> query = createElementClue();
         }
@@ -28,29 +30,11 @@ public class ElementDaoMySql implements ElementDao{
         }
     }
 
-    public String createElementRoom(){
-        String query = "";
-        double price = 0d;
-        Difficulty difficulty = null;
-        int element_id = inputElementTableInfo(1);
-        if (element_id == -1){
-            System.out.println("Failed to create element.");
-            query = null;
-        } else {
-            price = readDouble("Price of the element:\n>");
-            difficulty = Menu.readDifficultySelection("Choose a level of difficulty:");
-            query = "INSERT INTO room (element_id, price, difficulty) " +
-                    "VALUES (" + element_id + ", " + price + ", '" + difficulty + "');";
-            storeElementInStorage(element_id);
-        }
-        return query;
-    }
-
     @Override
     public String createElementDecoration(){
-        String query = "";
-        double price = 0d;
-        String material = "";
+        String query;
+        double price;
+        String material;
         int element_id = inputElementTableInfo(2);
         if (element_id == -1){
             System.out.println("Failed to create element.");
@@ -60,28 +44,30 @@ public class ElementDaoMySql implements ElementDao{
             material = readString("Material:\n");
             query = "INSERT INTO decor_item (element_id, price, material) " +
                     "VALUES (" + element_id + ", " + price + ", '" + material + "');";
-            storeElementInStorage(element_id);
+            storeElementDao.storeElementInStorage(element_id);
         }
         return query;
     }
 
     @Override
     public String createElementClue(){
-        String query = "";
+        String query;
         int element_id = inputElementTableInfo(3);
         if (element_id == -1){
             System.out.println("Failed to create element.");
+            // Exception createElement
             query = null;
         } else {
             query = "INSERT INTO clue (element_id) " +
                     "VALUES (" + element_id + ");";
-            storeElementInStorage(element_id);
+            storeElementDao.storeElementInStorage(element_id);
         }
         return query;
     }
 
     @Override
-    public int inputElementTableInfo(int elementType){
+    public
+    int inputElementTableInfo(int elementType){
         int element_id = -1;
         String insertElementSQL = elementTableQuery(elementType);
         try (Connection conn = getConnection("escape_room")) {
@@ -120,13 +106,6 @@ public class ElementDaoMySql implements ElementDao{
         }
         return "INSERT INTO element (name, type, quantity, theme) VALUES " +
                 "('" + nameElem + "', '" + type + "', " + quantity + ", '" + theme + "')";
-    }
-
-    @Override
-    public void storeElementInStorage(int element_id) {
-        String query = "INSERT INTO stock_manager (element_id, enabled, available) " +
-                "VALUES ('" + element_id + "', '" + 1 + "', '" + 1 + "');";
-        inputDataInfo(query);
     }
 
     @Override
