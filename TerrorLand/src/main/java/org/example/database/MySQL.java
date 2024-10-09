@@ -13,11 +13,14 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class MySQL implements Database {
 
     private static Connection connection;
+    private static final Logger log = LoggerFactory.getLogger(MySQL.class);
 
     /*
     public static void loadDriver(){
@@ -107,10 +110,10 @@ public class MySQL implements Database {
     public static void inputDataInfo(String elementTypeQuery) {
         try (Connection connection = getConnection("escape_room");
              Statement stmt = connection.createStatement()) {
-            System.out.println("Executing SQL: " + elementTypeQuery);
+            log.info("Executing SQL: {}", elementTypeQuery);
             stmt.executeUpdate(elementTypeQuery);
         } catch (SQLException | MySqlCredentialsException err) {
-            err.printStackTrace();
+            log.error("{}, {}", err.getMessage(), elementTypeQuery);
         }
     }
 
