@@ -19,11 +19,9 @@ USE `escape_room` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `escape_room`.`element` (
   `element_id` INT NOT NULL AUTO_INCREMENT,
-  `type` ENUM('room', 'clue', 'object') NOT NULL,
   `name` VARCHAR(45) NOT NULL,
-  `quantity` INT NOT NULL DEFAULT 1,
-  `price` DECIMAL(10,2) NULL,
-  `status` ENUM('active', 'deleted') NOT NULL DEFAULT 'active',
+  `price` DECIMAL(10,2) UNSIGNED NULL,
+  `type` ENUM('room', 'clue', 'decoration') NOT NULL,
   PRIMARY KEY (`element_id`),
   UNIQUE INDEX `element_id_UNIQUE` (`element_id` ASC) VISIBLE,
   UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)
@@ -34,10 +32,12 @@ ENGINE = InnoDB;
 -- Table `escape_room`.`room`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `escape_room`.`room` (
+  `room_id` INT NOT NULL AUTO_INCREMENT,
   `element_id` INT NOT NULL,
-  `difficulty` ENUM('easy', 'medium', 'hard', 'very hard') NOT NULL,
-  PRIMARY KEY (`element_id`),
+  `difficulty` ENUM('easy', 'medium', 'hard') NOT NULL,
+  PRIMARY KEY (`room_id`, `element_id`),
   UNIQUE INDEX `element_id_UNIQUE` (`element_id` ASC) VISIBLE,
+  UNIQUE INDEX `room_id_UNIQUE` (`room_id` ASC) VISIBLE,
   CONSTRAINT `fk_element3`
     FOREIGN KEY (`element_id`)
     REFERENCES `escape_room`.`element` (`element_id`)
@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `escape_room`.`ticket` (
   `ticket_id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
   `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `price` DECIMAL(4,2) NOT NULL,
+  `price` DECIMAL(4,2) UNSIGNED NOT NULL,
   `cashed` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`ticket_id`, `user_id`),
   INDEX `fk_user3_idx` (`user_id` ASC) VISIBLE,
@@ -227,13 +227,12 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `escape_room`.`room_has_clue` (
   `room_id` INT NOT NULL,
   `clue_id` INT NOT NULL,
-  `quantity` INT NOT NULL,
+  `quantity` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`room_id`, `clue_id`),
   INDEX `fk_clue1_idx` (`clue_id` ASC) VISIBLE,
-  INDEX `fk_room1_idx` (`room_id` ASC) VISIBLE,
   CONSTRAINT `fk_room1`
     FOREIGN KEY (`room_id`)
-    REFERENCES `escape_room`.`room` (`element_id`)
+    REFERENCES `escape_room`.`room` (`room_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_clue1`
@@ -250,13 +249,12 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `escape_room`.`room_has_decor_items` (
   `room_id` INT NOT NULL,
   `decor_item_id` INT NOT NULL,
-  `quantity` INT NOT NULL,
+  `quantity` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`room_id`, `decor_item_id`),
   INDEX `fk_decor_items1_idx` (`decor_item_id` ASC) VISIBLE,
-  INDEX `fk_room2_idx` (`room_id` ASC) VISIBLE,
   CONSTRAINT `fk_room2`
     FOREIGN KEY (`room_id`)
-    REFERENCES `escape_room`.`room` (`element_id`)
+    REFERENCES `escape_room`.`room` (`room_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_decor_items1`
@@ -286,13 +284,32 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `escape_room`.`property`
+-- Table `escape_room`.`persistent_property`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `escape_room`.`property` (
+CREATE TABLE IF NOT EXISTS `escape_room`.`persistent_property` (
   `property_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(20) NOT NULL,
   `value` VARCHAR(45) NULL,
   PRIMARY KEY (`property_id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `escape_room`.`stock_manager`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `escape_room`.`stock_manager` (
+  `element_element_id` INT NOT NULL,
+  `total_quantity` INT UNSIGNED NOT NULL,
+  `available_quantity` INT UNSIGNED NOT NULL,
+  `deleted` TINYINT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`element_element_id`),
+  INDEX `fk_stock_manager_element1_idx` (`element_element_id` ASC) VISIBLE,
+  UNIQUE INDEX `element_element_id_UNIQUE` (`element_element_id` ASC) VISIBLE,
+  CONSTRAINT `fk_stock_manager_element1`
+    FOREIGN KEY (`element_element_id`)
+    REFERENCES `escape_room`.`element` (`element_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
@@ -301,11 +318,11 @@ SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 -- -----------------------------------------------------
--- Data for table `escape_room`.`property`
+-- Data for table `escape_room`.`persistent_property`
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `escape_room`;
-INSERT INTO `escape_room`.`property` (`property_id`, `name`, `value`) VALUES (1 , 'ticket_price', '9,99');
+INSERT INTO `escape_room`.`persistent_property` (`property_id`, `name`, `value`) VALUES (1, 'ticket_price', '9.99');
 
 COMMIT;
 
