@@ -1,27 +1,32 @@
 package org.example.dao;
 
 import org.example.enums.Difficulty;
+import org.example.exceptions.ElementIdException;
+import org.example.exceptions.MySqlCredentialsException;
 import org.example.util.Menu;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.sql.SQLException;
+
 import static org.example.util.IO.readDouble;
 
 public class RoomDaoMySql extends StoreElementDaoMySql implements RoomDao{
-    private final ElementDao elementDao = new ElementDaoMySql();
+    private final GenerateElementIdDaoMySql element = new GenerateElementIdDaoMySql();
+    private static final Logger log = LoggerFactory.getLogger(ElementDaoMySql.class);
 
-
-    public String createElementRoom(){
-        String query;
-        double price;
+    public String createElementRoom() throws ElementIdException {
+        String query = "";
         Difficulty difficulty;
-        int element_id = elementDao.inputElementTableInfo(1);
-        if (element_id == -1){
-            System.out.println("Failed to create element.");
-            query = null;
-        } else {
-            price = readDouble("Price of the element:\n>");
+        try {
+            int element_id = element.generateElementId(1);
             difficulty = Menu.readDifficultySelection("Choose a level of difficulty:");
             query = "INSERT INTO room (element_id, price, difficulty) " +
-                    "VALUES (" + element_id + ", " + price + ", '" + difficulty + "');";
+                    "VALUES (" + element_id + ", " + 23 + ", '" + difficulty + "');";
             storeElementInStorage(element_id);
+        } catch (ElementIdException e){
+            log.error("Error creating room: {}", e.getMessage());
+            throw e;
         }
         return query;
     }
