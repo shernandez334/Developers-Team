@@ -1,5 +1,6 @@
-package org.example.logic;
+package org.example.model;
 
+import org.example.database.PropertiesDaoMySql;
 import org.example.database.MySQL;
 
 import java.math.BigDecimal;
@@ -18,11 +19,11 @@ public class Ticket {
     }
 
     public static BigDecimal getPurchasePrice() {
-        return purchasePrice;
+        return (new PropertiesDaoMySql()).getTicketPrice();
     }
 
-    public static void setPurchasePrice(BigDecimal purchasePrice) {
-        Ticket.purchasePrice = purchasePrice;
+    public static void setPurchasePrice(String price) {
+        (new PropertiesDaoMySql()).setTicketPrice(price);
     }
 
     public static void createTicket(User user){

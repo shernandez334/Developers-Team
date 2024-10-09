@@ -1,5 +1,6 @@
 package org.example.util;
 
+import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -47,19 +48,29 @@ public class IO {
     }
 
     public static String readString(String message){
-        boolean success = false;
-        String myString =  "";
+        String myString;
         do {
-            try {
-                System.out.print(message);
-                myString = input.nextLine();
-                success = true;
-            }catch(Exception e) {
-                System.out.println("Error");
-                input.nextLine();
-            }
-        }while(!success);
+            System.out.print(message);
+            myString = input.nextLine();
+        }while(myString.isBlank());
         return myString;
     }
 
+    public static char readChar(String message){
+        while (true) {
+            String input = readString(message);
+            if (input.length() == 1) {
+                return input.charAt(0);
+            }
+        }
+    }
+
+    public static String indentText(String rawMessage, String indent) {
+        StringBuilder message = new StringBuilder();
+        Arrays.stream(rawMessage
+                .split("\n"))
+                .forEach(s -> {message.append(indent); message.append(s);message.append("\n");}
+                );
+        return message.toString();
+    }
 }

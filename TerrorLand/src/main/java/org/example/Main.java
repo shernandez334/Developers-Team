@@ -1,10 +1,10 @@
 package org.example;
 
-import org.example.logic.EscapeRoom;
+import org.example.menu.EscapeRoomMenu;
 
 public class Main {
     public static void main(String[] args) {
-        EscapeRoom escapeRoom = new EscapeRoom("Terror Land");
+        EscapeRoomMenu escapeRoom = new EscapeRoomMenu();
         escapeRoom.run();
     }
 }
