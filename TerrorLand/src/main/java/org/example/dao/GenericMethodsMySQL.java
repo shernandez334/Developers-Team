@@ -75,11 +75,8 @@ public class GenericMethodsMySQL {
     public static int createStatementAndExecute(String sql) throws SQLIntegrityConstraintViolationException {
         try (Connection connection = getConnection(DefaultProperties.DB_NAME.getValue());
              Statement statement = connection.createStatement()) {
-            boolean noResultSet = statement.execute(sql);
-            if (noResultSet){
-
-            }
-            return getLastInsertedId();
+            statement.execute(sql);
+            return statement.getUpdateCount();
         } catch (SQLIntegrityConstraintViolationException e){
             throw e;
         } catch (SQLException e) {
@@ -87,7 +84,24 @@ public class GenericMethodsMySQL {
         }
     }
 
-    public static ResultSet createStatementAndExecuteQuery(String sql){
+    public static int executeInsertStatementAndGetId(String sql) throws SQLIntegrityConstraintViolationException {
+        try (Connection connection = getConnection(DefaultProperties.DB_NAME.getValue());
+             Statement statement = connection.createStatement()) {
+            statement.execute(sql);
+            ResultSet result = statement.executeQuery("SELECT LAST_INSERT_ID();");
+            if (result.next()){
+                return result.getInt(1);
+            }else {
+                return 0;
+            }
+        } catch (SQLIntegrityConstraintViolationException e){
+            throw e;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static ResultSet  createStatementAndExecuteQuery(String sql){
         try (Connection connection = getConnection(DefaultProperties.DB_NAME.getValue());
              Statement statement = connection.createStatement()) {
             return statement.executeQuery(sql);

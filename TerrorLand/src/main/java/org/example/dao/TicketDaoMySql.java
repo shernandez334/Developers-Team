@@ -13,7 +13,7 @@ public class TicketDaoMySql {
         String sql = String.format("INSERT INTO ticket (user_id, price, cashed) VALUES('%s', '%s', '%s');",
                 player.getId(), ticket.getPrice(), 0);
         try {
-            ticket.setId(createStatementAndExecute(sql));
+            ticket.setId(executeInsertStatementAndGetId(sql));
         } catch (SQLIntegrityConstraintViolationException ex) {
             throw new RuntimeException(ex);
         }

@@ -15,7 +15,7 @@ public class UserDaoMySql implements UserDao {
         String sql = String.format("INSERT INTO user (name, email, password, role) VALUES('%s', '%s', '%s', '%s');",
                 user.getName(), user.getEmail(), user.getPassword(), user instanceof PlayerEntity ? "player" : "admin");
         try {
-            user.setId(createStatementAndExecute(sql));
+            user.setId(executeInsertStatementAndGetId(sql));
             if (user instanceof PlayerEntity) {
                 ((PlayerEntity) user).subscribeToNotifications();
             }
