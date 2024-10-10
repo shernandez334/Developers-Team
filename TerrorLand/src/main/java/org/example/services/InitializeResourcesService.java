@@ -26,8 +26,8 @@ public class InitializeResourcesService {
                 String defaultInfo =
                         FileProps.PROVIDER.getValue() + "=" + DefaultProperties.DEFAULT_PROVIDER.getValue() + "\n" +
                         FileProps.URL.getValue() + "=" + DefaultProperties.DEFAULT_DB_URL.getValue() + "\n" +
-                        FileProps.USER + "=" + DefaultProperties.DEFAULT_DB_USER.getValue() + "\n" +
-                        FileProps.PASSWORD + "=" + DefaultProperties.DEFAULT_DB_PASSWORD.getValue();
+                        FileProps.USER.getValue() + "=" + DefaultProperties.DEFAULT_DB_USER.getValue() + "\n" +
+                        FileProps.PASSWORD.getValue() + "=" + DefaultProperties.DEFAULT_DB_PASSWORD.getValue();
                 Files.createFile(path);
                 Files.writeString(path, defaultInfo);
                 System.out.println("Created properties.properties file.");
