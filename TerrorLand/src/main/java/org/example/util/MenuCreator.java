@@ -4,7 +4,7 @@ import org.example.enums.Difficulty;
 
 import java.util.Arrays;
 
-public class Menu {
+public class MenuCreator {
     private static final String[] DIFFICULTY_OPTIONS = {"1.EASY", "2.MEDIUM", "3.HARD", "4.EPIC"};
 
     public static int readSelection(String heading, String closing, String ... options){
@@ -18,7 +18,7 @@ public class Menu {
     }
 
     public static Difficulty readDifficultySelection(String message) {
-        int op = Menu.readSelection(message, ">", DIFFICULTY_OPTIONS);
+        int op = MenuCreator.readSelection(message, ">", DIFFICULTY_OPTIONS);
         return Difficulty.values()[op - 1];
     }
 

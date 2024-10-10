@@ -1,11 +1,11 @@
 package org.example.dao;
 
 import org.example.enums.Difficulty;
-import org.example.exceptions.MySqlCredentialsException;
-import org.example.util.Menu;
+import org.example.exceptions.MySqlNotValidCredentialsException;
+import org.example.util.MenuCreator;
 import java.sql.*;
 
-import static org.example.database.MySQL.*;
+import static org.example.database.DeprecatedMySQL.*;
 import static org.example.util.IO.*;
 import static org.example.util.IO.readInt;
 
@@ -14,7 +14,7 @@ public class ElementDaoMySql implements ElementDao{
     @Override
     public void createAnElement(){
         String query = "";
-        int op = Menu.readSelection("What element would you like to create?", ">",
+        int op = MenuCreator.readSelection("What element would you like to create?", ">",
                 "1. Room", "2. Decoration", "3. Clue");
         switch (op){
             case 1 -> query = createElementRoom();
@@ -38,7 +38,7 @@ public class ElementDaoMySql implements ElementDao{
             query = null;
         } else {
             price = readDouble("Price of the element:\n>");
-            difficulty = Menu.readDifficultySelection("Choose a level of difficulty:");
+            difficulty = MenuCreator.readDifficultySelection("Choose a level of difficulty:");
             query = "INSERT INTO room (element_id, price, difficulty) " +
                     "VALUES (" + element_id + ", " + price + ", '" + difficulty + "');";
             storeElementInStorage(element_id);
@@ -92,7 +92,7 @@ public class ElementDaoMySql implements ElementDao{
                     element_id = generatedKeys.getInt(1);
                 }
             }
-        } catch (SQLException | MySqlCredentialsException e){
+        } catch (SQLException | MySqlNotValidCredentialsException e){
             System.out.println(e.getMessage());
         }
         return element_id;

@@ -1,10 +1,11 @@
 package org.example.database;
 
-import org.example.model.Notification;
+import org.example.entities.NotificationEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface Notifier {
-    void NotifyUser(Notification notification);
-    void NotifyAll(ArrayList<Integer> subscribers, String message);
+    void NotifyUser(NotificationEntity notification);
+    void NotifyAll(List<Integer> subscribers, String message);
 }
