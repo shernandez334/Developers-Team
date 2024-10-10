@@ -71,7 +71,7 @@ public class PlayerDaoMySql implements PlayerDao {
         List<Notification> response = new ArrayList<>();
         List<List<Object>> items = retrieveMultipleColumnsFromDatabase(
                 String.format("SELECT notification_id, message FROM notification WHERE user_id = %d;", playerId),
-                new String[] {"Integer", "String"});
+                new String[] {Integer.class.getName(), String.class.getName()});
         items.forEach(e -> response.add(new Notification((int) e.getFirst(), playerId, (String) e.get(1))));
         return response;
     }
