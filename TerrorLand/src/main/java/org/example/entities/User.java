@@ -1,23 +1,22 @@
-package org.example.model;
+package org.example.entities;
 
 public class User {
-    private final int id;
+    private int id;
     private final String name;
     private final String password;
     private final String email;
 
 
     public User(String name, String password, String email) {
-        this.id = -1;
         this.name = name;
         this.password = password;
         this.email = email;
     }
 
-    public User(String name, String email, int id) {
+    public User(int id, String name, String password, String email) {
         this.id = id;
         this.name = name;
-        this.password = "";
+        this.password = password;
         this.email = email;
     }
 
@@ -37,13 +36,8 @@ public class User {
         return this.email;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+    public void setId(int id) {
+        this.id = id;
     }
+
 }
