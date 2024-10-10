@@ -14,7 +14,7 @@ public class GenerateElementIdDaoMySql implements GenerateElementIdDao{
 
     @Override
     public int generateElementId(int elementType) throws ElementIdException{
-        int element_id = -1;
+        int element_id = 0;
         String insertElementSQL = query.generateElementQuery(elementType);
         try (Connection conn = getConnection("escape_room");
              PreparedStatement pstmt = conn.prepareStatement(insertElementSQL, Statement.RETURN_GENERATED_KEYS)) {
