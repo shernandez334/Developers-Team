@@ -15,7 +15,7 @@ public class DbInitialSetupMySql implements DbInitialSetup {
     @Override
     public void createIfMissing() throws MySqlNotValidCredentialsException, SQLException {
         try (Connection connection = GenericMethodsMySQL.getConnection(DefaultProperties.DB_NAME.getValue())){
-            System.out.println("Connected to the Database.");
+            System.out.print("connected to the Database");
         } catch (SQLException e) {
             if (e.getErrorCode() == 1049) {
                 System.out.println("Creating Database from scratch...");

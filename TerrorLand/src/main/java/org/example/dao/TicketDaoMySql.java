@@ -5,8 +5,7 @@ import org.example.entities.TicketEntity;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 
-import static org.example.dao.GenericMethodsMySQL.createStatementAndExecute;
-import static org.example.dao.GenericMethodsMySQL.getLastInsertedId;
+import static org.example.dao.GenericMethodsMySQL.*;
 
 public class TicketDaoMySql {
 
@@ -14,8 +13,7 @@ public class TicketDaoMySql {
         String sql = String.format("INSERT INTO ticket (user_id, price, cashed) VALUES('%s', '%s', '%s');",
                 player.getId(), ticket.getPrice(), 0);
         try {
-            createStatementAndExecute(sql);
-            ticket.setId(getLastInsertedId());
+            ticket.setId(createStatementAndExecute(sql));
         } catch (SQLIntegrityConstraintViolationException ex) {
             throw new RuntimeException(ex);
         }

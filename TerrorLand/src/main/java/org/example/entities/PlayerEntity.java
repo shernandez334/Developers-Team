@@ -1,15 +1,11 @@
 package org.example.entities;
 
-import org.example.dao.NotificationDaoMySql;
 import org.example.dao.PlayerDaoMySql;
-import org.example.dao.TicketDaoMySql;
-import org.example.database.DeprecatedMySQL;
-import org.example.database.Retrievable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerEntity extends UserEntity implements Retrievable {
+public class PlayerEntity extends UserEntity {
 
     private final ArrayList<TicketEntity> tickets;
     private final ArrayList<NotificationEntity> notifications;

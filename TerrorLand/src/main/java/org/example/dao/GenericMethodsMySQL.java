@@ -6,7 +6,6 @@ import org.example.exceptions.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
@@ -76,8 +75,11 @@ public class GenericMethodsMySQL {
     public static int createStatementAndExecute(String sql) throws SQLIntegrityConstraintViolationException {
         try (Connection connection = getConnection(DefaultProperties.DB_NAME.getValue());
              Statement statement = connection.createStatement()) {
-            statement.execute(sql);
-            return statement.getUpdateCount();
+            boolean noResultSet = statement.execute(sql);
+            if (noResultSet){
+
+            }
+            return getLastInsertedId();
         } catch (SQLIntegrityConstraintViolationException e){
             throw e;
         } catch (SQLException e) {
@@ -131,4 +133,18 @@ public class GenericMethodsMySQL {
             throw new RuntimeException(e);
         }
     }
+
+    public static int getLastInsertedId(Statement statement) {
+        String sql = "SELECT LAST_INSERT_ID();";
+        try (ResultSet result = statement.executeQuery(sql);) {
+            if (result.next()){
+                return result.getInt(1);
+            }else {
+                return 0;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

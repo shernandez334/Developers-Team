@@ -3,7 +3,6 @@ package org.example.dao;
 import org.example.entities.PlayerEntity;
 import org.example.entities.UserEntity;
 import org.example.exceptions.ExistingEmailException;
-import org.example.exceptions.MySqlEmptyResultSetException;
 import org.example.entities.AdminEntity;
 
 import java.sql.*;
@@ -16,8 +15,7 @@ public class UserDaoMySql implements UserDao {
         String sql = String.format("INSERT INTO user (name, email, password, role) VALUES('%s', '%s', '%s', '%s');",
                 user.getName(), user.getEmail(), user.getPassword(), user instanceof PlayerEntity ? "player" : "admin");
         try {
-            createStatementAndExecute(sql);
-            user.setId(getLastInsertedId());
+            user.setId(createStatementAndExecute(sql));
             if (user instanceof PlayerEntity) {
                 ((PlayerEntity) user).subscribeToNotifications();
             }

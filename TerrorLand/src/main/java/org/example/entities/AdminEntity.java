@@ -3,7 +3,6 @@ package org.example.entities;
 import org.example.dao.AdminDaoMySql;
 import org.example.dao.NotificationDaoMySql;
 import org.example.database.Notifier;
-
 import java.math.BigDecimal;
 import java.util.List;
 

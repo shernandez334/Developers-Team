@@ -1,9 +1,7 @@
 package org.example.menu;
 
-import org.example.dao.AdminDaoMySql;
 import org.example.dao.ElementDaoMySql;
 import org.example.dao.NotificationDaoMySql;
-import org.example.database.DeprecatedMySQL;
 import org.example.exceptions.MySqlNotValidCredentialsException;
 import org.example.entities.AdminEntity;
 import org.example.entities.PlayerEntity;

@@ -12,10 +12,10 @@ import java.sql.SQLException;
 public class InitializeResourcesService {
 
     public void run() throws MySqlNotValidCredentialsException, SQLException {
+        System.out.print("Running initial setup... ");
         createPropertiesFileIfMissing();
-        System.out.println("Created Properties file.\n");
         new DbInitialSetupMySql().createIfMissing();
-        System.out.println("DB created successfully.\n");
+        System.out.println("... all systems online.");
     }
 
     public static void createPropertiesFileIfMissing(){
@@ -28,6 +28,7 @@ public class InitializeResourcesService {
                         "\ndb.password=" + DefaultProperties.DEFAULT_DB_PASSWORD.getValue();
                 Files.createFile(path);
                 Files.writeString(path, defaultInfo);
+                System.out.println("Created properties.properties file.");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

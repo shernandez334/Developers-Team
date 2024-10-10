@@ -1,10 +1,8 @@
 package org.example.dao;
 
 import org.example.entities.NotificationEntity;
-import org.example.entities.PlayerEntity;
 
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.example.dao.GenericMethodsMySQL.*;

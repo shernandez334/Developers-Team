@@ -1,7 +1,6 @@
 package org.example.services;
 
 import org.example.dao.UserDaoMySql;
-import org.example.database.DeprecatedMySQL;
 import org.example.exceptions.ExistingEmailException;
 import org.example.entities.AdminEntity;
 import org.example.entities.PlayerEntity;
