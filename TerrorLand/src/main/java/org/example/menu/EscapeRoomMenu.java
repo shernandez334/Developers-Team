@@ -2,6 +2,7 @@ package org.example.menu;
 
 import org.example.database.Database;
 import org.example.database.MySQL;
+import org.example.enums.Properties;
 import org.example.exceptions.ExistingEmailException;
 import org.example.exceptions.MySqlCredentialsException;
 import org.example.model.Admin;
@@ -11,7 +12,7 @@ import org.example.model.User;
 import org.example.dao.ElementDaoMySql;
 import org.example.util.IO;
 import org.example.util.Menu;
-import org.example.enums.Properties;
+
 import java.util.regex.Pattern;
 
 
