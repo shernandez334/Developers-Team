@@ -1,15 +1,18 @@
 package org.example.dao;
 
-import org.example.entities.PlayerEntity;
-import org.example.entities.TicketEntity;
+import org.example.entities.Player;
+import org.example.entities.Ticket;
+import org.example.exceptions.MySqlEmptyResultSetException;
 
+import java.math.BigDecimal;
 import java.sql.SQLIntegrityConstraintViolationException;
 
-import static org.example.dao.GenericMethodsMySQL.*;
+import static org.example.mySQL.MySqlHelper.*;
 
-public class TicketDaoMySql {
+public class TicketDaoMySql implements TicketDao {
 
-    public void saveTicket(TicketEntity ticket, PlayerEntity player) {
+    @Override
+    public void saveTicket(Ticket ticket, Player player) {
         String sql = String.format("INSERT INTO ticket (user_id, price, cashed) VALUES('%s', '%s', '%s');",
                 player.getId(), ticket.getPrice(), 0);
         try {
@@ -19,12 +22,23 @@ public class TicketDaoMySql {
         }
     }
 
-    public void cashTicket(TicketEntity ticket) {
+    @Override
+    public void cashTicket(Ticket ticket) {
         String sql = String.format("UPDATE ticket SET cashed = 1 WHERE ticket_id = %d;", ticket.getId());
         try {
             createStatementAndExecute(sql);
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public BigDecimal getTotalIncome() {
+        String sql = "SELECT SUM(price) FROM ticket;";
+        try {
+            return retrieveSingleValueFromDatabase(sql, BigDecimal.class);
+        } catch (MySqlEmptyResultSetException e) {
+            throw new RuntimeException(String.format("The query '%s' didn't yield a result.%n", sql));
         }
     }
 

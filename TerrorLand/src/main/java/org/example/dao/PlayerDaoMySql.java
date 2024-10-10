@@ -1,19 +1,21 @@
 package org.example.dao;
 
-import org.example.entities.NotificationEntity;
-import org.example.entities.PlayerEntity;
-import org.example.entities.TicketEntity;
+import org.example.entities.Notification;
+import org.example.entities.Player;
+import org.example.entities.Ticket;
 import org.example.exceptions.MySqlEmptyResultSetException;
+import org.example.mySQL.QueryResult;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.example.dao.GenericMethodsMySQL.*;
+import static org.example.mySQL.MySqlHelper.*;
 
-public class PlayerDaoMySql {
+public class PlayerDaoMySql implements PlayerDao {
 
-    public void subscribePlayer(PlayerEntity player){
+    @Override
+    public void subscribePlayer(Player player){
         try {
             createStatementAndExecute(String.format("INSERT INTO subscription (user_id) VALUES (%d);", player.getId()));
         } catch (SQLIntegrityConstraintViolationException e) {
@@ -21,7 +23,8 @@ public class PlayerDaoMySql {
         }
     }
 
-    public void unsubscribePlayer(PlayerEntity player){
+    @Override
+    public void unsubscribePlayer(Player player){
         try {
             createStatementAndExecute(String.format("DELETE FROM subscription WHERE user_id = %d;", player.getId()));
         } catch (SQLIntegrityConstraintViolationException e) {
@@ -29,7 +32,8 @@ public class PlayerDaoMySql {
         }
     }
 
-    public boolean isSubscribed(PlayerEntity player){
+    @Override
+    public boolean isSubscribed(Player player){
         String sql = String.format("SELECT user_id FROM subscription WHERE user_id = %d;", player.getId());
         try{
             retrieveSingleValueFromDatabase(sql, Integer.class);
@@ -39,19 +43,21 @@ public class PlayerDaoMySql {
         }
     }
 
-    public List<TicketEntity> retrieveTickets(PlayerEntity player, boolean onlyNotCashed) {
-        List<TicketEntity> tickets = new ArrayList<>();
+    @Override
+    public List<Ticket> retrieveTickets(Player player, boolean onlyNotCashed) {
+        List<Ticket> tickets = new ArrayList<>();
         String sql = String.format("SELECT ticket_id, price, cashed FROM ticket WHERE user_id = '%d';", player.getId());
 
-        try (ResultSet result = createStatementAndExecuteQuery(sql)){
-            while (result.next()){
+        try (QueryResult queryResult = createStatementAndExecuteQuery(sql)){
+            ResultSet resultSet = queryResult.getResultSet();
+            while (resultSet.next()){
                 if (onlyNotCashed){
-                    if(!result.getBoolean("cashed")){
-                        int ticketId = result.getInt("ticket_id");
-                        tickets.add(new TicketEntity(ticketId));
+                    if(!resultSet.getBoolean("cashed")){
+                        int ticketId = resultSet.getInt("ticket_id");
+                        tickets.add(new Ticket(ticketId));
                     }
                 }else {
-                    tickets.add(new TicketEntity(result.getInt("ticket_id")));
+                    tickets.add(new Ticket(resultSet.getInt("ticket_id")));
                 }
             }
         } catch (SQLException e) {
@@ -60,12 +66,13 @@ public class PlayerDaoMySql {
         return tickets;
     }
 
-    public List<NotificationEntity> retrieveNotifications(int playerId) {
-        List<NotificationEntity> response = new ArrayList<>();
+    @Override
+    public List<Notification> retrieveNotifications(int playerId) {
+        List<Notification> response = new ArrayList<>();
         List<List<Object>> items = retrieveMultipleColumnsFromDatabase(
                 String.format("SELECT notification_id, message FROM notification WHERE user_id = %d;", playerId),
                 new String[] {"Integer", "String"});
-        items.forEach(e -> response.add(new NotificationEntity((int) e.getFirst(), playerId, (String) e.get(1))));
+        items.forEach(e -> response.add(new Notification((int) e.getFirst(), playerId, (String) e.get(1))));
         return response;
     }
 

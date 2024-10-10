@@ -1,13 +1,13 @@
 package org.example.services;
 
-import org.example.dao.UserDaoMySql;
-import org.example.entities.UserEntity;
+import org.example.dao.DatabaseFactory;
+import org.example.entities.User;
 import org.example.util.IO;
 
 public class UserLoginService {
 
-    public UserEntity run(){
-        UserEntity user;
+    public User run(){
+        User user;
         String password = "";
         String email = "";
         do{
@@ -23,7 +23,7 @@ public class UserLoginService {
             }
             password = IO.readString("password: ");
         }while(password.matches(".*\\s.*") || password.length()<4); //Regex: has blank spaces
-        user = new UserDaoMySql().getUser(email, password);
+        user = DatabaseFactory.get().createUserDao().getUser(email, password);
         return user;
     }
 

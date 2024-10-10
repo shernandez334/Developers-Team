@@ -1,12 +1,12 @@
 package org.example.services;
 
-import org.example.database.PropertiesDaoMySql;
-import org.example.entities.PlayerEntity;
-import org.example.entities.TicketEntity;
-import org.example.exceptions.MySqlEmptyResultSetException;
+import org.example.dao.DatabaseFactory;
+import org.example.entities.Player;
+import org.example.entities.Ticket;
 import org.example.util.IO;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class TicketsService {
@@ -22,25 +22,42 @@ public class TicketsService {
         setPurchasePrice(price);
     }
 
-    public void buyTickets(PlayerEntity player){
+    public void buyTickets(Player player){
         System.out.printf("Each ticket costs %.2f.%n", getPurchasePrice());
         int quantity = IO.readInt("How Many Tickets do you wish to buy?\n>");
         for (int i = 0; i < quantity; i++){
-            TicketEntity ticket = new TicketEntity(getPurchasePrice()).createTicket(player);
+            Ticket ticket = createTicket(player, getPurchasePrice());
             player.addTicket(ticket);
         }
     }
 
     private static BigDecimal getPurchasePrice() {
-        return (new PropertiesDaoMySql()).getTicketPrice();
+        return DatabaseFactory.get().createPropertiesDao().getTicketPrice();
     }
 
     private static void setPurchasePrice(String price) {
-        (new PropertiesDaoMySql()).setTicketPrice(price);
+        DatabaseFactory.get().createPropertiesDao().setTicketPrice(price);
     }
 
+    public Ticket createTicket(Player player, BigDecimal price){
+        Ticket ticket = new Ticket(price);
+        DatabaseFactory.get().createTicketDao().saveTicket(ticket, player);
+        return ticket;
+    }
 
+    public void cash(Ticket ticket){
+        DatabaseFactory.get().createTicketDao().cashTicket(ticket);
+    }
 
+    public BigDecimal getTotalIncome(){
+        return DatabaseFactory.get().createTicketDao().getTotalIncome();
+    }
 
-
+    public boolean cashTicket(Player player) {
+        List<Ticket> tickets = player.getTickets();
+        if (tickets.isEmpty()) return false;
+        Ticket ticket = tickets.removeFirst();
+        cash(ticket);
+        return true;
+    }
 }

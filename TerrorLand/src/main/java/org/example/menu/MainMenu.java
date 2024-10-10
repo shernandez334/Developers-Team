@@ -1,11 +1,10 @@
 package org.example.menu;
 
 import org.example.dao.ElementDaoMySql;
-import org.example.dao.NotificationDaoMySql;
 import org.example.exceptions.MySqlNotValidCredentialsException;
-import org.example.entities.AdminEntity;
-import org.example.entities.PlayerEntity;
-import org.example.entities.UserEntity;
+import org.example.entities.Admin;
+import org.example.entities.Player;
+import org.example.entities.User;
 import org.example.services.*;
 import org.example.util.IO;
 import org.example.util.MenuCreator;
@@ -16,7 +15,7 @@ import java.sql.SQLException;
 public class MainMenu {
     private final ElementDaoMySql elementDaoMySql = new ElementDaoMySql();
 
-    private static UserEntity user;
+    private static User user;
     private static boolean quit;
 
     static{
@@ -34,7 +33,7 @@ public class MainMenu {
         do{
             if (user == null){
                 loginOrRegisterMenu();
-            } else if (user instanceof PlayerEntity){
+            } else if (user instanceof Player){
                 playerMenu();
             }else {
                 adminMenu();
@@ -44,7 +43,7 @@ public class MainMenu {
     }
 
     private void loginOrRegisterMenu() {
-        UserEntity user = null;
+        User user = null;
         int option = MenuCreator.readSelection("Welcome to the login menu! Select an option.", ">",
                 "1. Login", "2. Register", "3. Quit");
         switch (option){
@@ -59,7 +58,7 @@ public class MainMenu {
     }
 
     private void adminMenu() {
-        AdminEntity admin = (AdminEntity) user;
+        Admin admin = (Admin) user;
         int option = MenuCreator.readSelection("Welcome Administrator! Select an option.", ">",
                 "1. Create Element", "2. Delete Element", "3. Set ticket price", "4. Get total income",
                 "5. Send Notification" ,"6. Logout");
@@ -67,14 +66,14 @@ public class MainMenu {
             case 1 -> elementDaoMySql.createAnElement();
             case 2 -> elementDaoMySql.deleteAnElement();
             case 3 -> new TicketsService().setTicketPrice();
-            case 4 -> System.out.printf("The total income is %.2f€.%n", admin.getTotalIncome());
-            case 5 -> admin.NotifyAll(new NotificationDaoMySql().getSubscribers(), IO.readString("Insert the message: "));
+            case 4 -> System.out.printf("The total income is %.2f€.%n", new TicketsService().getTotalIncome());
+            case 5 -> new NotificationsService().notifySubscribers(IO.readString("Insert the message: "));
             case 6 -> MainMenu.user = null;
         }
     }
 
     private void playerMenu() {
-        PlayerEntity player = (PlayerEntity) user;
+        Player player = (Player) user;
         System.out.printf("Welcome %s! You've got %d tickets.%n", player.getName(), player.getTotalTickets());
         int option = MenuCreator.readSelection("Select an option.", ">",
                 "1. Play Room", "2. Buy a Ticket",
@@ -82,15 +81,15 @@ public class MainMenu {
                 "4. " + (player.isSubscribed() ? "Stop receiving notifications" : "Receive notifications"),
                 "5. Logout");
         switch (option) {
-            case 1 -> System.out.println(player.cashTicket() ? "You played a room!" : "Get some tickets first!");
+            case 1 -> new RoomPlayService().play(player);
             case 2 -> new TicketsService().buyTickets(player);
             case 3 -> new NotificationsService().readNotifications(player);
             case 4 -> {
                 if (player.isSubscribed()) {
-                    player.unsubscribeFromNotifications();
+                    new NotificationsService().unsubscribe(player);
                     System.out.println("You are no longer subscribed to the notifications.");
                 }else {
-                    player.subscribeToNotifications();
+                    new NotificationsService().subscribe(player);
                     System.out.println("You have subscribed successfully.");
                 }
             }

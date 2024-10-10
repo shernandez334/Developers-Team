@@ -1,17 +1,17 @@
 package org.example.services;
 
-import org.example.dao.UserDaoMySql;
+import org.example.dao.DatabaseFactory;
 import org.example.exceptions.ExistingEmailException;
-import org.example.entities.AdminEntity;
-import org.example.entities.PlayerEntity;
-import org.example.entities.UserEntity;
+import org.example.entities.Admin;
+import org.example.entities.Player;
+import org.example.entities.User;
 import org.example.util.IO;
 import org.example.util.MenuCreator;
 
 public class UserRegistrationService {
 
-    public UserEntity run(){
-        UserEntity user;
+    public User run(){
+        User user;
         String userName = "";
         String password = "";
         String email = "";
@@ -41,13 +41,13 @@ public class UserRegistrationService {
 
         int option = MenuCreator.readSelection("Select your role:", ">", "1. Player", "2. Admin");
         user = switch (option) {
-            case 1 -> new PlayerEntity(userName, password, email);
-            case 2 -> new AdminEntity(userName, password, email);
+            case 1 -> new Player(userName, password, email);
+            case 2 -> new Admin(userName, password, email);
             default -> null;
         };
         assert user != null;
         try {
-            if (new UserDaoMySql().saveUser(user) != null){
+            if (DatabaseFactory.get().createUserDao().saveUser(user) != null){
                 System.out.println("User created successfully, you can log in now!");
             } else {
                 System.out.println("The user was not created...");

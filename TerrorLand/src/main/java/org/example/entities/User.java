@@ -1,19 +1,19 @@
 package org.example.entities;
 
-public class UserEntity {
+public class User {
     private int id;
-    private String name;
-    private String password;
-    private String email;
+    private final String name;
+    private final String password;
+    private final String email;
 
 
-    public UserEntity(String name, String password, String email) {
+    public User(String name, String password, String email) {
         this.name = name;
         this.password = password;
         this.email = email;
     }
 
-    public UserEntity(int id, String name, String password, String email) {
+    public User(int id, String name, String password, String email) {
         this.id = id;
         this.name = name;
         this.password = password;
@@ -40,15 +40,4 @@ public class UserEntity {
         this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }

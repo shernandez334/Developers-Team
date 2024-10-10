@@ -1,31 +1,34 @@
 package org.example.dao;
 
-import org.example.entities.NotificationEntity;
+import org.example.entities.Notification;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
-import static org.example.dao.GenericMethodsMySQL.*;
+import static org.example.mySQL.MySqlHelper.*;
 
-public class NotificationDaoMySql {
+public class NotificationDaoMySql implements NotificationDao {
 
+    @Override
     public List<Integer> getSubscribers() {
         return retrieveSingleColumnFromDatabase("SELECT user_id FROM subscription;", Integer.class);
     }
 
-    public void storeNotification(NotificationEntity notification){
+    @Override
+    public void storeNotification(Notification notification){
         String message = notification.getMessage().replaceAll("'", "''");
         String sql = String.format("INSERT INTO notification (user_id, message) VALUES (%d, '%s');",
                 notification.getUserId(), message);
         try {
             createStatementAndExecute(sql);
-            notification.setId(getLastInsertedId());
+            //notification.setId(getLastInsertedId());
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void deleteNotification(NotificationEntity notification) {
+    @Override
+    public void deleteNotification(Notification notification) {
         String sql = String.format("DELETE FROM notification WHERE notification_id = %d;", notification.getId());
         try {
             createStatementAndExecute(sql);

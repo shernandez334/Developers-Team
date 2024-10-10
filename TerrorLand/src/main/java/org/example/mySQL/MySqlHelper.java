@@ -1,4 +1,4 @@
-package org.example.dao;
+package org.example.mySQL;
 
 import org.example.enums.DefaultProperties;
 import org.example.enums.Properties;
@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class GenericMethodsMySQL {
+public class MySqlHelper {
 
     public static Connection getConnection(String dbName) throws SQLException {
         Connection connection;
@@ -35,7 +35,7 @@ public class GenericMethodsMySQL {
         return getConnection("");
     }
 
-    public static void executeSqlFile(String filePath) {
+    public static void executeSqlFile(String filePath) throws ExecuteScriptIOException {
         Path path = Path.of(filePath);
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement();
@@ -49,21 +49,20 @@ public class GenericMethodsMySQL {
                     System.out.println(s);
                     statement.execute(s);
                 } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException("Error executing the mySQL statement.", e);
                 }
             });
-
         } catch (SQLException e) {
             throw new RuntimeException("Unable to run the script: MySQL error.", e);
         } catch (IOException e) {
-            throw new RunSqlFileException("Unable to execute the script: error reading the '.sql' file.", e);
+            throw new ExecuteScriptIOException(String.format( "Error executing the script: can't read '%s'.", path));
         }
     }
 
     public static <T> T retrieveSingleValueFromDatabase(String sql, Class<T> type) throws MySqlEmptyResultSetException {
-        try (ResultSet result = createStatementAndExecuteQuery(sql)) {
-            if (result.next()){
-                return type.cast(result.getObject((1)));
+        try (QueryResult resultQuery = createStatementAndExecuteQuery(sql)) {
+            if (resultQuery.getResultSet().next()){
+                return type.cast(resultQuery.getResultSet().getObject((1)));
             }else {
                 throw new MySqlEmptyResultSetException("Query resulted in an empty ResultSet.");
             }
@@ -72,11 +71,10 @@ public class GenericMethodsMySQL {
         }
     }
 
-    public static int createStatementAndExecute(String sql) throws SQLIntegrityConstraintViolationException {
+    public static void createStatementAndExecute(String sql) throws SQLIntegrityConstraintViolationException {
         try (Connection connection = getConnection(DefaultProperties.DB_NAME.getValue());
-             Statement statement = connection.createStatement()) {
+            Statement statement = connection.createStatement()){
             statement.execute(sql);
-            return statement.getUpdateCount();
         } catch (SQLIntegrityConstraintViolationException e){
             throw e;
         } catch (SQLException e) {
@@ -89,22 +87,24 @@ public class GenericMethodsMySQL {
              Statement statement = connection.createStatement()) {
             statement.execute(sql);
             ResultSet result = statement.executeQuery("SELECT LAST_INSERT_ID();");
-            if (result.next()){
+            if (result.next()) {
                 return result.getInt(1);
-            }else {
+            } else {
                 return 0;
             }
-        } catch (SQLIntegrityConstraintViolationException e){
+        } catch (SQLIntegrityConstraintViolationException e) {
             throw e;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static ResultSet  createStatementAndExecuteQuery(String sql){
-        try (Connection connection = getConnection(DefaultProperties.DB_NAME.getValue());
-             Statement statement = connection.createStatement()) {
-            return statement.executeQuery(sql);
+        public static QueryResult createStatementAndExecuteQuery(String sql){
+        try {
+            Connection connection = getConnection(DefaultProperties.DB_NAME.getValue());
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            return new QueryResult(connection, statement, resultSet);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -112,9 +112,9 @@ public class GenericMethodsMySQL {
 
     public static <T> List<T> retrieveSingleColumnFromDatabase(String sql, Class<T> type){
         List<T> response = new ArrayList<>();
-        try (ResultSet result = createStatementAndExecuteQuery(sql)) {
-            while (result.next()){
-                response.add(type.cast(result.getObject(1)));
+        try (QueryResult queryResult = createStatementAndExecuteQuery(sql)) {
+            while (queryResult.getResultSet().next()){
+                response.add(type.cast(queryResult.getResultSet().getObject(1)));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -122,13 +122,13 @@ public class GenericMethodsMySQL {
         return response;
     }
 
-    public static <T> List<List<Object>> retrieveMultipleColumnsFromDatabase(String sql, String[] types) {
+    public static List<List<Object>> retrieveMultipleColumnsFromDatabase(String sql, String[] types) {
         List<List<Object>> response = new ArrayList<>();
-        try (ResultSet result = createStatementAndExecuteQuery(sql)) {
-            while (result.next()){
+        try (QueryResult queryResult = createStatementAndExecuteQuery(sql)) {
+            while (queryResult.getResultSet().next()){
                 response.add(new ArrayList<>());
                 for (int i = 0; i < types.length; i++){
-                    response.getLast().add(Class.forName(types[i]).cast(result.getObject(i +1)));
+                    response.getLast().add(Class.forName(types[i]).cast(queryResult.getResultSet().getObject(i +1)));
                 }
             }
         } catch (SQLException e) {
@@ -137,28 +137,6 @@ public class GenericMethodsMySQL {
             throw new RuntimeException(String.format("Class within '%s' not found.%n", Arrays.toString(types)));
         }
         return response;
-    }
-
-    public static int getLastInsertedId() {
-        String sql = "SELECT LAST_INSERT_ID();";
-        try {
-            return retrieveSingleValueFromDatabase(sql, Integer.class);
-        } catch (MySqlEmptyResultSetException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static int getLastInsertedId(Statement statement) {
-        String sql = "SELECT LAST_INSERT_ID();";
-        try (ResultSet result = statement.executeQuery(sql);) {
-            if (result.next()){
-                return result.getInt(1);
-            }else {
-                return 0;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

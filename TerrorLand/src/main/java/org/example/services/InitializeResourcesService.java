@@ -1,7 +1,8 @@
 package org.example.services;
 
-import org.example.database.DbInitialSetupMySql;
+import org.example.dao.DatabaseFactory;
 import org.example.enums.DefaultProperties;
+import org.example.enums.FileProps;
 import org.example.exceptions.MySqlNotValidCredentialsException;
 
 import java.io.IOException;
@@ -14,7 +15,7 @@ public class InitializeResourcesService {
     public void run() throws MySqlNotValidCredentialsException, SQLException {
         System.out.print("Running initial setup... ");
         createPropertiesFileIfMissing();
-        new DbInitialSetupMySql().createIfMissing();
+        DatabaseFactory.get().createDbInitialSetup().createDatabaseIfMissing();
         System.out.println("... all systems online.");
     }
 
@@ -22,10 +23,11 @@ public class InitializeResourcesService {
         final Path path = Path.of(DefaultProperties.PROPERTIES_FILE_PATH.getValue());
         if (!Files.exists(path)) {
             try {
-                String defaultInfo = "db.provider=MySQL" +
-                        "\ndb.url=" + DefaultProperties.DEFAULT_DB_URL.getValue() +
-                        "\ndb.user=" + DefaultProperties.DEFAULT_DB_USER.getValue() +
-                        "\ndb.password=" + DefaultProperties.DEFAULT_DB_PASSWORD.getValue();
+                String defaultInfo =
+                        FileProps.PROVIDER.getValue() + "=" + DefaultProperties.DEFAULT_PROVIDER.getValue() + "\n" +
+                        FileProps.URL.getValue() + "=" + DefaultProperties.DEFAULT_DB_URL.getValue() + "\n" +
+                        FileProps.USER + "=" + DefaultProperties.DEFAULT_DB_USER.getValue() + "\n" +
+                        FileProps.PASSWORD + "=" + DefaultProperties.DEFAULT_DB_PASSWORD.getValue();
                 Files.createFile(path);
                 Files.writeString(path, defaultInfo);
                 System.out.println("Created properties.properties file.");

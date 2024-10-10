@@ -6,6 +6,6 @@ import java.sql.SQLException;
 
 public interface DbInitialSetup {
 
-    void createIfMissing() throws MySqlNotValidCredentialsException, SQLException;
+    void createDatabaseIfMissing() throws MySqlNotValidCredentialsException, SQLException;
 
 }
