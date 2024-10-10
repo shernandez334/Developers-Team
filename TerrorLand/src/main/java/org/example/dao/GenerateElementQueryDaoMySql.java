@@ -1,7 +1,7 @@
 package org.example.dao;
 
-import static org.example.util.IO.readInt;
-import static org.example.util.IO.readString;
+import static org.example.util.IOHelper.readInt;
+import static org.example.util.IOHelper.readString;
 
 public class GenerateElementQueryDaoMySql implements GenerateElementQueryDao{
 

@@ -5,7 +5,7 @@ import org.example.entities.Notification;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
-import static org.example.mySQL.MySqlHelper.*;
+import static org.example.mysql.MySqlHelper.*;
 
 public class NotificationDaoMySql implements NotificationDao {
 

@@ -1,6 +1,6 @@
 package org.example.database;
 
-import org.example.mySQL.MySqlHelper;
+import org.example.mysql.MySqlHelper;
 import org.example.enums.DefaultProperties;
 import org.example.exceptions.ExecuteScriptIOException;
 import org.example.exceptions.MySqlNotValidCredentialsException;
@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static org.example.mySQL.MySqlHelper.executeSqlFile;
+import static org.example.mysql.MySqlHelper.executeSqlFile;
 
 public class DbInitialSetupMySql implements DbInitialSetup {
 

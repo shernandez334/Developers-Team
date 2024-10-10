@@ -5,8 +5,8 @@ import org.example.exceptions.ExistingEmailException;
 import org.example.entities.Admin;
 import org.example.entities.Player;
 import org.example.entities.User;
-import org.example.util.IO;
-import org.example.util.MenuCreator;
+import org.example.util.IOHelper;
+import org.example.util.MenuHelper;
 
 public class UserRegistrationService {
 
@@ -21,7 +21,7 @@ public class UserRegistrationService {
                 System.out.println("Error: " +
                         "The username cannot contain blank spaces and must be between 4 and 16 characters long.");
             }
-            userName = IO.readString("username: ");
+            userName = IOHelper.readString("username: ");
         }while(userName.matches(".*\\s.*") || userName.length()<4 || userName.length()>16);
         //Regex: has blank spaces
         do{
@@ -29,17 +29,17 @@ public class UserRegistrationService {
                 System.out.println("Error: " +
                         "The password cannot contain blank spaces and must be between 4 and 16 characters long.");
             }
-            password = IO.readString("password: ");
+            password = IOHelper.readString("password: ");
         }while(password.matches(".*\\s.*") || password.length()<4 || password.length()>16);
         //Regex: has blank spaces
         do{
             if (!email.isEmpty()){
                 System.out.println("Error: not a valid email address.");
             }
-            email = IO.readString("email: ");
+            email = IOHelper.readString("email: ");
         }while(email.matches(".*\\s.*") || !email.matches(".+@.+\\..+")); //Regex: has blank spaces
 
-        int option = MenuCreator.readSelection("Select your role:", ">", "1. Player", "2. Admin");
+        int option = MenuHelper.readSelection("Select your role:", ">", "1. Player", "2. Admin");
         user = switch (option) {
             case 1 -> new Player(userName, password, email);
             case 2 -> new Admin(userName, password, email);

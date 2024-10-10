@@ -1,13 +1,13 @@
 package org.example.dao;
 
-import org.example.mySQL.MySqlHelper;
+import org.example.mysql.MySqlHelper;
 import org.example.exceptions.MySqlEmptyResultSetException;
 import org.example.exceptions.MySqlPropertyNotFoundException;
 
 import java.math.BigDecimal;
 import java.sql.SQLIntegrityConstraintViolationException;
 
-import static org.example.mySQL.MySqlHelper.retrieveSingleValueFromDatabase;
+import static org.example.mysql.MySqlHelper.retrieveSingleValueFromDatabase;
 
 public class PropertiesDaoMySql implements PropertiesDao {
     @Override

@@ -1,4 +1,4 @@
-package org.example.mySQL;
+package org.example.mysql;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

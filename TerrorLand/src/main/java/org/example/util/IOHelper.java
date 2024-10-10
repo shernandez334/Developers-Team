@@ -5,7 +5,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 
-public class IO {
+public class IOHelper {
 
     private static final Scanner input;
 

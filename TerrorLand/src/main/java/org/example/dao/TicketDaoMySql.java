@@ -7,7 +7,7 @@ import org.example.exceptions.MySqlEmptyResultSetException;
 import java.math.BigDecimal;
 import java.sql.SQLIntegrityConstraintViolationException;
 
-import static org.example.mySQL.MySqlHelper.*;
+import static org.example.mysql.MySqlHelper.*;
 
 public class TicketDaoMySql implements TicketDao {
 

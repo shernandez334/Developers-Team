@@ -4,12 +4,12 @@ import org.example.entities.Player;
 import org.example.entities.User;
 import org.example.exceptions.ExistingEmailException;
 import org.example.entities.Admin;
-import org.example.mySQL.QueryResult;
+import org.example.mysql.QueryResult;
 import org.example.services.NotificationsService;
 
 import java.sql.*;
 
-import static org.example.mySQL.MySqlHelper.*;
+import static org.example.mysql.MySqlHelper.*;
 
 public class UserDaoMySql implements UserDao {
 

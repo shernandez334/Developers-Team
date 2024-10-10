@@ -3,7 +3,7 @@ package org.example.services;
 import org.example.dao.DatabaseFactory;
 import org.example.entities.Player;
 import org.example.entities.Ticket;
-import org.example.util.IO;
+import org.example.util.IOHelper;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,7 +16,7 @@ public class TicketsService {
         String price = "";
         do {
             if (!price.isEmpty()) System.out.println("Wrong format, values between 0 and 99 accepted.");
-            price = IO.readString("New price: ").replace(',', '.');
+            price = IOHelper.readString("New price: ").replace(',', '.');
         }while(!Pattern.matches("^\\d{1,2}(\\.\\d{1,2})?$", price));
         //REGEX: Number up to 99 with optional 1 or 2 digit decimal
         setPurchasePrice(price);
@@ -24,7 +24,7 @@ public class TicketsService {
 
     public void buyTickets(Player player){
         System.out.printf("Each ticket costs %.2f.%n", getPurchasePrice());
-        int quantity = IO.readInt("How Many Tickets do you wish to buy?\n>");
+        int quantity = IOHelper.readInt("How Many Tickets do you wish to buy?\n>");
         for (int i = 0; i < quantity; i++){
             Ticket ticket = createTicket(player, getPurchasePrice());
             player.addTicket(ticket);

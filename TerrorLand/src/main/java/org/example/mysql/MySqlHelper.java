@@ -1,4 +1,4 @@
-package org.example.mySQL;
+package org.example.mysql;
 
 import org.example.enums.DefaultProperties;
 import org.example.enums.Properties;

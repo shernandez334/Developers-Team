@@ -3,7 +3,7 @@ package org.example.services;
 import org.example.dao.DatabaseFactory;
 import org.example.entities.Player;
 import org.example.entities.Notification;
-import org.example.util.IO;
+import org.example.util.IOHelper;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -44,11 +44,11 @@ public class NotificationsService {
                 item.next();
                 backed = false;
             }
-            System.out.printf("%n%s%n", IO.indentText(notification.getMessage(), "**  "));
+            System.out.printf("%n%s%n", IOHelper.indentText(notification.getMessage(), "**  "));
             System.out.printf("Previous(p)  -- %d/%d --  Next(n), Delete(d), Quit(q)%n",
                     item.nextIndex(), player.notificationsSize());
             do{
-                option = IO.readChar(">");
+                option = IOHelper.readChar(">");
             }while (!(option == 'p' || option == 'n' || option == 'd' || option == 'q'));
         } while(option != 'q' && player.hasNoNotifications());
     }

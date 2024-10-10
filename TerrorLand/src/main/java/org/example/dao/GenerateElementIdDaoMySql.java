@@ -1,10 +1,8 @@
 package org.example.dao;
 
-import org.example.database.MySQL;
 import org.example.exceptions.ElementIdException;
-import org.example.exceptions.MySqlCredentialsException;
 import java.sql.*;
-import static org.example.database.MySQL.getConnection;
+import static org.example.mysql.MySqlHelper.getConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +23,7 @@ public class GenerateElementIdDaoMySql implements GenerateElementIdDao{
                     element_id = generatedKeys.getInt(1);
                 }
             }
-        } catch (SQLException | MySqlCredentialsException e){
+        } catch (SQLException e){
             throw new ElementIdException(e);
         }
         return element_id;

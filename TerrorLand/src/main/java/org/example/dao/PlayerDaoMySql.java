@@ -4,13 +4,13 @@ import org.example.entities.Notification;
 import org.example.entities.Player;
 import org.example.entities.Ticket;
 import org.example.exceptions.MySqlEmptyResultSetException;
-import org.example.mySQL.QueryResult;
+import org.example.mysql.QueryResult;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.example.mySQL.MySqlHelper.*;
+import static org.example.mysql.MySqlHelper.*;
 
 public class PlayerDaoMySql implements PlayerDao {
 

@@ -1,12 +1,11 @@
 package org.example.dao;
 
 import org.example.exceptions.ElementIdException;
-import org.example.util.Menu;
+import org.example.util.MenuHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static org.example.database.MySQL.*;
-import static org.example.util.IO.*;
-import static org.example.util.IO.readInt;
+import static org.example.util.IOHelper.readInt;
 
 public class ElementDaoMySql implements ElementDao{
     private final RoomDaoMySql roomDaoMySql = new RoomDaoMySql();
@@ -18,7 +17,7 @@ public class ElementDaoMySql implements ElementDao{
     @Override
     public void createAnElement(){
         String query = "";
-        int op = Menu.readSelection("What element would you like to create?", ">",
+        int op = MenuHelper.readSelection("What element would you like to create?", ">",
                 "1. Room", "2. Decoration", "3. Clue");
         try {
             switch (op){
