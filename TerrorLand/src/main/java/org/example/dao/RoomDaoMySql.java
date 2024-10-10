@@ -13,10 +13,10 @@ import static org.example.util.IO.readDouble;
 
 public class RoomDaoMySql extends StoreElementDaoMySql implements RoomDao{
     private final GenerateElementIdDaoMySql element = new GenerateElementIdDaoMySql();
-    private static final Logger log = LoggerFactory.getLogger(ElementDaoMySql.class);
+    private static final Logger log = LoggerFactory.getLogger(RoomDaoMySql.class);
 
     public String createElementRoom() throws ElementIdException {
-        String query = "";
+        String query;
         Difficulty difficulty;
         try {
             int element_id = element.generateElementId(1);

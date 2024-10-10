@@ -1,20 +1,28 @@
 package org.example.dao;
 
+import org.example.enums.Difficulty;
+import org.example.exceptions.ElementIdException;
+import org.example.util.Menu;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ClueDaoMySql extends StoreElementDaoMySql implements ClueDao{
-    private final ElementDao elementDao = new ElementDaoMySql();
+    private final GenerateElementIdDaoMySql element = new GenerateElementIdDaoMySql();
+    private static final Logger log = LoggerFactory.getLogger(ClueDaoMySql.class);
 
     @Override
-    public String createElementClue(){
+    public String createElementClue() throws ElementIdException{
         String query;
-        int element_id = elementDao.inputElementTableInfo(3);
-        if (element_id == -1){
-            System.out.println("Failed to create element.");
-            // Exception createElement
-            query = null;
-        } else {
-            query = "INSERT INTO clue (element_id) " +
-                    "VALUES (" + element_id + ");";
+        Difficulty difficulty;
+        try {
+            int element_id = element.generateElementId(1);
+            difficulty = Menu.readDifficultySelection("Choose a level of difficulty:");
+            query = "INSERT INTO room (element_id, price, difficulty) " +
+                    "VALUES (" + element_id + ", " + 23 + ", '" + difficulty + "');";
             storeElementInStorage(element_id);
+        } catch (ElementIdException e){
+            log.error("Error creating room: {}", e.getMessage());
+            throw e;
         }
         return query;
     }
