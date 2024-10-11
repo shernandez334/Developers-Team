@@ -77,6 +77,4 @@ public class MySQL {
             throw new RuntimeException(e);
         }
     }
-
-
 }
