@@ -1,21 +1,19 @@
-package org.example.dao;
+package org.example.dao.element;
 
+import org.example.dao.generate.GenerateElementIdMySql;
+import org.example.dao.store.StoreElementDaoMySql;
 import org.example.enums.Difficulty;
 import org.example.exceptions.ElementIdException;
-import org.example.exceptions.MySqlCredentialsException;
 import org.example.util.Menu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
+public class ClueMySql extends StoreElementDaoMySql implements Clue {
+    private final GenerateElementIdMySql element = new GenerateElementIdMySql();
+    private static final Logger log = LoggerFactory.getLogger(ClueMySql.class);
 
-import static org.example.util.IO.readDouble;
-
-public class RoomDaoMySql extends StoreElementDaoMySql implements RoomDao{
-    private final GenerateElementIdDaoMySql element = new GenerateElementIdDaoMySql();
-    private static final Logger log = LoggerFactory.getLogger(RoomDaoMySql.class);
-
-    public String createElementRoom() throws ElementIdException {
+    @Override
+    public String createElementClue() throws ElementIdException{
         String query;
         Difficulty difficulty;
         try {

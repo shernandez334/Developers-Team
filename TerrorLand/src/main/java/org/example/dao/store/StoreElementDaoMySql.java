@@ -1,4 +1,4 @@
-package org.example.dao;
+package org.example.dao.store;
 
 import static org.example.database.MySQL.inputDataInfo;
 

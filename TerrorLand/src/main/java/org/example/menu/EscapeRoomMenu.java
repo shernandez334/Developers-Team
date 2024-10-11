@@ -9,7 +9,7 @@ import org.example.model.Admin;
 import org.example.model.Player;
 import org.example.model.Ticket;
 import org.example.model.User;
-import org.example.dao.ElementDaoMySql;
+import org.example.dao.element.ElementMySql;
 import org.example.util.IO;
 import org.example.util.Menu;
 
@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 
 public class EscapeRoomMenu {
-    private final ElementDaoMySql elementDaoMySql = new ElementDaoMySql();
+    private final ElementMySql elementDaoMySql = new ElementMySql();
 
     private static User user;
     private static boolean quit;

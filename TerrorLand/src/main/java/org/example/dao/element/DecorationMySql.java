@@ -1,5 +1,7 @@
-package org.example.dao;
+package org.example.dao.element;
 
+import org.example.dao.generate.GenerateElementIdMySql;
+import org.example.dao.store.StoreElementDaoMySql;
 import org.example.enums.Difficulty;
 import org.example.exceptions.ElementIdException;
 import org.example.util.Menu;
@@ -7,9 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class DecorationDaoMySql extends StoreElementDaoMySql implements DecorationDao{
-    private final GenerateElementIdDaoMySql element = new GenerateElementIdDaoMySql();
-    private static final Logger log = LoggerFactory.getLogger(DecorationDaoMySql.class);
+public class DecorationMySql extends StoreElementDaoMySql implements Decoration {
+    private final GenerateElementIdMySql element = new GenerateElementIdMySql();
+    private static final Logger log = LoggerFactory.getLogger(DecorationMySql.class);
 
     public String createElementDecoration() throws ElementIdException {
         String query;

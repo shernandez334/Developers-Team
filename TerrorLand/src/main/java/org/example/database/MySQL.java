@@ -58,8 +58,14 @@ public class MySQL implements Database {
                 throw e;
             }
         }
+    }
 
-
+    public static Connection getConnectionFormatted() throws SQLException{
+        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/", "root", "password");
+        if (!conn.isValid(2)){
+            throw new SQLException("Failed to establish connection.");
+        }
+        return conn;
     }
 
     public static Connection getConnection() throws SQLException, MySqlCredentialsException {
