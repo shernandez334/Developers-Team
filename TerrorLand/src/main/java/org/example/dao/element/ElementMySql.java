@@ -1,5 +1,6 @@
-package org.example.dao;
+package org.example.dao.element;
 
+import org.example.dao.generate.GenerateElementIdMySql;
 import org.example.exceptions.ElementIdException;
 import org.example.util.MenuHelper;
 import org.slf4j.Logger;
@@ -7,23 +8,22 @@ import org.slf4j.LoggerFactory;
 import static org.example.database.MySQL.*;
 import static org.example.util.IOHelper.readInt;
 
-public class ElementDaoMySql implements ElementDao{
-    private final RoomDaoMySql roomDaoMySql = new RoomDaoMySql();
-    private final DecorationDao decorationDao = new DecorationDaoMySql();
-    private final ClueDaoMySql clueDaoMySql = new ClueDaoMySql();
-    private final GenerateElementIdDaoMySql elementId = new GenerateElementIdDaoMySql();
-    private static final Logger log = LoggerFactory.getLogger(ElementDaoMySql.class);
+public class ElementMySql implements Element {
+    private final RoomMySql roomDaoMySql = new RoomMySql();
+    private final Decoration decoration = new DecorationMySql();
+    private final ClueMySql clueDaoMySql = new ClueMySql();
+    private final GenerateElementIdMySql elementId = new GenerateElementIdMySql();
+    private static final Logger log = LoggerFactory.getLogger(ElementMySql.class);
 
     @Override
     public void createAnElement(){
-        String query = "";
         int op = MenuHelper.readSelection("What element would you like to create?", ">",
                 "1. Room", "2. Decoration", "3. Clue");
         try {
             switch (op){
-                case 1 -> query = roomDaoMySql.createElementRoom();
-                case 2 -> query = decorationDao.createElementDecoration();
-                case 3 -> query = clueDaoMySql.createElementClue();
+                case 1 -> roomDaoMySql.createElementRoom();
+                case 2 -> decoration.createElementDecoration();
+                case 3 -> clueDaoMySql.createElementClue();
             }
         } catch (ElementIdException e){
             log.error("Error occurred while creating an element: {}", e.getMessage());

@@ -1,6 +1,5 @@
 package org.example.menu;
 
-import org.example.dao.ElementDaoMySql;
 import org.example.exceptions.MySqlNotValidCredentialsException;
 import org.example.entities.Admin;
 import org.example.entities.Player;
@@ -13,7 +12,6 @@ import java.sql.SQLException;
 
 
 public class MainMenu {
-    private final ElementDaoMySql elementDaoMySql = new ElementDaoMySql();
 
     private static User user;
     private static boolean quit;
@@ -63,8 +61,8 @@ public class MainMenu {
                 "1. Create Element", "2. Delete Element", "3. Set ticket price", "4. Get total income",
                 "5. Send Notification" ,"6. Logout");
         switch (option) {
-            case 1 -> elementDaoMySql.createAnElement();
-            case 2 -> elementDaoMySql.deleteAnElement();
+            case 1 -> elementMySql.createAnElement();
+            //case 2 -> elementDaoMySql.deleteAnElement();
             case 3 -> new TicketsService().setTicketPrice();
             case 4 -> System.out.printf("The total income is %.2f€.%n", new TicketsService().getTotalIncome());
             case 5 -> new NotificationsService().notifySubscribers(IOHelper.readString("Insert the message: "));

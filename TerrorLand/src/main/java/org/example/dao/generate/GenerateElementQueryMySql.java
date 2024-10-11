@@ -1,9 +1,9 @@
-package org.example.dao;
+package org.example.dao.generate;
 
-import static org.example.util.IOHelper.readInt;
-import static org.example.util.IOHelper.readString;
+import static org.example.util.IO.readInt;
+import static org.example.util.IO.readString;
 
-public class GenerateElementQueryDaoMySql implements GenerateElementQueryDao{
+public class GenerateElementQueryMySql implements GenerateElementQuery {
 
     @Override
     public String generateElementQuery(int elementType){

@@ -14,6 +14,20 @@ public class MySQL {
 
     private static final Logger log = LoggerFactory.getLogger(MySQL.class);
 
+    public static Connection getConnectionFormatted() throws SQLException {
+        String url = "jdbc:mysql://localhost:3306/your_database_name"; // Specify your database name
+        String user = "root";
+        String password = "password"; // Consider externalizing this
+
+        Connection conn = DriverManager.getConnection(url, user, password);
+
+        if (!conn.isValid(2)) { // Check if the connection is valid with a timeout of 2 seconds
+            throw new SQLException("Failed to establish a valid connection.");
+        }
+
+        return conn;
+    }
+
     public static void inputDataInfo(String elementTypeQuery) {
         try (Connection connection = MySqlHelper.getConnection("escape_room");
              Statement stmt = connection.createStatement()) {
@@ -59,7 +73,6 @@ public class MySQL {
         } catch (SQLException e) {
             System.out.println("Error disabling element: " + e.getMessage());
         }
-
     }
 
     @Deprecated
