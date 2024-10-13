@@ -46,7 +46,7 @@ public class NotificationsService {
             }
             System.out.printf("%n%s%n", IOHelper.indentText(notification.getMessage(), "**  "));
             System.out.printf("Previous(p)  -- %d/%d --  Next(n), Delete(d), Quit(q)%n",
-                    item.nextIndex(), player.notificationsSize());
+                    item.nextIndex(), player.getNotificationsSize());
             do{
                 option = IOHelper.readChar(">");
             }while (!(option == 'p' || option == 'n' || option == 'd' || option == 'q'));
