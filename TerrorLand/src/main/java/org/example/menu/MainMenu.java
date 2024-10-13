@@ -1,6 +1,11 @@
 package org.example.menu;
 
 import org.example.dao.ElementDaoMySql;
+import org.example.dao.FactoryProvider;
+import org.example.enums.UserRole;
+import org.example.exceptions.ExistingEmailException;
+import org.example.exceptions.FormatException;
+import org.example.exceptions.MySqlException;
 import org.example.exceptions.MySqlNotValidCredentialsException;
 import org.example.entities.Admin;
 import org.example.entities.Player;
@@ -8,6 +13,8 @@ import org.example.entities.User;
 import org.example.services.*;
 import org.example.util.IOHelper;
 import org.example.util.MenuHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 
@@ -17,6 +24,7 @@ public class MainMenu {
 
     private static User user;
     private static boolean quit;
+    private static final Logger log = LoggerFactory.getLogger(MainMenu.class);
 
     static{
         user = null;
@@ -51,11 +59,13 @@ public class MainMenu {
                 user = new UserLoginService().run();
                 System.out.println(user == null ? "Wrong credentials." : "You successfully logged as " + user.getName());
             }
-            case 2 -> new UserRegistrationService().run();
+            case 2 -> userRegistrationDialog();
             case 3 -> quit = true;
         }
         MainMenu.user = user;
     }
+
+
 
     private void adminMenu() {
         Admin admin = (Admin) user;
@@ -74,7 +84,7 @@ public class MainMenu {
 
     private void playerMenu() {
         Player player = (Player) user;
-        System.out.printf("Welcome %s! You've got %d tickets.%n", player.getName(), player.getTotalTickets());
+        System.out.printf("Welcome %s! You've got %d tickets.%n", player.getName(), player.getTicketsSize());
         int option = MenuHelper.readSelection("Select an option.", ">",
                 "1. Play Room", "2. Buy a Ticket",
                 "3. Read notifications " + player.getNotificationWarning(),
@@ -94,6 +104,56 @@ public class MainMenu {
                 }
             }
             case 5 -> MainMenu.user = null;
+        }
+    }
+
+    private void userRegistrationDialog() {
+        UserRegistrationService service = new UserRegistrationService(new FactoryProvider());
+        String userName;
+        String password;
+        String email;
+        UserRole role;
+
+        while (true) {
+            try {
+                userName = service.validateUserName(IOHelper.readString("Username: "));
+                break;
+            } catch (FormatException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        while (true) {
+            try {
+                password = service.validatePassword(IOHelper.readString("Password: "));
+                break;
+            } catch (FormatException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        while (true) {
+            try {
+                email = service.validateEmail(IOHelper.readString("Email: "));
+                break;
+            } catch (FormatException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        int option = MenuHelper.readSelection("Select your role:", ">", "1. Player", "2. Admin");
+        role = switch (option) {
+            case 1 -> UserRole.PLAYER;
+            case 2 -> UserRole.ADMIN;
+            default -> throw new IllegalStateException("Error: role selection dialog allowed invalid selection.");
+        };
+        try {
+            MainMenu.user = service.registerUser(userName, password, email, role);
+            System.out.println("User created successfully, you can log in now!");
+        } catch (ExistingEmailException e) {
+            System.out.println("Couldn't complete the register: there is already a user with this email.");
+            MainMenu.user = null;
+        } catch (MySqlException e) {
+            System.out.println("Quitting the app: unexpected DB error.");
+            log.error(e.getMessage(), e);
+            quit = true;
         }
     }
 

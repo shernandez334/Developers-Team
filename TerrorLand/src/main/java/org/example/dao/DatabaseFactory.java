@@ -14,6 +14,11 @@ public interface DatabaseFactory {
     DbInitialSetup createDbInitialSetup();
     PropertiesDao createPropertiesDao();
 
+    /**
+     * @deprecated
+     * User FactoryProvider.get() instead.
+     */
+    @Deprecated
     public static DatabaseFactory get(){
         if (Properties.getProperty(FileProps.PROVIDER.getValue()).equalsIgnoreCase("mysql")){
             return new MySqlFactory();

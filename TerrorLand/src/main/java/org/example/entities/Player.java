@@ -34,7 +34,7 @@ public class Player extends User {
         return tickets;
     }
 
-    public int getTotalTickets(){
+    public int getTicketsSize(){
         return this.tickets.size();
     }
 
@@ -59,7 +59,7 @@ public class Player extends User {
         return this.notifications;
     }
 
-    public int notificationsSize() {
+    public int getNotificationsSize() {
         return this.notifications.size();
     }
 
