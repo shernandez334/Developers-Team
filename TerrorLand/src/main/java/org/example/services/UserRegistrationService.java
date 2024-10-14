@@ -1,5 +1,6 @@
 package org.example.services;
 
+import org.example.dao.DatabaseFactory;
 import org.example.dao.FactoryProvider;
 import org.example.enums.UserRole;
 import org.example.entities.Admin;
@@ -8,6 +9,7 @@ import org.example.entities.User;
 import org.example.exceptions.ExistingEmailException;
 import org.example.exceptions.FormatException;
 import org.example.exceptions.MySqlException;
+import org.example.util.IOHelper;
 
 public class UserRegistrationService {
 
@@ -75,5 +77,9 @@ public class UserRegistrationService {
 
     private User saveUserInDatabaseAndSetId(User user) throws MySqlException, ExistingEmailException {
         return factoryProvider.get().createUserDao().saveUser(user);
+    }
+
+    public User getUserFromCredentials(String email, String password){
+        return this.factoryProvider.get().createUserDao().getUser(email, password);
     }
 }
