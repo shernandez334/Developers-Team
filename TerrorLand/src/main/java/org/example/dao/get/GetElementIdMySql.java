@@ -3,7 +3,7 @@ package org.example.dao.get;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class GetElementIdMySql implements GetElementId {
+public class GetElementIdMySql{
 
     public int getElementId(ResultSet setId) throws SQLException {
         int element_id;

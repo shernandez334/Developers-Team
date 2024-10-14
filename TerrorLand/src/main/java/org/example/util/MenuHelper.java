@@ -3,10 +3,12 @@ package org.example.util;
 import org.example.enums.Difficulty;
 import org.example.enums.Material;
 import org.example.enums.Theme;
+import org.example.enums.Type;
 
 import java.util.Arrays;
 
 public class MenuHelper {
+    private static final String [] TYPE_OPTIONS = {"1. ROOM", "2. DECOR_ITEM", "3. CLUE"};
     private static final String[] DIFFICULTY_OPTIONS = {"1.EASY", "2.MEDIUM", "3.HARD", "4.EPIC"};
     private static final String[] THEME_OPTIONS = {"1. SCI-FI", "2. MEDIEVAL", "3. SPACE"};
     private static final String[] MATERIAL_OPTIONS = {"1. METAL", "2. WOOD", "3. GLASS", "4 PLASTIC"};
@@ -19,6 +21,11 @@ public class MenuHelper {
             selection = IOHelper.readInt(closing);
         }while (selection <= 0 || selection > options.length);
         return selection;
+    }
+
+    public static Type readTypeSelection(String message){
+        int op = readSelection(message, ">", TYPE_OPTIONS);
+        return Type.values()[op - 1];
     }
 
     public static Difficulty readDifficultySelection(String message) {

@@ -3,9 +3,8 @@ package org.example.dao.generate;
 
 import static org.example.util.IOHelper.*;
 
-public class GenerateElementQueryMySql implements GenerateElementQuery {
+public class GenerateElementQueryMySql {
 
-    @Override
     public String generateElementQuery(int elementType){
         String type = "";
         String nameElem = readString("Name of the element:\n>");
