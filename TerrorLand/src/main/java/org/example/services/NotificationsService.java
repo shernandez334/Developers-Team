@@ -1,6 +1,7 @@
 package org.example.services;
 
 import org.example.dao.DatabaseFactory;
+import org.example.dao.FactoryProvider;
 import org.example.entities.Player;
 import org.example.entities.Notification;
 import org.example.util.IOHelper;
@@ -9,6 +10,12 @@ import java.util.List;
 import java.util.ListIterator;
 
 public class NotificationsService {
+
+    private final DatabaseFactory databaseFactory;
+
+    public NotificationsService(FactoryProvider factoryProvider){
+        this.databaseFactory = factoryProvider.getFactory();
+    }
 
     public void readNotifications(Player player) {
         loadNotificationsFromDatabase(player);
@@ -54,32 +61,32 @@ public class NotificationsService {
     }
 
     private void delete(Notification notification) {
-        DatabaseFactory.get().createNotificationDao().deleteNotification(notification);
+        databaseFactory.createNotificationDao().deleteNotification(notification);
     }
 
     public void notifySubscribers(String message) {
-        List<Integer> subscribers = DatabaseFactory.get().createNotificationDao().getSubscribers();
+        List<Integer> subscribers = databaseFactory.createNotificationDao().getSubscribers();
         for (Integer subscriberId : subscribers){
-            sendNotification(new Notification(subscriberId, message));
+            notifySubscriber(new Notification(subscriberId, message));
         }
     }
 
-    public void sendNotification(Notification notification){
-        DatabaseFactory.get().createNotificationDao().storeNotification(notification);
+    private void notifySubscriber(Notification notification){
+        databaseFactory.createNotificationDao().saveNotification(notification);
     }
 
-    public void unsubscribe(Player player) {
-        DatabaseFactory.get().createPlayerDao().unsubscribePlayer(player);
+    public void removeSubscriber(Player player) {
+        databaseFactory.createPlayerDao().unsubscribePlayer(player);
         player.setSubscribed(false);
     }
 
-    public void subscribe(Player player) {
-        DatabaseFactory.get().createPlayerDao().subscribePlayer(player);
+    public void addSubscriber(Player player) {
+        databaseFactory.createPlayerDao().subscribePlayer(player);
         player.setSubscribed(true);
     }
 
     public void loadNotificationsFromDatabase(Player player){
-        player.setNotifications(DatabaseFactory.get().createPlayerDao().retrieveNotifications(player.getId()));
+        player.setNotifications(databaseFactory.createPlayerDao().retrieveNotifications(player.getId()));
     }
 
 }

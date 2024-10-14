@@ -7,7 +7,7 @@ import java.util.List;
 public interface NotificationDao {
     List<Integer> getSubscribers();
 
-    void storeNotification(Notification notification);
+    void saveNotification(Notification notification);
 
     void deleteNotification(Notification notification);
 }

@@ -1,6 +1,7 @@
 package org.example.services;
 
 import org.example.dao.DatabaseFactory;
+import org.example.dao.FactoryProvider;
 import org.example.entities.Player;
 import org.example.entities.Ticket;
 import org.example.util.IOHelper;
@@ -12,7 +13,8 @@ import java.util.regex.Pattern;
 public class TicketsService {
 
     public void setTicketPrice() {
-        System.out.printf("Each ticket costs %.2f.%n", getPurchasePrice());
+        BigDecimal previousPrice = getPurchasePrice();
+        System.out.printf("Each ticket costs %.2f.%n", previousPrice);
         String price = "";
         do {
             if (!price.isEmpty()) System.out.println("Wrong format, values between 0 and 99 accepted.");
@@ -20,6 +22,11 @@ public class TicketsService {
         }while(!Pattern.matches("^\\d{1,2}(\\.\\d{1,2})?$", price));
         //REGEX: Number up to 99 with optional 1 or 2 digit decimal
         setPurchasePrice(price);
+        BigDecimal newPrice = BigDecimal.valueOf(Double.parseDouble(price));
+        if (newPrice.compareTo(previousPrice) < 0){
+            String notification = String.format("The price is down to %.2f!! Get your tickets now!!", newPrice);
+            new NotificationsService(FactoryProvider.getInstance()).notifySubscribers(notification);
+        }
     }
 
     public void buyTickets(Player player){

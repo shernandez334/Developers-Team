@@ -77,7 +77,8 @@ public class MainMenu {
             case 2 -> elementDaoMySql.deleteAnElement();
             case 3 -> new TicketsService().setTicketPrice();
             case 4 -> System.out.printf("The total income is %.2f€.%n", new TicketsService().getTotalIncome());
-            case 5 -> new NotificationsService().notifySubscribers(IOHelper.readString("Insert the message: "));
+            case 5 -> new NotificationsService(FactoryProvider.getInstance())
+                    .notifySubscribers(IOHelper.readString("Insert the message: "));
             case 6 -> MainMenu.user = null;
         }
     }
@@ -93,13 +94,13 @@ public class MainMenu {
         switch (option) {
             case 1 -> new RoomPlayService().play(player);
             case 2 -> new TicketsService().buyTickets(player);
-            case 3 -> new NotificationsService().readNotifications(player);
+            case 3 -> new NotificationsService(FactoryProvider.getInstance()).readNotifications(player);
             case 4 -> {
                 if (player.isSubscribed()) {
-                    new NotificationsService().unsubscribe(player);
+                    new NotificationsService(FactoryProvider.getInstance()).removeSubscriber(player);
                     System.out.println("You are no longer subscribed to the notifications.");
                 }else {
-                    new NotificationsService().subscribe(player);
+                    new NotificationsService(FactoryProvider.getInstance()).addSubscriber(player);
                     System.out.println("You have subscribed successfully.");
                 }
             }

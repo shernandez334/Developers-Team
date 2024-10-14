@@ -1,6 +1,7 @@
 package org.example.services;
 
 import com.google.common.hash.Hashing;
+import org.example.dao.DatabaseFactory;
 import org.example.dao.FactoryProvider;
 import org.example.enums.UserRole;
 import org.example.entities.Admin;
@@ -15,10 +16,10 @@ import java.nio.charset.StandardCharsets;
 
 public class UserRegistrationService {
 
-    private final FactoryProvider factoryProvider;
+    private final DatabaseFactory databaseFactory;
 
     public UserRegistrationService(FactoryProvider factoryProvider){
-        this.factoryProvider = factoryProvider;
+        this.databaseFactory = factoryProvider.getFactory();
     }
 
 
@@ -85,10 +86,10 @@ public class UserRegistrationService {
     }
 
     private User saveUserInDatabaseAndSetId(User user) throws MySqlException, ExistingEmailException {
-        return factoryProvider.getFactory().createUserDao().saveUser(user);
+        return databaseFactory.createUserDao().saveUser(user);
     }
 
     public User getUserFromCredentials(String email, String password){
-        return this.factoryProvider.getFactory().createUserDao().getUser(email, password);
+        return databaseFactory.createUserDao().getUser(email, password);
     }
 }
