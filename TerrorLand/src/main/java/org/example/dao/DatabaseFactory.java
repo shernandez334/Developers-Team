@@ -16,12 +16,12 @@ public interface DatabaseFactory {
 
     /**
      * @deprecated
-     * Use new FactoryProvider().get() instead.
+     * Use FactoryProvider.getInstance().getFactory() instead.
      */
     @Deprecated
     public static DatabaseFactory get(){
         if (Properties.getProperty(FileProps.PROVIDER.getValue()).equalsIgnoreCase("mysql")){
-            return new MySqlFactory();
+            return MySqlFactory.getInstance();
         }else {
             System.out.printf("'%s' is not valid as a database provider. Fix the properties file.",
                     FileProps.PROVIDER.getValue());

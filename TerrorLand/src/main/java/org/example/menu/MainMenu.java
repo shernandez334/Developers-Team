@@ -108,7 +108,7 @@ public class MainMenu {
     }
 
     private void userRegistrationDialog() {
-        UserRegistrationService service = new UserRegistrationService(new FactoryProvider());
+        UserRegistrationService service = new UserRegistrationService(FactoryProvider.getInstance());
         String userName;
         String password;
         String email;
@@ -158,7 +158,7 @@ public class MainMenu {
     }
 
     private User userLoginDialog() {
-        UserRegistrationService service = new UserRegistrationService(new FactoryProvider());
+        UserRegistrationService service = new UserRegistrationService(FactoryProvider.getInstance());
         String password;
         String email;
 

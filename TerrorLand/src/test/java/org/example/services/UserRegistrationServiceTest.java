@@ -35,7 +35,7 @@ public class UserRegistrationServiceTest {
         FactoryProvider mockFactoryProvider = mock(FactoryProvider.class);
         DatabaseFactory mockDatabaseFactory = mock(MySqlFactory.class);
 
-        Mockito.when(mockFactoryProvider.get()).thenReturn(mockDatabaseFactory);
+        Mockito.when(mockFactoryProvider.getFactory()).thenReturn(mockDatabaseFactory);
         Mockito.when(mockDatabaseFactory.createUserDao()).thenReturn(mockUserDao);
 
         service = new UserRegistrationService(mockFactoryProvider);
