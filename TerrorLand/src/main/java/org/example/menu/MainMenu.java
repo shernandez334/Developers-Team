@@ -1,5 +1,7 @@
 package org.example.menu;
 
+import org.example.dao.element.DecorationMySql;
+import org.example.dao.element.ElementMySql;
 import org.example.exceptions.MySqlNotValidCredentialsException;
 import org.example.entities.Admin;
 import org.example.entities.Player;
@@ -7,6 +9,8 @@ import org.example.entities.User;
 import org.example.services.*;
 import org.example.util.IOHelper;
 import org.example.util.MenuHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 
@@ -15,17 +19,19 @@ public class MainMenu {
 
     private static User user;
     private static boolean quit;
+    private static final ElementMySql elem = new ElementMySql();
+    private static final Logger log = LoggerFactory.getLogger(MainMenu.class);
 
     static{
         user = null;
         quit = false;
     }
 
-    public void run() {
+    public void run(){
         try {
             new InitializeResourcesService().run();
         } catch (MySqlNotValidCredentialsException | SQLException e) {
-            System.out.println(e.getMessage());
+            log.error(e.getMessage());
             return;
         }
         do{
@@ -34,7 +40,11 @@ public class MainMenu {
             } else if (user instanceof Player){
                 playerMenu();
             }else {
-                adminMenu();
+                try {
+                    adminMenu();
+                } catch (SQLException e){
+                    log.error(e.getMessage());
+                }
             }
         }while (!quit);
         System.out.println("bye");
@@ -55,13 +65,13 @@ public class MainMenu {
         MainMenu.user = user;
     }
 
-    private void adminMenu() {
+    private void adminMenu() throws SQLException{
         Admin admin = (Admin) user;
         int option = MenuHelper.readSelection("Welcome Administrator! Select an option.", ">",
                 "1. Create Element", "2. Delete Element", "3. Set ticket price", "4. Get total income",
                 "5. Send Notification" ,"6. Logout");
         switch (option) {
-            case 1 -> elementMySql.createAnElement();
+            case 1 -> elem.createAnElement();
             //case 2 -> elementDaoMySql.deleteAnElement();
             case 3 -> new TicketsService().setTicketPrice();
             case 4 -> System.out.printf("The total income is %.2f€.%n", new TicketsService().getTotalIncome());
@@ -94,6 +104,4 @@ public class MainMenu {
             case 5 -> MainMenu.user = null;
         }
     }
-
-
 }

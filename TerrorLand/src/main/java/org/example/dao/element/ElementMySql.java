@@ -5,6 +5,9 @@ import org.example.exceptions.ElementIdException;
 import org.example.util.MenuHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.SQLException;
+
 import static org.example.database.MySQL.*;
 import static org.example.util.IOHelper.readInt;
 
@@ -13,20 +16,15 @@ public class ElementMySql implements Element {
     private final Decoration decoration = new DecorationMySql();
     private final ClueMySql clueDaoMySql = new ClueMySql();
     private final GenerateElementIdMySql elementId = new GenerateElementIdMySql();
-    private static final Logger log = LoggerFactory.getLogger(ElementMySql.class);
 
     @Override
-    public void createAnElement(){
+    public void createAnElement() throws SQLException {
         int op = MenuHelper.readSelection("What element would you like to create?", ">",
                 "1. Room", "2. Decoration", "3. Clue");
-        try {
-            switch (op){
+        switch (op){
                 case 1 -> roomDaoMySql.createElementRoom();
                 case 2 -> decoration.createElementDecoration();
                 case 3 -> clueDaoMySql.createElementClue();
-            }
-        } catch (ElementIdException e){
-            log.error("Error occurred while creating an element: {}", e.getMessage());
         }
     }
 

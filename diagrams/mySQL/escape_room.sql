@@ -19,12 +19,14 @@ USE `escape_room` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `escape_room`.`room` (
   `room_id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NOT NULL,
-  `difficulty` ENUM('easy', 'medium', 'hard') NOT NULL,
+  `element_id` INT NOT NULL,
+  `difficulty` ENUM('EASY', 'MEDIUM', 'HARD', 'EPIC') NOT NULL,
   PRIMARY KEY (`room_id`),
-  UNIQUE INDEX `room_id_UNIQUE` (`room_id` ASC) VISIBLE)
+  UNIQUE INDEX `room_id_UNIQUE` (`room_id` ASC) VISIBLE,
+  FOREIGN KEY (`element_id`) REFERENCES `escape_room`.`element`(`element_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB;
-
 
 -- -----------------------------------------------------
 -- Table `escape_room`.`element`
@@ -33,30 +35,18 @@ CREATE TABLE IF NOT EXISTS `escape_room`.`element` (
   `element_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `price` DECIMAL(10,2) UNSIGNED NULL,
-  `type` ENUM('room', 'clue', 'decoration') NOT NULL,
+  `type` ENUM('ROOM', 'CLUE', 'DECORATION') NOT NULL,
   PRIMARY KEY (`element_id`),
   UNIQUE INDEX `element_id_UNIQUE` (`element_id` ASC) VISIBLE,
   UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)
 ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `escape_room`.`theme`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `escape_room`.`theme` (
-  `theme_id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NULL,
-  PRIMARY KEY (`theme_id`),
-  UNIQUE INDEX `theme_id_UNIQUE` (`theme_id` ASC) VISIBLE)
-ENGINE = InnoDB;
-
 
 -- -----------------------------------------------------
 -- Table `escape_room`.`clue`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `escape_room`.`clue` (
   `element_id` INT NOT NULL,
-  `theme_id` INT NOT NULL,
+  `theme` ENUM('SCI-FI', 'MEDIEVAL', 'SPACE'),
   PRIMARY KEY (`element_id`, `theme_id`),
   UNIQUE INDEX `element_id_UNIQUE` (`element_id` ASC) VISIBLE,
   INDEX `fk_theme1_idx` (`theme_id` ASC) VISIBLE,
@@ -64,32 +54,15 @@ CREATE TABLE IF NOT EXISTS `escape_room`.`clue` (
     FOREIGN KEY (`element_id`)
     REFERENCES `escape_room`.`element` (`element_id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_theme1`
-    FOREIGN KEY (`theme_id`)
-    REFERENCES `escape_room`.`theme` (`theme_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE NO ACTION
 ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `escape_room`.`material`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `escape_room`.`material` (
-  `material_id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(45) NULL,
-  PRIMARY KEY (`material_id`),
-  UNIQUE INDEX `material_id_UNIQUE` (`material_id` ASC) VISIBLE)
-ENGINE = InnoDB;
-
 
 -- -----------------------------------------------------
 -- Table `escape_room`.`decor_item`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `escape_room`.`decor_item` (
   `element_id` INT NOT NULL,
-  `material_id` INT NOT NULL,
+  `material` ENUM('METAL', 'WOOD', 'GLASS', 'PLASTIC'),
   PRIMARY KEY (`element_id`, `material_id`),
   INDEX `fk_element2_idx` (`element_id` ASC) VISIBLE,
   UNIQUE INDEX `element_id_UNIQUE` (`element_id` ASC) VISIBLE,

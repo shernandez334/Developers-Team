@@ -1,7 +1,7 @@
 package org.example.dao.element;
 
-import org.example.exceptions.ElementIdException;
+import java.sql.SQLException;
 
 public interface Decoration {
-    String createElementDecoration() throws ElementIdException;
+    String createElementDecoration() throws SQLException;
 }

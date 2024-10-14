@@ -28,7 +28,8 @@ public class MySQL {
         return conn;
     }
 
-    public static void inputDataInfo(String elementTypeQuery) {
+    public static void inputValuesIntoSQLTable(String elementTypeQuery) throws SQLException{
+        Connection conn = getConnectionFormatted();
         try (Connection connection = MySqlHelper.getConnection("escape_room");
              Statement stmt = connection.createStatement()) {
             log.info("Executing SQL: {}", elementTypeQuery);

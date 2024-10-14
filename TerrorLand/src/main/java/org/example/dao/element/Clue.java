@@ -1,7 +1,7 @@
 package org.example.dao.element;
 
-import org.example.exceptions.ElementIdException;
+import java.sql.SQLException;
 
 public interface Clue {
-    String createElementClue() throws ElementIdException;
+    String createElementClue() throws SQLException;
 }

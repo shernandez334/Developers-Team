@@ -23,7 +23,7 @@ public class GenerateElementIdMySql implements GenerateElementId {
         pstmt.executeUpdate();
         log.info("Element table successfully inserted into the SQL database.");
         ResultSet setId = set.checkForGeneratedKey(pstmt.getGeneratedKeys());
-        log.info("Keys Created Successfully.");
+        log.info("Keys created Successfully.");
         return getId.getElementId(setId);
     }
 }
