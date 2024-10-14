@@ -20,11 +20,9 @@ public class MySQL {
         String password = "password"; // Consider externalizing this
 
         Connection conn = DriverManager.getConnection(url, user, password);
-
         if (!conn.isValid(2)) { // Check if the connection is valid with a timeout of 2 seconds
             throw new SQLException("Failed to establish a valid connection.");
         }
-
         return conn;
     }
 

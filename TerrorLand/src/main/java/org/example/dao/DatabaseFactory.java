@@ -1,5 +1,6 @@
 package org.example.dao;
 
+import org.example.dao.element.Elem;
 import org.example.database.DbInitialSetup;
 import org.example.enums.FileProps;
 import org.example.enums.Properties;
@@ -7,11 +8,11 @@ import org.example.enums.Properties;
 public interface DatabaseFactory {
 
     UserDao createUserDao();
-    ElementDao createElementDao();
     TicketDao createTicketDao();
     PlayerDao createPlayerDao();
     NotificationDao createNotificationDao();
     DbInitialSetup createDbInitialSetup();
+    Elem createElementDao();
     PropertiesDao createPropertiesDao();
 
     public static DatabaseFactory get(){

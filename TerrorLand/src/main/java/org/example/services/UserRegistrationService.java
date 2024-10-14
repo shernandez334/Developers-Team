@@ -24,13 +24,13 @@ public class UserRegistrationService {
             userName = IOHelper.readString("username: ");
         }while(userName.matches(".*\\s.*") || userName.length()<4 || userName.length()>16);
         //Regex: has blank spaces
-        do{
+        do {
             if (!password.isEmpty()){
                 System.out.println("Error: " +
                         "The password cannot contain blank spaces and must be between 4 and 16 characters long.");
             }
             password = IOHelper.readString("password: ");
-        }while(password.matches(".*\\s.*") || password.length()<4 || password.length()>16);
+        } while(password.matches(".*\\s.*") || password.length()<4 || password.length()>16);
         //Regex: has blank spaces
         do{
             if (!email.isEmpty()){
@@ -57,6 +57,4 @@ public class UserRegistrationService {
         }
         return user;
     }
-
-
 }

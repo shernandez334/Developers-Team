@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class MenuHelper {
     private static final String[] DIFFICULTY_OPTIONS = {"1.EASY", "2.MEDIUM", "3.HARD", "4.EPIC"};
-    private static final String[] THEME_OPTIONS = {"1. SCI-FI", "2. Medieval", "3. SPACE"};
+    private static final String[] THEME_OPTIONS = {"1. SCI-FI", "2. MEDIEVAL", "3. SPACE"};
     private static final String[] MATERIAL_OPTIONS = {"1. METAL", "2. WOOD", "3. GLASS", "4 PLASTIC"};
 
     public static int readSelection(String heading, String closing, String ... options){

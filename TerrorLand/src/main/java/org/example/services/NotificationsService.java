@@ -81,5 +81,4 @@ public class NotificationsService {
     public void loadNotificationsFromDatabase(Player player){
         player.setNotifications(DatabaseFactory.get().createPlayerDao().retrieveNotifications(player.getId()));
     }
-
 }

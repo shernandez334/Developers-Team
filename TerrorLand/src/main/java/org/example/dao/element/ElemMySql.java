@@ -1,17 +1,14 @@
 package org.example.dao.element;
 
 import org.example.dao.generate.GenerateElementIdMySql;
-import org.example.exceptions.ElementIdException;
 import org.example.util.MenuHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 
 import static org.example.database.MySQL.*;
 import static org.example.util.IOHelper.readInt;
 
-public class ElementMySql implements Element {
+public class ElemMySql implements Elem {
     private final RoomMySql roomDaoMySql = new RoomMySql();
     private final Decoration decoration = new DecorationMySql();
     private final ClueMySql clueDaoMySql = new ClueMySql();

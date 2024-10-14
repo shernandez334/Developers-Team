@@ -2,7 +2,7 @@ package org.example.dao.element;
 
 import java.sql.SQLException;
 
-public interface Element {
+public interface Elem {
     void createAnElement() throws SQLException;
     void deleteAnElement();
 }

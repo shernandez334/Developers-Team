@@ -47,14 +47,12 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `escape_room`.`clue` (
   `element_id` INT NOT NULL,
   `theme` ENUM('SCI-FI', 'MEDIEVAL', 'SPACE'),
-  PRIMARY KEY (`element_id`, `theme_id`),
   UNIQUE INDEX `element_id_UNIQUE` (`element_id` ASC) VISIBLE,
-  INDEX `fk_theme1_idx` (`theme_id` ASC) VISIBLE,
   CONSTRAINT `fk_element1`
     FOREIGN KEY (`element_id`)
     REFERENCES `escape_room`.`element` (`element_id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------

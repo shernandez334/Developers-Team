@@ -1,5 +1,7 @@
 package org.example.dao;
 
+import org.example.dao.element.Elem;
+import org.example.dao.element.ElemMySql;
 import org.example.database.DbInitialSetup;
 import org.example.database.DbInitialSetupMySql;
 
@@ -10,8 +12,8 @@ public class MySqlFactory implements DatabaseFactory {
     }
 
     @Override
-    public ElementDao createElementDao() {
-        return new ElementDaoMySql();
+    public Elem createElementDao() {
+        return new ElemMySql();
     }
 
     @Override

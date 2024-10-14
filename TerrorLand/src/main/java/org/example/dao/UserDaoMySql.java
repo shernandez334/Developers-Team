@@ -42,7 +42,7 @@ public class UserDaoMySql implements UserDao {
                 user = new Player(result.getInt("user_id"), result.getString("name"),
                         password, email);
                 new NotificationsService().loadNotificationsFromDatabase((Player) user);
-            }else {
+            } else {
                 user = new Admin(result.getInt("user_id"), result.getString("name"),
                         password, email);
             }

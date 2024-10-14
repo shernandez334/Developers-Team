@@ -1,7 +1,6 @@
 package org.example.menu;
 
-import org.example.dao.element.DecorationMySql;
-import org.example.dao.element.ElementMySql;
+import org.example.dao.element.ElemMySql;
 import org.example.exceptions.MySqlNotValidCredentialsException;
 import org.example.entities.Admin;
 import org.example.entities.Player;
@@ -19,7 +18,7 @@ public class MainMenu {
 
     private static User user;
     private static boolean quit;
-    private static final ElementMySql elem = new ElementMySql();
+    private static final ElemMySql elem = new ElemMySql();
     private static final Logger log = LoggerFactory.getLogger(MainMenu.class);
 
     static{
