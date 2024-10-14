@@ -85,10 +85,10 @@ public class UserRegistrationService {
     }
 
     private User saveUserInDatabaseAndSetId(User user) throws MySqlException, ExistingEmailException {
-        return factoryProvider.get().createUserDao().saveUser(user);
+        return factoryProvider.getFactory().createUserDao().saveUser(user);
     }
 
     public User getUserFromCredentials(String email, String password){
-        return this.factoryProvider.get().createUserDao().getUser(email, password);
+        return this.factoryProvider.getFactory().createUserDao().getUser(email, password);
     }
 }
