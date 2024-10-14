@@ -16,7 +16,7 @@ public class UserLoginService {
             }
             email = IOHelper.readString("email: ");
         }while(email.matches(".*\\s.*") || !email.matches(".+@.+\\..+"));
-        //Regex: has blank spaces. 2nd Regex: contains somenthing + @ + something + . +something
+        //Regex: has blank spaces. 2nd Regex: contains something + @ + something + . +something
         do{
             if (!password.isEmpty()){
                 System.out.println("Error: input a valid password.");

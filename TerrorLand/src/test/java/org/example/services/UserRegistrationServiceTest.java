@@ -138,8 +138,8 @@ public class UserRegistrationServiceTest {
         String password = "12345";
         String email = "player@mail.com";
 
-        User expectedUser = new Player(name, password, email);
-        Mockito.when(mockUserDao.saveUser(Mockito.any(User.class))).thenReturn(expectedUser);
+        Mockito.when(mockUserDao.saveUser(Mockito.any(User.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
         User result = service.registerUser(name, password, email, UserRole.PLAYER);
 
@@ -156,10 +156,10 @@ public class UserRegistrationServiceTest {
         String password = "pass123";
         String email = "name@mail.com";
 
-        User expectedUser = new Admin(name, password, email);
-        Mockito.when(mockUserDao.saveUser(Mockito.any(User.class))).thenReturn(expectedUser);
+        Mockito.when(mockUserDao.saveUser(Mockito.any(User.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
-        User result = service.registerUser(name, password, email, UserRole.PLAYER);
+        User result = service.registerUser(name, password, email, UserRole.ADMIN);
 
         assertInstanceOf(Admin.class, result);
         assertEquals(result.getName(), name);

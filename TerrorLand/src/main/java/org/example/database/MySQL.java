@@ -1,8 +1,5 @@
 package org.example.database;
 
-import org.example.enums.DefaultProperties;
-
-import java.math.BigDecimal;
 import java.sql.*;
 
 import org.example.mysql.MySqlHelper;
@@ -60,22 +57,6 @@ public class MySQL {
             System.out.println("Error disabling element: " + e.getMessage());
         }
 
-    }
-
-    @Deprecated
-    public static BigDecimal getTotalIncomeOldVersion(){
-        try (Connection connection = MySqlHelper.getConnection(DefaultProperties.DB_NAME.getValue());
-             Statement statement = connection.createStatement()) {
-            String str = "SELECT SUM(price) FROM ticket;";
-            ResultSet result = statement.executeQuery(str);
-            if (result.next()){
-                return result.getBigDecimal(1);
-            }else {
-                return null;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 
