@@ -7,13 +7,13 @@ import java.nio.file.Path;
 
 public class Properties {
 
-    public static String getProperty(String property){
-        Path path = Path.of(DefaultProperties.PROPERTIES_FILE_PATH.getValue());
+    public static String getProperty(ConfigurableProperty property){
+        Path path = Path.of(SystemProperty.PROPERTIES_FILE_PATH.getValue());
 
         try (InputStream input = Files.newInputStream(path)){
             java.util.Properties properties = new java.util.Properties();
             properties.load(input);
-            return properties.getProperty(property);
+            return properties.getProperty(property.getValue());
         } catch (IOException e) {
             System.out.println("Fatal error: couldn't read the properties.properties file.");
             throw new RuntimeException(e);

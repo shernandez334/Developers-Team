@@ -10,7 +10,7 @@ import static org.example.mysql.MySqlHelper.*;
 public class NotificationDaoMySql implements NotificationDao {
 
     @Override
-    public List<Integer> getSubscribers() {
+    public List<Integer> getSubscribersIds() {
         return retrieveSingleColumnFromDatabase("SELECT user_id FROM subscription;", Integer.class);
     }
 

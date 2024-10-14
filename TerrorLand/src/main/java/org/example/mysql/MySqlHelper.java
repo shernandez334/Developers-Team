@@ -1,6 +1,8 @@
 package org.example.mysql;
 
-import org.example.enums.DefaultProperties;
+import org.example.enums.ConfigurableProperty;
+import org.example.enums.ScriptMode;
+import org.example.enums.SystemProperty;
 import org.example.enums.Properties;
 import org.example.exceptions.*;
 
@@ -18,17 +20,12 @@ public class MySqlHelper {
 
     public static Connection getConnection(String dbName) throws SQLException {
         Connection connection;
-        String url = Properties.getProperty("db.url") + dbName;
-        String user = Properties.getProperty("db.user");
-        String password = Properties.getProperty("db.password");
+        String url = Properties.getProperty(ConfigurableProperty.URL) + dbName;
+        String user = Properties.getProperty(ConfigurableProperty.USER);
+        String password = Properties.getProperty(ConfigurableProperty.PASSWORD);
 
-        try {
-            connection = DriverManager.getConnection(url, user, password);
-            return connection;
-        } catch (SQLException e) {
-            System.out.printf("Error connecting to '%s' as '%s'.%n", url, user);
-            throw e;
-        }
+        connection = DriverManager.getConnection(url, user, password);
+        return connection;
     }
 
     public static Connection getConnection() throws SQLException {
@@ -46,7 +43,9 @@ public class MySqlHelper {
 
             Arrays.stream(sql.toString().split(";")).forEach(s -> {
                 try {
-                    System.out.println(s);
+                    if (SystemProperty.SCRIPT_MODE.getValue().equals(ScriptMode.VERBOSE.name())){
+                        System.out.println(s);
+                    }
                     statement.execute(s);
                 } catch (SQLException e) {
                     throw new RuntimeException("Error executing the mySQL statement.", e);
@@ -72,8 +71,8 @@ public class MySqlHelper {
     }
 
     public static void createStatementAndExecute(String sql) throws SQLIntegrityConstraintViolationException {
-        try (Connection connection = getConnection(DefaultProperties.DB_NAME.getValue());
-            Statement statement = connection.createStatement()){
+        try (Connection connection = getConnection(SystemProperty.DB_NAME.getValue());
+             Statement statement = connection.createStatement()){
             statement.execute(sql);
         } catch (SQLIntegrityConstraintViolationException e){
             throw e;
@@ -83,7 +82,7 @@ public class MySqlHelper {
     }
 
     public static int executeInsertStatementAndGetId(String sql) throws SQLIntegrityConstraintViolationException {
-        try (Connection connection = getConnection(DefaultProperties.DB_NAME.getValue());
+        try (Connection connection = getConnection(SystemProperty.DB_NAME.getValue());
              Statement statement = connection.createStatement()) {
             statement.execute(sql);
             ResultSet result = statement.executeQuery("SELECT LAST_INSERT_ID();");
@@ -101,7 +100,7 @@ public class MySqlHelper {
 
         public static QueryResult createStatementAndExecuteQuery(String sql){
         try {
-            Connection connection = getConnection(DefaultProperties.DB_NAME.getValue());
+            Connection connection = getConnection(SystemProperty.DB_NAME.getValue());
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             return new QueryResult(connection, statement, resultSet);

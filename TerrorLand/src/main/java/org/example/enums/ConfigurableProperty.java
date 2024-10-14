@@ -1,6 +1,6 @@
 package org.example.enums;
 
-public enum FileProps {
+public enum ConfigurableProperty {
     PROVIDER ("db.provider"),
     URL ("db.url"),
     USER ("db.user"),
@@ -8,7 +8,7 @@ public enum FileProps {
 
     private final String value;
 
-    FileProps(String value){
+    ConfigurableProperty(String value){
         this.value = value;
     }
 

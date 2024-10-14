@@ -13,12 +13,14 @@ public class NotificationsService {
 
     private final DatabaseFactory databaseFactory;
 
-    public NotificationsService(FactoryProvider factoryProvider){
-        this.databaseFactory = factoryProvider.getFactory();
+    public NotificationsService(DatabaseFactory databaseFactory){
+        this.databaseFactory = databaseFactory;
     }
 
+    //TODO: fix
+    //TODO: test readNotifications()
     public void readNotifications(Player player) {
-        loadNotificationsFromDatabase(player);
+        refreshNotificationsFromDatabase(player);
         if (player.hasNoNotifications()){
             System.out.println("You have no messages.");
             return;
@@ -65,8 +67,8 @@ public class NotificationsService {
     }
 
     public void notifySubscribers(String message) {
-        List<Integer> subscribers = databaseFactory.createNotificationDao().getSubscribers();
-        for (Integer subscriberId : subscribers){
+        List<Integer> subscribersIds = databaseFactory.createNotificationDao().getSubscribersIds();
+        for (Integer subscriberId : subscribersIds){
             notifySubscriber(new Notification(subscriberId, message));
         }
     }
@@ -85,7 +87,7 @@ public class NotificationsService {
         player.setSubscribed(true);
     }
 
-    public void loadNotificationsFromDatabase(Player player){
+    public void refreshNotificationsFromDatabase(Player player){
         player.setNotifications(databaseFactory.createPlayerDao().retrieveNotifications(player.getId()));
     }
 

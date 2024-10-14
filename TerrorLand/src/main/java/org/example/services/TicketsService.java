@@ -12,6 +12,12 @@ import java.util.regex.Pattern;
 
 public class TicketsService {
 
+    private final DatabaseFactory databaseFactory;
+
+    public TicketsService(DatabaseFactory databaseFactory){
+        this.databaseFactory = databaseFactory;
+    }
+
     public void setTicketPrice() {
         BigDecimal previousPrice = getPurchasePrice();
         System.out.printf("Each ticket costs %.2f.%n", previousPrice);
@@ -25,7 +31,7 @@ public class TicketsService {
         BigDecimal newPrice = BigDecimal.valueOf(Double.parseDouble(price));
         if (newPrice.compareTo(previousPrice) < 0){
             String notification = String.format("The price is down to %.2f!! Get your tickets now!!", newPrice);
-            new NotificationsService(FactoryProvider.getInstance()).notifySubscribers(notification);
+            new NotificationsService(databaseFactory).notifySubscribers(notification);
         }
     }
 
@@ -56,6 +62,7 @@ public class TicketsService {
         DatabaseFactory.get().createTicketDao().cashTicket(ticket);
     }
 
+    //TODO: Return 0 when there is no ticket
     public BigDecimal getTotalIncome(){
         return DatabaseFactory.get().createTicketDao().getTotalIncome();
     }
