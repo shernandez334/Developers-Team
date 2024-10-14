@@ -1,5 +1,6 @@
 package org.example.services;
 
+import com.google.common.hash.Hashing;
 import org.example.dao.DatabaseFactory;
 import org.example.dao.FactoryProvider;
 import org.example.dao.MySqlFactory;
@@ -17,6 +18,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 
+
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -75,27 +78,30 @@ public class UserRegistrationServiceTest {
     @ParameterizedTest
     @ValueSource(strings = {"   ","my password", "P A S S"})
     void validatePassword_ContainsBlankSpace_ThrowsException(String input){
-        Exception e = assertThrows(FormatException.class, () -> service.validatePassword(input));
+        Exception e = assertThrows(FormatException.class, () -> service.validatePasswordAndEncrypt(input));
         assertEquals(e.getMessage(), "The password cannot contain blank spaces.");
     }
 
     @Test
     void validatePassword_LengthLessThan4_ThrowsException(){
-        Exception e = assertThrows(FormatException.class, () -> service.validatePassword("pas"));
+        Exception e = assertThrows(FormatException.class, () -> service.validatePasswordAndEncrypt("pas"));
         assertEquals(e.getMessage(), "The password must be at least 4 characters long.");
     }
 
     @Test
     void validatePassword_LengthMoreThan16_ThrowsException(){
-        Exception e = assertThrows(FormatException.class, () -> service.validatePassword("myPasswordIsReallyLong"));
+        Exception e = assertThrows(FormatException.class, () -> service.validatePasswordAndEncrypt("myPasswordIsReallyLong"));
         assertEquals(e.getMessage(), "The password cannot have more than 16 characters.");
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"password","p@$$WoRd"})
-    void validatePassword_Valid_ThenReturnInput(String input) throws FormatException {
-        String response = service.validatePassword(input);
-        assertEquals(input, response);
+    void validatePasswordAndEncrypt_Valid_ThenReturnInput(String password) throws FormatException {
+        String response = service.validatePasswordAndEncrypt(password);
+        String encryptedPassword = Hashing.sha256()
+                .hashString(password, StandardCharsets.UTF_8)
+                .toString();
+        assertEquals(encryptedPassword, response);
     }
 
     @ParameterizedTest

@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS `escape_room`.`user` (
   `user_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
-  `password` VARCHAR(20) NOT NULL,
+  `password` VARCHAR(256) NOT NULL,
   `role` ENUM('player', 'admin') NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE INDEX `user_id_UNIQUE` (`user_id` ASC) VISIBLE,

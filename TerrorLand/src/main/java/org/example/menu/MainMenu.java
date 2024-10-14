@@ -124,7 +124,7 @@ public class MainMenu {
         }
         while (true) {
             try {
-                password = service.validatePassword(IOHelper.readString("Password: "));
+                password = service.validatePasswordAndEncrypt(IOHelper.readString("Password: "));
                 break;
             } catch (FormatException e) {
                 System.out.println(e.getMessage());
@@ -172,7 +172,7 @@ public class MainMenu {
         }
         while (true) {
             try {
-                password = service.validatePassword(IOHelper.readString("Password: "));
+                password = service.validatePasswordAndEncrypt(IOHelper.readString("Password: "));
                 break;
             } catch (FormatException e) {
                 System.out.println("Password not valid, try again.");
