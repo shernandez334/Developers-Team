@@ -1,5 +1,6 @@
 package org.example.services;
 
+import com.google.common.hash.Hashing;
 import org.example.dao.FactoryProvider;
 import org.example.enums.UserRole;
 import org.example.entities.Admin;
@@ -8,6 +9,9 @@ import org.example.entities.User;
 import org.example.exceptions.ExistingEmailException;
 import org.example.exceptions.FormatException;
 import org.example.exceptions.MySqlException;
+
+import java.nio.charset.StandardCharsets;
+
 
 public class UserRegistrationService {
 
@@ -34,7 +38,14 @@ public class UserRegistrationService {
         return userName;
     }
 
-    public String validatePassword(String password) throws FormatException {
+    public String validatePasswordAndEncrypt(String password) throws FormatException {
+        password = validatePassword(password);
+        return Hashing.sha256()
+                .hashString(password, StandardCharsets.UTF_8)
+                .toString();
+    }
+
+    private String validatePassword(String password) throws FormatException {
         if (password.matches(".*\\s.*")) {
             throw new FormatException("The password cannot contain blank spaces.");
         }
@@ -75,5 +86,9 @@ public class UserRegistrationService {
 
     private User saveUserInDatabaseAndSetId(User user) throws MySqlException, ExistingEmailException {
         return factoryProvider.get().createUserDao().saveUser(user);
+    }
+
+    public User getUserFromCredentials(String email, String password){
+        return this.factoryProvider.get().createUserDao().getUser(email, password);
     }
 }

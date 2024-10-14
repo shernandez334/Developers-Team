@@ -16,7 +16,7 @@ public interface DatabaseFactory {
 
     /**
      * @deprecated
-     * User FactoryProvider.get() instead.
+     * Use new FactoryProvider().get() instead.
      */
     @Deprecated
     public static DatabaseFactory get(){

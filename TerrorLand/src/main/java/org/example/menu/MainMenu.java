@@ -56,7 +56,7 @@ public class MainMenu {
                 "1. Login", "2. Register", "3. Quit");
         switch (option){
             case 1 -> {
-                user = new UserLoginService().run();
+                user = userLoginDialog();
                 System.out.println(user == null ? "Wrong credentials." : "You successfully logged as " + user.getName());
             }
             case 2 -> userRegistrationDialog();
@@ -124,7 +124,7 @@ public class MainMenu {
         }
         while (true) {
             try {
-                password = service.validatePassword(IOHelper.readString("Password: "));
+                password = service.validatePasswordAndEncrypt(IOHelper.readString("Password: "));
                 break;
             } catch (FormatException e) {
                 System.out.println(e.getMessage());
@@ -155,6 +155,30 @@ public class MainMenu {
             log.error(e.getMessage(), e);
             quit = true;
         }
+    }
+
+    private User userLoginDialog() {
+        UserRegistrationService service = new UserRegistrationService(new FactoryProvider());
+        String password;
+        String email;
+
+        while (true) {
+            try {
+                email = service.validateEmail(IOHelper.readString("Email: "));
+                break;
+            } catch (FormatException e) {
+                System.out.println("Input a valid email.");
+            }
+        }
+        while (true) {
+            try {
+                password = service.validatePasswordAndEncrypt(IOHelper.readString("Password: "));
+                break;
+            } catch (FormatException e) {
+                System.out.println("Password not valid, try again.");
+            }
+        }
+        return service.getUserFromCredentials(email, password);
     }
 
 
