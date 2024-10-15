@@ -35,7 +35,7 @@ public class UserDaoMySql implements UserDao {
             throw new MySqlException("Database error: problem saving the user data.");
         }
         if (user instanceof Player) {
-            new NotificationsService(FactoryProvider.getInstance().getDbFactory()).addSubscriber((Player) user);
+            new NotificationsService().subscribe((Player) user);
         }
         return user;
     }
@@ -52,8 +52,7 @@ public class UserDaoMySql implements UserDao {
             } else if (result.getString("role").equalsIgnoreCase("player")){
                 user = new Player(result.getInt("user_id"), result.getString("name"),
                         password, email);
-                new NotificationsService(FactoryProvider.getInstance().getDbFactory())
-                        .refreshNotificationsFromDatabase((Player) user);
+                new NotificationsService().loadNotificationsFromDatabase((Player) user);
             }else {
                 user = new Admin(result.getInt("user_id"), result.getString("name"),
                         password, email);

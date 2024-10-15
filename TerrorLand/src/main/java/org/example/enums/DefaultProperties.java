@@ -1,6 +1,6 @@
 package org.example.enums;
 
-public enum SystemProperty {
+public enum DefaultProperties {
 
     PROPERTIES_FILE_PATH("properties.properties"),
     DEFAULT_PROVIDER("MySQL"),
@@ -8,12 +8,11 @@ public enum SystemProperty {
     DEFAULT_DB_USER("root"),
     DEFAULT_DB_PASSWORD("1234"),
     SQL_SCHEMA_CREATION_FILE("diagrams\\mySQL\\escape_room.sql"),
-    DB_NAME("escape_room"),
-    SCRIPT_MODE(ScriptMode.SILENT.name());
+    DB_NAME("escape_room");
 
     private final String value;
 
-    SystemProperty(String s) {
+    DefaultProperties(String s) {
             this.value = s;
         }
 

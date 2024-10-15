@@ -1,11 +1,12 @@
 package org.example.menu;
 
-import org.example.dao.DatabaseFactory;
 import org.example.dao.ElementDaoMySql;
+import org.example.dao.FactoryProvider;
 import org.example.enums.UserRole;
 import org.example.exceptions.ExistingEmailException;
 import org.example.exceptions.FormatException;
 import org.example.exceptions.MySqlException;
+import org.example.exceptions.MySqlNotValidCredentialsException;
 import org.example.entities.Admin;
 import org.example.entities.Player;
 import org.example.entities.User;
@@ -15,13 +16,14 @@ import org.example.util.MenuHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLException;
+
 
 public class MainMenu {
     private final ElementDaoMySql elementDaoMySql = new ElementDaoMySql();
 
     private static User user;
     private static boolean quit;
-    private final DatabaseFactory databaseFactory;
     private static final Logger log = LoggerFactory.getLogger(MainMenu.class);
 
     static{
@@ -29,24 +31,25 @@ public class MainMenu {
         quit = false;
     }
 
-    public MainMenu(DatabaseFactory databaseFactory){
-        this.databaseFactory = databaseFactory;
-    }
-
     public void run() {
+        try {
+            new InitializeResourcesService().run();
+        } catch (MySqlNotValidCredentialsException | SQLException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
         do{
-            if (user instanceof Player){
-                playerMenu();
-            }else if (user instanceof Admin){
-                adminMenu();
-            }else {
+            if (user == null){
                 loginOrRegisterMenu();
+            } else if (user instanceof Player){
+                playerMenu();
+            }else {
+                adminMenu();
             }
         }while (!quit);
         System.out.println("bye");
     }
 
-    //TODO? userLoginDialog() should throw an exception instead of null return when unsuccessful login
     private void loginOrRegisterMenu() {
         User user = null;
         int option = MenuHelper.readSelection("Welcome to the login menu! Select an option.", ">",
@@ -62,7 +65,8 @@ public class MainMenu {
         MainMenu.user = user;
     }
 
-    //TODO: Access to elementDaoMySql has to be done through this.databaseFactory.getElementDao()
+
+
     private void adminMenu() {
         Admin admin = (Admin) user;
         int option = MenuHelper.readSelection("Welcome Administrator! Select an option.", ">",
@@ -71,11 +75,9 @@ public class MainMenu {
         switch (option) {
             case 1 -> elementDaoMySql.createAnElement();
             case 2 -> elementDaoMySql.deleteAnElement();
-            case 3 -> new TicketsService(databaseFactory).setTicketPrice();
-            case 4 -> System.out.printf("The total income is %.2f€.%n",
-                    new TicketsService(databaseFactory).getTotalIncome());
-            case 5 -> new NotificationsService(databaseFactory)
-                    .notifySubscribers(IOHelper.readString("Insert the message: "));
+            case 3 -> new TicketsService().setTicketPrice();
+            case 4 -> System.out.printf("The total income is %.2f€.%n", new TicketsService().getTotalIncome());
+            case 5 -> new NotificationsService().notifySubscribers(IOHelper.readString("Insert the message: "));
             case 6 -> MainMenu.user = null;
         }
     }
@@ -84,22 +86,29 @@ public class MainMenu {
         Player player = (Player) user;
         System.out.printf("Welcome %s! You've got %d tickets.%n", player.getName(), player.getTicketsSize());
         int option = MenuHelper.readSelection("Select an option.", ">",
-                "1. Play Room",
-                "2. Buy a Ticket",
+                "1. Play Room", "2. Buy a Ticket",
                 "3. Read notifications " + player.getNotificationWarning(),
                 "4. " + (player.isSubscribed() ? "Stop receiving notifications" : "Receive notifications"),
                 "5. Logout");
         switch (option) {
             case 1 -> new RoomPlayService().play(player);
-            case 2 -> new TicketsService(databaseFactory).buyTickets(player);
-            case 3 -> new NotificationsService(databaseFactory).readNotifications(player);
-            case 4 -> toggleSubscriptionStatus(player);
+            case 2 -> new TicketsService().buyTickets(player);
+            case 3 -> new NotificationsService().readNotifications(player);
+            case 4 -> {
+                if (player.isSubscribed()) {
+                    new NotificationsService().unsubscribe(player);
+                    System.out.println("You are no longer subscribed to the notifications.");
+                }else {
+                    new NotificationsService().subscribe(player);
+                    System.out.println("You have subscribed successfully.");
+                }
+            }
             case 5 -> MainMenu.user = null;
         }
     }
 
     private void userRegistrationDialog() {
-        UserRegistrationAndLoginService service = new UserRegistrationAndLoginService(databaseFactory);
+        UserRegistrationService service = new UserRegistrationService(FactoryProvider.getInstance());
         String userName;
         String password;
         String email;
@@ -149,7 +158,7 @@ public class MainMenu {
     }
 
     private User userLoginDialog() {
-        UserRegistrationAndLoginService service = new UserRegistrationAndLoginService(databaseFactory);
+        UserRegistrationService service = new UserRegistrationService(FactoryProvider.getInstance());
         String password;
         String email;
 
@@ -170,16 +179,6 @@ public class MainMenu {
             }
         }
         return service.getUserFromCredentials(email, password);
-    }
-
-    private void toggleSubscriptionStatus(Player player) {
-        if (player.isSubscribed()) {
-            new NotificationsService(databaseFactory).removeSubscriber(player);
-            System.out.println("You are no longer subscribed to the notifications.");
-        }else {
-            new NotificationsService(databaseFactory).addSubscriber(player);
-            System.out.println("You have subscribed successfully.");
-        }
     }
 
 

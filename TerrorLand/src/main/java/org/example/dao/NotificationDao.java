@@ -5,9 +5,9 @@ import org.example.entities.Notification;
 import java.util.List;
 
 public interface NotificationDao {
-    List<Integer> getSubscribersIds();
+    List<Integer> getSubscribers();
 
-    void saveNotification(Notification notification);
+    void storeNotification(Notification notification);
 
     void deleteNotification(Notification notification);
 }

@@ -1,7 +1,7 @@
 package org.example.services;
 
 import com.google.common.hash.Hashing;
-import org.example.dao.DatabaseFactory;
+import org.example.dao.FactoryProvider;
 import org.example.enums.UserRole;
 import org.example.entities.Admin;
 import org.example.entities.Player;
@@ -13,12 +13,12 @@ import org.example.exceptions.MySqlException;
 import java.nio.charset.StandardCharsets;
 
 
-public class UserRegistrationAndLoginService {
+public class UserRegistrationService {
 
-    private final DatabaseFactory databaseFactory;
+    private final FactoryProvider factoryProvider;
 
-    public UserRegistrationAndLoginService(DatabaseFactory databaseFactory){
-        this.databaseFactory = databaseFactory;
+    public UserRegistrationService(FactoryProvider factoryProvider){
+        this.factoryProvider = factoryProvider;
     }
 
 
@@ -85,10 +85,10 @@ public class UserRegistrationAndLoginService {
     }
 
     private User saveUserInDatabaseAndSetId(User user) throws MySqlException, ExistingEmailException {
-        return databaseFactory.createUserDao().saveUser(user);
+        return factoryProvider.getFactory().createUserDao().saveUser(user);
     }
 
     public User getUserFromCredentials(String email, String password){
-        return databaseFactory.createUserDao().getUser(email, password);
+        return this.factoryProvider.getFactory().createUserDao().getUser(email, password);
     }
 }

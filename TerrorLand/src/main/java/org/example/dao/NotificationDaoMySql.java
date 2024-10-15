@@ -10,12 +10,12 @@ import static org.example.mysql.MySqlHelper.*;
 public class NotificationDaoMySql implements NotificationDao {
 
     @Override
-    public List<Integer> getSubscribersIds() {
+    public List<Integer> getSubscribers() {
         return retrieveSingleColumnFromDatabase("SELECT user_id FROM subscription;", Integer.class);
     }
 
     @Override
-    public void saveNotification(Notification notification){
+    public void storeNotification(Notification notification){
         String message = notification.getMessage().replaceAll("'", "''");
         String sql = String.format("INSERT INTO notification (user_id, message) VALUES (%d, '%s');",
                 notification.getUserId(), message);
