@@ -2,7 +2,6 @@ package org.example.services;
 
 import com.google.common.hash.Hashing;
 import org.example.dao.DatabaseFactory;
-import org.example.dao.FactoryProvider;
 import org.example.dao.MySqlFactory;
 import org.example.dao.UserDao;
 import org.example.entities.Admin;
@@ -26,19 +25,17 @@ import static org.mockito.Mockito.mock;
 
 public class UserRegistrationServiceTest {
 
-    private UserRegistrationService service;
+    private UserRegistrationAndLoginService service;
     private UserDao mockUserDao;
 
     @BeforeEach
     void setUp(){
         mockUserDao = mock(UserDao.class);
-        FactoryProvider mockFactoryProvider = mock(FactoryProvider.class);
         DatabaseFactory mockDatabaseFactory = mock(MySqlFactory.class);
 
-        Mockito.when(mockFactoryProvider.getFactory()).thenReturn(mockDatabaseFactory);
         Mockito.when(mockDatabaseFactory.createUserDao()).thenReturn(mockUserDao);
 
-        service = new UserRegistrationService(mockFactoryProvider);
+        service = new UserRegistrationAndLoginService(mockDatabaseFactory);
     }
 
 
