@@ -5,9 +5,11 @@ import org.example.entities.Room;
 import org.example.enums.Difficulty;
 import org.example.util.MenuHelper;
 
+import java.sql.SQLException;
+
 public class ElementCreator {
 
-    public void createElements(){
+    public void createElements() {
         Element elem = Element.createAnElement();
         int op = MenuHelper.readSelection("What element would you like to create?", ">",
                 "1. Room", "2. Decoration", "3. Clue");
@@ -21,6 +23,7 @@ public class ElementCreator {
     public void createElementRoom(Element elem){
         Difficulty difficulty = MenuHelper.readDifficultySelection("Choose a level of difficulty:");
         Room room = new Room(elem.getElement_id(), difficulty);
+        Room.inputRoomIntoTable(room);
     }
 }
 

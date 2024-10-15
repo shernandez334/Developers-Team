@@ -43,25 +43,42 @@ public class Element {
         return this.type;
     }
 
-    public static int getCurrentElementId(){
-        int nextId = 0;
-        String sql = "SELECT COALESCE(MAX(id_column), 0) + 1 AS next_id FROM element";
-        try (Connection conn = getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
-            nextId = rs.getInt("next_id");
-        } catch (SQLException e) {
-           log.error("Couldn't get the next element id number: {}", e.getMessage());
-        }
-        return nextId;
-    }
 
     public static Element createAnElement(){
         int element_id = getCurrentElementId();
         String name = readString("Name of the element:\n>");
         double price = readDouble("Price of the element:\n");
         Type type = MenuHelper.readTypeSelection("Choose the element type");
+        inputElementIntoTable(name, price, type);
         return new Element(element_id, name, price, type);
+    }
+
+    public static int getCurrentElementId() {
+        int nextId = 0;
+        String sql = "SELECT COALESCE(MAX(id_column), 0) AS next_id FROM element";
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            nextId = rs.getInt("next_id");
+        } catch (SQLException e) {
+            log.error("Couldn't get the next element id number: {}", e.getMessage());
+        }
+        return nextId;
+    }
+
+    public static void inputElementIntoTable(String name, double price, Type type){
+        String elementSqlQuery = "INSERT INTO element (name, price, type) VALUES (?, ?, ?)";
+        log.info("Generated SQL query for element table: {}", elementSqlQuery);
+
+        try (Connection conn = getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(elementSqlQuery)){
+            pstmt.setString(1, name);
+            pstmt.setDouble(2, price);
+            pstmt.setString(3, type.toString());
+            pstmt.executeUpdate();
+        } catch (SQLException e){
+            log.error("Error inputting values into the element table: {}", e.getMessage());
+        }
     }
 
     public int generateElement(Type type) {
@@ -69,7 +86,7 @@ public class Element {
         try {
             Connection conn = getConnectionFormatted();
             String elementSQLQuery = generateElementQuery(type);
-            log.info("Generated SQL query for element table: {}", elementSQLQuery);
+            //log.info("Generated SQL query for element table: {}", elementSQLQuery);
             PreparedStatement pstmt = conn.prepareStatement(elementSQLQuery, Statement.RETURN_GENERATED_KEYS);
             pstmt.executeUpdate();
             ResultSet setId = set.checkForGeneratedKey(pstmt.getGeneratedKeys());
