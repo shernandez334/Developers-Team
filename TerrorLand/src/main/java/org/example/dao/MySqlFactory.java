@@ -1,19 +1,13 @@
 package org.example.dao;
 
-import org.example.dao.element.Elem;
-import org.example.dao.element.ElemMySql;
 import org.example.database.DbInitialSetup;
 import org.example.database.DbInitialSetupMySql;
+import org.example.entities.Element;
 
 public class MySqlFactory implements DatabaseFactory {
     @Override
     public UserDao createUserDao() {
         return new UserDaoMySql();
-    }
-
-    @Override
-    public Elem createElementDao() {
-        return new ElemMySql();
     }
 
     @Override

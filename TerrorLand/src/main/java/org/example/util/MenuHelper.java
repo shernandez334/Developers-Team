@@ -11,7 +11,7 @@ public class MenuHelper {
     private static final String [] TYPE_OPTIONS = {"1. ROOM", "2. DECOR_ITEM", "3. CLUE"};
     private static final String[] DIFFICULTY_OPTIONS = {"1.EASY", "2.MEDIUM", "3.HARD", "4.EPIC"};
     private static final String[] THEME_OPTIONS = {"1. SCI-FI", "2. MEDIEVAL", "3. SPACE"};
-    private static final String[] MATERIAL_OPTIONS = {"1. METAL", "2. WOOD", "3. GLASS", "4 PLASTIC"};
+    private static final String[] MATERIAL_OPTIONS = {"1. PLASTIC", "2. PAPER", "3. STONE", "4. GLASS", "5. METAL"};
 
     public static int readSelection(String heading, String closing, String ... options){
         int selection;
@@ -42,5 +42,4 @@ public class MenuHelper {
         int op = readSelection(message, ">", MATERIAL_OPTIONS);
         return Material.values()[op - 1];
     }
-
 }

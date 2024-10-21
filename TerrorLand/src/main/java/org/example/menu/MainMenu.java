@@ -1,7 +1,6 @@
 package org.example.menu;
 
-import org.example.dao.element.ElemMySql;
-import org.example.elements.ElementCreator;
+import org.example.entities.ElementCreator;
 import org.example.exceptions.MySqlNotValidCredentialsException;
 import org.example.entities.Admin;
 import org.example.entities.Player;
@@ -68,10 +67,10 @@ public class MainMenu {
     private void adminMenu() throws SQLException{
         Admin admin = (Admin) user;
         int option = MenuHelper.readSelection("Welcome Administrator! Select an option.", ">",
-                "1. Create Element", "2. Delete Element", "3. Set ticket price", "4. Get total income",
+                "1. Create Room", "2. Delete Room", "3. Set ticket price", "4. Get total income",
                 "5. Send Notification" ,"6. Logout");
         switch (option) {
-            case 1 -> creator.createElements();
+            case 1 -> creator.createRoomHasElements();
             //case 2 -> elementDaoMySql.deleteAnElement();
             case 3 -> new TicketsService().setTicketPrice();
             case 4 -> System.out.printf("The total income is %.2f€.%n", new TicketsService().getTotalIncome());

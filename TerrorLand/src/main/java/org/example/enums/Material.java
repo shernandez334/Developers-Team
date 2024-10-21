@@ -1,5 +1,5 @@
 package org.example.enums;
 
 public enum Material {
-    METAL, WOOD, GLASS, PLASTIC
+    PLASTIC, PAPER, STONE, GLASS, METAL
 }
