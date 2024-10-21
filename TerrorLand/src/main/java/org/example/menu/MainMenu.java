@@ -1,11 +1,12 @@
 package org.example.menu;
 
 import org.example.dao.DatabaseFactory;
-import org.example.dao.ElementDaoMySql;
 import org.example.enums.UserRole;
 import org.example.exceptions.ExistingEmailException;
 import org.example.exceptions.FormatException;
 import org.example.exceptions.MySqlException;
+import org.example.entities.ElementCreator;
+import org.example.exceptions.MySqlNotValidCredentialsException;
 import org.example.entities.Admin;
 import org.example.entities.Player;
 import org.example.entities.User;
@@ -15,14 +16,16 @@ import org.example.util.MenuHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLException;
+
 
 public class MainMenu {
-    private final ElementDaoMySql elementDaoMySql = new ElementDaoMySql();
 
     private static User user;
     private static boolean quit;
     private final DatabaseFactory databaseFactory;
     private static final Logger log = LoggerFactory.getLogger(MainMenu.class);
+    private static final ElementCreator creator = new ElementCreator();
 
     static{
         user = null;
@@ -62,15 +65,14 @@ public class MainMenu {
         MainMenu.user = user;
     }
 
-    //TODO: Access to elementDaoMySql has to be done through this.databaseFactory.getElementDao()
     private void adminMenu() {
         Admin admin = (Admin) user;
         int option = MenuHelper.readSelection("Welcome Administrator! Select an option.", ">",
-                "1. Create Element", "2. Delete Element", "3. Set ticket price", "4. Get total income",
+                "1. Create Room", "2. Delete Room", "3. Set ticket price", "4. Get total income",
                 "5. Send Notification" ,"6. Logout");
         switch (option) {
-            case 1 -> elementDaoMySql.createAnElement();
-            case 2 -> elementDaoMySql.deleteAnElement();
+            case 1 -> creator.createRoomHasElements();
+            //case 2 -> elementDaoMySql.deleteAnElement();
             case 3 -> new TicketsService(databaseFactory).setTicketPrice();
             case 4 -> System.out.printf("The total income is %.2f€.%n",
                     new TicketsService(databaseFactory).getTotalIncome());
@@ -181,6 +183,4 @@ public class MainMenu {
             System.out.println("You have subscribed successfully.");
         }
     }
-
-
 }

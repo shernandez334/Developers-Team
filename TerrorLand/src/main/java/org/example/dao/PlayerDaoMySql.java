@@ -38,7 +38,7 @@ public class PlayerDaoMySql implements PlayerDao {
         try{
             retrieveSingleValueFromDatabase(sql, Integer.class);
             return true;
-        }catch (MySqlEmptyResultSetException e){
+        } catch (MySqlEmptyResultSetException e){
             return false;
         }
     }

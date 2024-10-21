@@ -20,7 +20,7 @@ USE `escape_room` ;
 CREATE TABLE IF NOT EXISTS `escape_room`.`room` (
   `room_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
-  `difficulty` ENUM('easy', 'medium', 'hard') NOT NULL,
+  `difficulty` ENUM('EASY', 'MEDIUM', 'HARD') NOT NULL,
   PRIMARY KEY (`room_id`),
   UNIQUE INDEX `room_id_UNIQUE` (`room_id` ASC) VISIBLE)
 ENGINE = InnoDB;
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `escape_room`.`element` (
   `element_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `price` DECIMAL(10,2) UNSIGNED NULL,
-  `type` ENUM('room', 'clue', 'decoration') NOT NULL,
+  `type` ENUM('ROOM', 'CLUE', 'DECORATION') NOT NULL,
   `deleted` TINYINT NULL DEFAULT 0,
   PRIMARY KEY (`element_id`),
   UNIQUE INDEX `element_id_UNIQUE` (`element_id` ASC) VISIBLE,
@@ -46,7 +46,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `escape_room`.`clue` (
   `element_id` INT NOT NULL,
-  `theme` ENUM('scifi', 'horror', 'fantasy') NOT NULL,
+  `theme` ENUM('SCI_FI', 'MEDIEVAL', 'SPACE') NOT NULL,
   PRIMARY KEY (`element_id`),
   UNIQUE INDEX `element_id_UNIQUE` (`element_id` ASC) VISIBLE,
   CONSTRAINT `fk_element1`
@@ -62,8 +62,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `escape_room`.`decor_item` (
   `element_id` INT NOT NULL,
-  `material` ENUM('plastic', 'paper', 'stone', 'glass', 'metal') NOT NULL,
-  PRIMARY KEY (`element_id`),
+  `material` ENUM('PLASTIC', 'PAPER', 'STONE', 'GLASS', 'METAL') NOT NULL,
   INDEX `fk_element2_idx` (`element_id` ASC) VISIBLE,
   UNIQUE INDEX `element_id_UNIQUE` (`element_id` ASC) VISIBLE,
   CONSTRAINT `fk_element2`

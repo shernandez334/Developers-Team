@@ -1,7 +1,6 @@
 package org.example.database;
-
+import java.math.BigDecimal;
 import java.sql.*;
-
 import org.example.mysql.MySqlHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,20 @@ public class MySQL {
 
     private static final Logger log = LoggerFactory.getLogger(MySQL.class);
 
-    public static void inputDataInfo(String elementTypeQuery) {
+    public static Connection getConnectionFormatted() throws SQLException {
+        String url = "jdbc:mysql://localhost:3306/your_database_name"; // Specify your database name
+        String user = "root";
+        String password = "password"; // Consider externalizing this
+
+        Connection conn = DriverManager.getConnection(url, user, password);
+        if (!conn.isValid(2)) { // Check if the connection is valid with a timeout of 2 seconds
+            throw new SQLException("Failed to establish a valid connection.");
+        }
+        return conn;
+    }
+
+    public static void inputValuesIntoSQLTable(String elementTypeQuery) throws SQLException{
+        Connection conn = getConnectionFormatted();
         try (Connection connection = MySqlHelper.getConnection("escape_room");
              Statement stmt = connection.createStatement()) {
             log.info("Executing SQL: {}", elementTypeQuery);
@@ -56,7 +68,6 @@ public class MySQL {
         } catch (SQLException e) {
             System.out.println("Error disabling element: " + e.getMessage());
         }
-
     }
 
 

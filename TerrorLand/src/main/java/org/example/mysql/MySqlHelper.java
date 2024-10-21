@@ -33,7 +33,7 @@ public class MySqlHelper {
     }
 
     public static void executeSqlFile(String filePath) throws ExecuteScriptIOException {
-        Path path = Path.of(filePath);
+        Path path = Path.of("diagrams/mySQL/escape_room.sql").toAbsolutePath();
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement();
              BufferedReader input = Files.newBufferedReader(path.toRealPath())
