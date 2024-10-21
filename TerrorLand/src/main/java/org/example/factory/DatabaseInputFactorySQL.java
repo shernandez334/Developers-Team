@@ -16,16 +16,16 @@ import static org.example.mysql.MySqlHelper.getConnection;
 public class DatabaseInputFactorySQL implements DatabaseInputFactory{
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseInputFactorySQL.class);
 
-    public void inputElementIntoTable(Element elem) {
+    public void inputElementIntoTable(String name, double price, Type type) {
         String elementSqlQuery = "INSERT INTO element (name, price, type, deleted) VALUES (?, ?, ?, ?)";
-        LOGGER.info("Generated SQL query for element table: {}", elementSqlQuery);
         try (Connection conn = getConnection("escape_room");
              PreparedStatement pstmt = conn.prepareStatement(elementSqlQuery)) {
-            pstmt.setString(1, elem.getName());
-            pstmt.setDouble(2, elem.getPrice());
-            pstmt.setString(3, String.valueOf(elem.getType()));
-            pstmt.setInt(4, elem.getDeleted());
+            pstmt.setString(1, name);
+            pstmt.setDouble(2, price);
+            pstmt.setString(3, String.valueOf(type));
+            pstmt.setInt(4, 1);
             pstmt.executeUpdate();
+            LOGGER.info("Generated SQL query for element table: {}", elementSqlQuery);
         } catch (SQLException e) {
             LOGGER.error("Error inputting values into the element table: {}", e.getMessage());
         }
@@ -49,7 +49,6 @@ public class DatabaseInputFactorySQL implements DatabaseInputFactory{
     @Override
     public void inputClueIntoTable(int element_id, Theme theme){
         String elementSqlQuery = "INSERT INTO clue (element_id, theme) VALUES (?, ?)";
-        LOGGER.info("Generated SQL query for the clue table: {}", elementSqlQuery);
 
         try (Connection conn = getConnection("escape_room");
              PreparedStatement pstmt = conn.prepareStatement(elementSqlQuery)){

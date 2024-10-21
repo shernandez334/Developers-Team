@@ -9,12 +9,10 @@ import org.example.enums.Type;
 import org.example.util.MenuHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import static org.example.mysql.MySqlHelper.getConnection;
 import static org.example.util.IOHelper.readDouble;
 import static org.example.util.IOHelper.readString;
@@ -25,16 +23,17 @@ public class ElementFactoryCreator implements ElementFactory{
 
     @Override
     public Element createAnElement(Type type){
-        int element_id = getCurrentElementId();
         String name = readString(String.format("Name of the %s:\n>", type));
         double price = readDouble(String.format("Price of the %s:\n>", type));
+        DATABASEINPUT.inputElementIntoTable(name, price, type);
+        int element_id = getCurrentElementId();
+        LOGGER.info("{}", element_id);
         return new Element(element_id, name, price, type, 1);
     }
 
     @Override
     public Decoration createDecoration(){
         Element elem = createAnElement(Type.DECORATION);
-        DATABASEINPUT.inputElementIntoTable(elem);
         Material material = MenuHelper.readMaterialSelection("Material the decoration is made of: ");
         return new Decoration(elem.getElementId(), material);
     }
@@ -42,7 +41,6 @@ public class ElementFactoryCreator implements ElementFactory{
     @Override
     public Clue createClue(){
         Element elem = createAnElement(Type.CLUE);
-        DATABASEINPUT.inputElementIntoTable(elem);
         Theme theme = MenuHelper.readThemeSelection("Theme of the clue: ");
         return new Clue(elem.getElementId(), theme);
     }
@@ -50,12 +48,12 @@ public class ElementFactoryCreator implements ElementFactory{
     @Override
     public int getCurrentElementId() {
         int currentElementId = 0;
-        String sql = "SELECT COALESCE(MAX(element_id), 1) AS next_id FROM element";
+        String sql = "SELECT element_id FROM element ORDER BY element_id DESC LIMIT 1";
         try (Connection conn = getConnection("escape_room");
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
             rs.next();
-            currentElementId = rs.getInt("next_id");
+            currentElementId = rs.getInt("element_id");
         } catch (SQLException e) {
             LOGGER.error("Couldn't get the next element_id number: {}", e.getMessage());
         }
