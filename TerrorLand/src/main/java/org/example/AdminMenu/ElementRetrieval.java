@@ -10,21 +10,21 @@ import java.sql.SQLException;
 
 import static org.example.mysql.MySqlHelper.getConnection;
 
-public class ElementEraser {
-    private static final DisplayElement DISPLAY = new DisplayElement();
+public class ElementRetrieval {
     private static final Logger LOGGER = LoggerFactory.getLogger(ElementEraser.class);
+    private static final DisplayElement DISPLAY = new DisplayElement();
 
-    public void eraseRoom(){
-        DISPLAY.displayUndeletedRooms();
-        int roomDeleted = IOHelper.readInt("Enter the room Id you want to delete:\n");
-        updateRoomDeletedStatus(roomDeleted);
+    public void retrieveDeletedRooms(){
+        DISPLAY.displayDeletedRooms();
+        int roomUndeleted = IOHelper.readInt("Enter the room Id you want to retrieve:\n");
+        updateRoomDeletedStatus(roomUndeleted);
     }
 
     public void updateRoomDeletedStatus(int roomId) {
         String updateQuery = "UPDATE room SET deleted = ? WHERE room_id = ?";
         try (Connection conn = getConnection("escape_room");
              PreparedStatement psmt = conn.prepareStatement(updateQuery)) {
-            psmt.setInt(1, 1);
+            psmt.setInt(1, 0);
             psmt.setInt(2, roomId);
             int rowsAffected = psmt.executeUpdate();
             if (rowsAffected > 0) {

@@ -2,6 +2,7 @@ package org.example.menu;
 
 import org.example.AdminMenu.DisplayElement;
 import org.example.AdminMenu.ElementEraser;
+import org.example.AdminMenu.ElementRetrieval;
 import org.example.dao.DatabaseFactory;
 import org.example.enums.UserRole;
 import org.example.exceptions.ExistingEmailException;
@@ -27,6 +28,7 @@ public class MainMenu {
     private static final DisplayElement DISPLAY = new DisplayElement();
     private static final ElementCreator CREATOR = new ElementCreator();
     private static final ElementEraser ERASER = new ElementEraser();
+    private static final ElementRetrieval RETRIEVAL = new ElementRetrieval();
 
     static{
         user = null;
@@ -69,18 +71,19 @@ public class MainMenu {
     private void adminMenu() {
         Admin admin = (Admin) user;
         int option = MenuHelper.readSelection("Welcome Administrator! Select an option.", ">",
-                  "1. Display Rooms", "2. Create Room", "3. Delete Room", "4. Set ticket price", "5. Get total income",
-                "6. Send Notification" ,"7. Logout");
+                  "1. Display Rooms", "2. Create Room", "3. Delete Room", "4. Retrieve Room", "5. Set ticket price", "6. Get total income",
+                "7. Send Notification" ,"8. Logout");
         switch (option) {
-            case 1 -> DISPLAY.displayAllRooms();
+            case 1 -> DISPLAY.displayUndeletedRooms();
             case 2 -> CREATOR.createRoomHasElements();
             case 3 -> ERASER.eraseRoom();
-            case 4 -> new TicketsService(databaseFactory).setTicketPrice();
-            case 5 -> System.out.printf("The total income is %.2f€.%n",
+            case 4 -> RETRIEVAL.retrieveDeletedRooms();
+            case 5 -> new TicketsService(databaseFactory).setTicketPrice();
+            case 6 -> System.out.printf("The total income is %.2f€.%n",
                     new TicketsService(databaseFactory).getTotalIncome());
-            case 6 -> new NotificationsService(databaseFactory)
+            case 7 -> new NotificationsService(databaseFactory)
                     .notifySubscribers(IOHelper.readString("Insert the message: "));
-            case 7 -> MainMenu.user = null;
+            case 8 -> MainMenu.user = null;
         }
     }
 
