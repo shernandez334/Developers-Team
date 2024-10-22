@@ -15,23 +15,24 @@ import static org.example.mysql.MySqlHelper.getConnection;
 
 public class RoomFactoryCreator implements RoomFactory{
     private static final Logger LOGGER = LoggerFactory.getLogger(RoomFactoryCreator.class);
+    private static final DatabaseInputFactorySQL DATABASEINPUT = new DatabaseInputFactorySQL();
 
     public Room createElementRoom(){
-        int room_id = getCurrentRoomId();
-
-        String nameRoom = IOHelper.readString("Name of the room: ");
+        String name = IOHelper.readString("Name of the room: ");
         Difficulty difficulty = MenuHelper.readDifficultySelection("Choose a level of difficulty: ");
-        return new Room(room_id, nameRoom, difficulty);
+        DATABASEINPUT.inputRoomIntoTable(name, difficulty, 0);
+        int room_id = getCurrentRoomId();
+        return new Room(room_id, name, difficulty, 0);
     }
 
-    public int getCurrentRoomId(){
+    public int getCurrentRoomId() {
         int currentRoomId = 0;
-        String sql = "SELECT COALESCE(MAX(room_id), 1) AS next_id FROM room";
+        String sql = "SELECT room_id FROM room ORDER BY room_id DESC LIMIT 1";
         try (Connection conn = getConnection("escape_room");
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
             rs.next();
-            currentRoomId = rs.getInt("next_id");
+            currentRoomId = rs.getInt("room_id");
         } catch (SQLException e) {
             LOGGER.error("Couldn't get the next element_id number: {}", e.getMessage());
         }

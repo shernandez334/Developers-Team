@@ -1,12 +1,13 @@
 package org.example.menu;
 
+import org.example.AdminMenu.DisplayElement;
+import org.example.AdminMenu.ElementEraser;
 import org.example.dao.DatabaseFactory;
 import org.example.enums.UserRole;
 import org.example.exceptions.ExistingEmailException;
 import org.example.exceptions.FormatException;
 import org.example.exceptions.MySqlException;
-import org.example.entities.ElementCreator;
-import org.example.exceptions.MySqlNotValidCredentialsException;
+import org.example.AdminMenu.ElementCreator;
 import org.example.entities.Admin;
 import org.example.entities.Player;
 import org.example.entities.User;
@@ -16,8 +17,6 @@ import org.example.util.MenuHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
-
 
 public class MainMenu {
 
@@ -25,7 +24,9 @@ public class MainMenu {
     private static boolean quit;
     private final DatabaseFactory databaseFactory;
     private static final Logger log = LoggerFactory.getLogger(MainMenu.class);
-    private static final ElementCreator creator = new ElementCreator();
+    private static final DisplayElement DISPLAY = new DisplayElement();
+    private static final ElementCreator CREATOR = new ElementCreator();
+    private static final ElementEraser ERASER = new ElementEraser();
 
     static{
         user = null;
@@ -68,17 +69,18 @@ public class MainMenu {
     private void adminMenu() {
         Admin admin = (Admin) user;
         int option = MenuHelper.readSelection("Welcome Administrator! Select an option.", ">",
-                "1. Create Room", "2. Delete Room", "3. Set ticket price", "4. Get total income",
-                "5. Send Notification" ,"6. Logout");
+                  "1. Display Rooms", "2. Create Room", "3. Delete Room", "4. Set ticket price", "5. Get total income",
+                "6. Send Notification" ,"7. Logout");
         switch (option) {
-            case 1 -> creator.createRoomHasElements();
-            //case 2 -> elementDaoMySql.deleteAnElement();
-            case 3 -> new TicketsService(databaseFactory).setTicketPrice();
-            case 4 -> System.out.printf("The total income is %.2f€.%n",
+            case 1 -> DISPLAY.displayAllRooms();
+            case 2 -> CREATOR.createRoomHasElements();
+            case 3 -> ERASER.eraseRoom();
+            case 4 -> new TicketsService(databaseFactory).setTicketPrice();
+            case 5 -> System.out.printf("The total income is %.2f€.%n",
                     new TicketsService(databaseFactory).getTotalIncome());
-            case 5 -> new NotificationsService(databaseFactory)
+            case 6 -> new NotificationsService(databaseFactory)
                     .notifySubscribers(IOHelper.readString("Insert the message: "));
-            case 6 -> MainMenu.user = null;
+            case 7 -> MainMenu.user = null;
         }
     }
 

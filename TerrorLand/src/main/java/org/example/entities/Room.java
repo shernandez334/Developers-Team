@@ -18,12 +18,14 @@ public class Room{
     private final int room_id;
     private final String name;
     private final Difficulty difficulty;
+    private int deleted;
     private static final Logger log = LoggerFactory.getLogger(Room.class);
 
-    public Room(int room_id, String name, Difficulty difficulty){
+    public Room(int room_id, String name, Difficulty difficulty, int deleted){
         this.name = name;
         this.room_id = room_id;
         this.difficulty = difficulty;
+        this.deleted = deleted;
     }
 
     public int getRoomId(){
@@ -34,6 +36,9 @@ public class Room{
     }
     public Difficulty getDifficulty(){
         return this.difficulty;
+    }
+    public int getDeleted(){
+        return this.deleted;
     }
 
 }
