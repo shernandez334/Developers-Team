@@ -9,15 +9,13 @@ public class Element {
     private String name;
     private double price;
     private Type type;
-    private int deleted;
     private static final Logger log = LoggerFactory.getLogger(Element.class);
 
-    public Element (int element_id, String name, double price, Type type, int deleted){
+    public Element (int element_id, String name, double price, Type type){
         this.element_id = element_id;
         this.name = name;
         this.price = price;
         this.type = type;
-        this.deleted = deleted;
     }
 
     public int getElementId(){
@@ -31,8 +29,5 @@ public class Element {
     }
     public Type getType(){
         return this.type;
-    }
-    public int getDeleted(){
-        return this.deleted;
     }
 }

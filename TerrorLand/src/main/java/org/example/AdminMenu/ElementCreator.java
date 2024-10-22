@@ -1,7 +1,11 @@
-package org.example.entities;
+package org.example.AdminMenu;
 
+import org.example.entities.Clue;
+import org.example.entities.Decoration;
+import org.example.entities.Room;
+import org.example.entities.RoomHasElement;
 import org.example.factory.DatabaseInputFactorySQL;
-import org.example.factory.ElementFactoryCreator;
+import org.example.factory.ElementFactoryCreatorMySql;
 import org.example.factory.RoomFactoryCreator;
 import org.example.util.IOHelper;
 import org.example.util.MenuHelper;
@@ -10,14 +14,13 @@ import org.slf4j.LoggerFactory;
 
 public class ElementCreator {
     private static final Logger LOGGER = LoggerFactory.getLogger(ElementCreator.class);
-    private static final ElementFactoryCreator ELEMCREATOR = new ElementFactoryCreator();
+    private static final ElementFactoryCreatorMySql ELEMCREATOR = new ElementFactoryCreatorMySql();
     private static final RoomFactoryCreator ROOMCREATOR = new RoomFactoryCreator();
     private static final DatabaseInputFactorySQL DATABASEINPUT = new DatabaseInputFactorySQL();
 
     public void createRoomHasElements(){
         int op;
         Room room = ROOMCREATOR.createElementRoom();
-        DATABASEINPUT.inputRoomIntoTable(room.getNameRoom(), room.getDifficulty());
         do {
             op = MenuHelper.readSelection("Element which will be inputted into the room: ",
                     ">", "1. Decoration", "2. Clue", "3. Exit");

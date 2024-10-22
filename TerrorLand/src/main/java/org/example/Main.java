@@ -11,10 +11,7 @@ public class Main {
 
         InitializeResourcesService Setup = new InitializeResourcesService();
         if (Setup.runSetup() == ProcessStatus.EXIT) return;
-
         MainMenu menu = new MainMenu(FactoryProvider.getInstance().getDbFactory());
         menu.run();
-
     }
-
 }

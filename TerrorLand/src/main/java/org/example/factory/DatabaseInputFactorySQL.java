@@ -61,12 +61,13 @@ public class DatabaseInputFactorySQL implements DatabaseInputFactory{
     }
 
     @Override
-    public void inputRoomIntoTable(String name, Difficulty difficulty){
-        String roomSqlQuery = "INSERT INTO room (name, difficulty) VALUES (?, ?)";
+    public void inputRoomIntoTable(String name, Difficulty difficulty, int deleted){
+        String roomSqlQuery = "INSERT INTO room (name, difficulty, deleted) VALUES (?, ?, ?)";
         try (Connection conn = getConnection("escape_room");
              PreparedStatement pstmt = conn.prepareStatement(roomSqlQuery)){
             pstmt.setString(1, name);
             pstmt.setString(2, String.valueOf(difficulty));
+            pstmt.setInt(3, deleted);
             pstmt.executeUpdate();
         } catch (SQLException e){
             LOGGER.error("Error inputting values into the room table: {}", e.getMessage());
