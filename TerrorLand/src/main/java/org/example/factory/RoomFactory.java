@@ -4,5 +4,5 @@ import org.example.entities.Room;
 
 public interface RoomFactory {
     Room createElementRoom();
-    public int getCurrentRoomId();
+    int getCurrentRoomId();
 }
