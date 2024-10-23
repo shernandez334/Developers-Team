@@ -20,7 +20,7 @@ USE `escape_room` ;
 CREATE TABLE IF NOT EXISTS `escape_room`.`room` (
   `room_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
-  `difficulty` ENUM('EASY', 'MEDIUM', 'HARD') NOT NULL,
+  `difficulty` ENUM('EASY', 'MEDIUM', 'HARD', 'EPIC') NOT NULL,
   `deleted` INT NOT NULL,
   PRIMARY KEY (`room_id`),
   UNIQUE INDEX `room_id_UNIQUE` (`room_id` ASC) VISIBLE)
