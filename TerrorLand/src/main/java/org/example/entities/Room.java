@@ -16,8 +16,8 @@ import static org.example.mysql.MySqlHelper.getConnection;
 
 public class Room{
     private final int room_id;
-    private final String name;
-    private final Difficulty difficulty;
+    private String name;
+    private Difficulty difficulty;
     private int deleted;
     private static final Logger log = LoggerFactory.getLogger(Room.class);
 
@@ -41,4 +41,8 @@ public class Room{
         return this.deleted;
     }
 
+    public void reset(){
+        this.name = null;
+        this.difficulty = null;
+    }
 }

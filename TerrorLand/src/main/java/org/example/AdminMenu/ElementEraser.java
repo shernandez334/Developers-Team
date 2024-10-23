@@ -11,11 +11,11 @@ import java.sql.SQLException;
 import static org.example.mysql.MySqlHelper.getConnection;
 
 public class ElementEraser {
-    private static final DisplayElement DISPLAY = new DisplayElement();
+    private static final ElementDisplay DISPLAY = new ElementDisplay();
     private static final Logger LOGGER = LoggerFactory.getLogger(ElementEraser.class);
 
     public void eraseRoom(){
-        DISPLAY.displayUndeletedRooms();
+        //DISPLAY.displayUndeletedRooms();
         int roomDeleted = IOHelper.readInt("Enter the room Id you want to delete:\n");
         updateRoomDeletedStatus(roomDeleted);
     }

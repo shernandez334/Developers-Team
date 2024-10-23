@@ -66,7 +66,7 @@ public class DatabaseInputFactorySQL implements DatabaseInputFactory{
         try (Connection conn = getConnection("escape_room");
              PreparedStatement pstmt = conn.prepareStatement(roomSqlQuery)){
             pstmt.setString(1, name);
-            pstmt.setString(2, String.valueOf(difficulty));
+            pstmt.setString(2, difficulty.name());
             pstmt.setInt(3, deleted);
             pstmt.executeUpdate();
         } catch (SQLException e){
