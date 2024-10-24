@@ -27,9 +27,8 @@ public class RoomPlayService {
         }
 
         Room room = roomSelectionDialog();
-        List<String> elements= getElementsList(room);
 
-        boolean solved = playRoom(room, elements, Integer.parseInt(Properties.getProperty(ConfigurableProperty.PLAY_TIME)));
+        boolean solved = playRoom(room);
 
         if (solved) {
             System.out.println("Congrats, you have solved the room in time!");
@@ -52,7 +51,9 @@ public class RoomPlayService {
         return new ArrayList<>(List.of(new String[] {"MockClue1", "MockDeco1", "MockDeco2"}));
     }
 
-    private boolean playRoom(Room room, List<String> elements, int countdown) {
+    private boolean playRoom(Room room) {
+        List<String> elements= getElementsList(room);
+        int countdown = Integer.parseInt(Properties.getProperty(ConfigurableProperty.PLAY_TIME));
         boolean solved = false;
         while (countdown > 0 && !solved){
             System.out.println("You inspect a " + elements.get((int) (Math.random() * elements.size())) + ".");
