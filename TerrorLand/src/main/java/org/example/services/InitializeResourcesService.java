@@ -60,7 +60,9 @@ public class InitializeResourcesService {
                 ConfigurableProperty.PROVIDER.getValue() + "=" + SystemProperty.DEFAULT_PROVIDER.getValue() + "\n" +
                 ConfigurableProperty.URL.getValue() + "=" + SystemProperty.DEFAULT_DB_URL.getValue() + "\n" +
                 ConfigurableProperty.USER.getValue() + "=" + SystemProperty.DEFAULT_DB_USER.getValue() + "\n" +
-                ConfigurableProperty.PASSWORD.getValue() + "=" + SystemProperty.DEFAULT_DB_PASSWORD.getValue();
+                ConfigurableProperty.PASSWORD.getValue() + "=" + SystemProperty.DEFAULT_DB_PASSWORD.getValue() + "\n" +
+                "\n" +
+                ConfigurableProperty.PLAY_TIME.getValue() + "=" + SystemProperty.DEFAULT_PLAY_TIME.getValue() ;
         Files.createFile(path);
         Files.writeString(path, PropertiesFileContent);
     }

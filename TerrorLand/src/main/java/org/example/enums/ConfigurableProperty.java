@@ -4,7 +4,8 @@ public enum ConfigurableProperty {
     PROVIDER ("db.provider"),
     URL ("db.url"),
     USER ("db.user"),
-    PASSWORD ("db.password");
+    PASSWORD ("db.password"),
+    PLAY_TIME("play.time");
 
     private final String value;
 

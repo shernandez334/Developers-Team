@@ -88,7 +88,7 @@ public class MainMenu {
                 "4. " + (player.isSubscribed() ? "Stop receiving notifications" : "Receive notifications"),
                 "5. Logout");
         switch (option) {
-            case 1 -> new RoomPlayService().play(player);
+            case 1 -> new RoomPlayService(databaseFactory).play(player);
             case 2 -> new TicketsService(databaseFactory).buyTickets(player);
             case 3 -> new NotificationsService(databaseFactory).readNotifications(player);
             case 4 -> toggleSubscriptionStatus(player);

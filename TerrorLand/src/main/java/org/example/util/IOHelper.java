@@ -82,6 +82,18 @@ public class IOHelper {
         }
     }
 
+    public static boolean readYorN(String message){
+        while (true) {
+            char c = readChar(message);
+            if (Character.toLowerCase(c) == 'y'){
+                return true;
+            }
+            if (Character.toLowerCase(c) == 'n'){
+                return false;
+            }
+        }
+    }
+
     public static String indentText(String rawMessage, String indent) {
         StringBuilder message = new StringBuilder();
         Arrays.stream(rawMessage
