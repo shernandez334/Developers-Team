@@ -75,5 +75,4 @@ public class PlayerDaoMySql implements PlayerDao {
         items.forEach(e -> response.add(new Notification((int) e.getFirst(), playerId, (String) e.get(1))));
         return response;
     }
-
 }

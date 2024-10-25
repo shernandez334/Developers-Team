@@ -1,4 +1,4 @@
-package org.example.factory;
+package org.example.dao;
 
 import org.example.entities.Clue;
 import org.example.entities.Decoration;
@@ -6,6 +6,7 @@ import org.example.entities.Element;
 import org.example.enums.Material;
 import org.example.enums.Theme;
 import org.example.enums.Type;
+import org.example.factory.ElementFactory;
 import org.example.util.MenuHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +18,9 @@ import static org.example.mysql.MySqlHelper.getConnection;
 import static org.example.util.IOHelper.readDouble;
 import static org.example.util.IOHelper.readString;
 
-public class ElementFactoryCreatorMySql implements ElementFactoryCreator {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ElementFactoryCreatorMySql.class);
-    private static final DatabaseInputFactorySQL DATABASEINPUT = new DatabaseInputFactorySQL();
+public class ElementDaoSql implements ElementFactory {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ElementDaoSql.class);
+    private static final DatabaseInputDaoSQL DATABASEINPUT = new DatabaseInputDaoSQL();
 
     @Override
     public Element createAnElement(Type type){

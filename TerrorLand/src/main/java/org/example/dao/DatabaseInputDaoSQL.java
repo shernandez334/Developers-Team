@@ -1,10 +1,10 @@
-package org.example.factory;
+package org.example.dao;
 
-import org.example.entities.Element;
 import org.example.enums.Difficulty;
 import org.example.enums.Material;
 import org.example.enums.Theme;
 import org.example.enums.Type;
+import org.example.factory.DatabaseInputFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.sql.Connection;
@@ -13,8 +13,8 @@ import java.sql.SQLException;
 
 import static org.example.mysql.MySqlHelper.getConnection;
 
-public class DatabaseInputFactorySQL implements DatabaseInputFactory{
-    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseInputFactorySQL.class);
+public class DatabaseInputDaoSQL implements DatabaseInputFactory {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseInputDaoSQL.class);
 
     public void inputElementIntoTable(String name, double price, Type type) {
         String elementSqlQuery = "INSERT INTO element (name, price, type, deleted) VALUES (?, ?, ?, ?)";
