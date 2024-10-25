@@ -1,21 +1,21 @@
 package org.example.AdminMenu;
 
+import org.example.dao.RoomDao;
 import org.example.entities.Clue;
 import org.example.entities.Decoration;
 import org.example.entities.Room;
-import org.example.factory.DatabaseInputFactorySQL;
-import org.example.factory.ElementFactoryCreatorMySql;
-import org.example.factory.RoomFactoryCreator;
+import org.example.dao.DatabaseInputDaoSQL;
+import org.example.dao.ElementDaoSql;
 import org.example.util.IOHelper;
 import org.example.util.MenuHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ElementCreator {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RoomManager.class);
-    private static final ElementFactoryCreatorMySql ELEMCREATOR = new ElementFactoryCreatorMySql();
-    private static final RoomFactoryCreator ROOMCREATOR = new RoomFactoryCreator();
-    private static final DatabaseInputFactorySQL DATABASEINPUT = new DatabaseInputFactorySQL();
+    private static final Logger LOGGER = LoggerFactory.getLogger(RoomManagerMenu.class);
+    private static final ElementDaoSql ELEMCREATOR = new ElementDaoSql();
+    private static final RoomDao ROOMCREATOR = new RoomDao();
+    private static final DatabaseInputDaoSQL DATABASEINPUT = new DatabaseInputDaoSQL();
 
 
     public void createRoomHasElements() {

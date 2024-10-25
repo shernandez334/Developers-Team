@@ -16,7 +16,6 @@ import java.sql.SQLException;
 
 //TODO throw generic database exceptions instead of sql exceptions.
 public class InitializeResourcesService {
-
     private static final Logger log = LoggerFactory.getLogger(InitializeResourcesService.class);
 
 

@@ -5,7 +5,7 @@ import org.example.entities.Decoration;
 import org.example.entities.Element;
 import org.example.enums.Type;
 
-public interface ElementFactoryCreator {
+public interface ElementFactory {
     Element createAnElement(Type type);
     Decoration createDecoration();
     Clue createClue();

@@ -1,11 +1,11 @@
 package org.example.menu;
 
+import org.example.AdminMenu.RoomManagerMenu;
 import org.example.dao.DatabaseFactory;
 import org.example.enums.UserRole;
 import org.example.exceptions.ExistingEmailException;
 import org.example.exceptions.FormatException;
 import org.example.exceptions.MySqlException;
-import org.example.AdminMenu.RoomManager;
 import org.example.entities.Admin;
 import org.example.entities.Player;
 import org.example.entities.User;
@@ -22,7 +22,7 @@ public class MainMenu {
     private static boolean quit;
     private final DatabaseFactory databaseFactory;
     private static final Logger log = LoggerFactory.getLogger(MainMenu.class);
-    private static final RoomManager MANAGER = new RoomManager();
+    private static final RoomManagerMenu MANAGER = new RoomManagerMenu();
 
     static{
         user = null;
