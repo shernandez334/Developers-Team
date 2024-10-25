@@ -27,4 +27,9 @@ public class OutputBuilder {
         }
         return output.toString();
     }
+
+    public String buildTotalPriceOutput(ResultSet rs) throws SQLException {
+        return "Total Price of All Elements in All Rooms: $" + rs.getBigDecimal("total_price");
+    }
+
 }

@@ -32,4 +32,14 @@ public class Queries {
                     rhe.room_id = ?;
             """;
     }
+
+    public static String buildCalculateStockValue(){
+        return """
+                SELECT SUM(e.price * rhe.quantity) AS total_price
+                FROM room r
+                JOIN room_has_element rhe ON r.room_id = rhe.room_id
+                JOIN element e ON e.element_id = rhe.element_id
+                WHERE r.deleted = 0;
+               """;
+    }
 }
