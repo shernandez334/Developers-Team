@@ -1,11 +1,13 @@
 package org.example.AdminMenu;
 
+import org.example.dao.FactoryProvider;
 import org.example.dao.RoomDao;
 import org.example.entities.Clue;
 import org.example.entities.Decoration;
 import org.example.entities.Room;
 import org.example.dao.DatabaseInputDaoSQL;
 import org.example.dao.ElementDaoSql;
+import org.example.services.NotificationsService;
 import org.example.util.IOHelper;
 import org.example.util.MenuHelper;
 import org.slf4j.Logger;
@@ -31,7 +33,21 @@ public class ElementCreator {
                 case 3 -> LOGGER.info("Returning to the Room Manager Menu.");
             }
         } while (op != 3);
+        notifyRoomCreation(room);
         room.reset();
+    }
+
+    private void notifyRoomCreation(Room room) {
+        new NotificationsService(FactoryProvider.getInstance().getDbFactory()).notifySubscribers(String.format(
+            """
+            Dear Escape Room Enthusiasts,
+            We’re excited to announce the launch of our brand-new
+            virtual escape room, “%s” 🧙‍♂️✨
+            Play this %s room and solve puzzles, uncover secrets, and
+            navigate through a magical room filled with challenges!
+            """
+                , room.getNameRoom(), room.getDifficulty().toString().toLowerCase()
+        ));
     }
 
     public void addDecorationToRoomHasElement(Room room){

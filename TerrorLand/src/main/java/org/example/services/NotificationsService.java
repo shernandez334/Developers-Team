@@ -69,12 +69,12 @@ public class NotificationsService {
     public void notifySubscribers(String message) {
         List<Integer> subscribersIds = databaseFactory.createNotificationDao().getSubscribersIds();
         for (Integer subscriberId : subscribersIds){
-            notifySubscriber(new Notification(subscriberId, message));
+            notifySubscriber(subscriberId, message);
         }
     }
 
-    private void notifySubscriber(Notification notification){
-        databaseFactory.createNotificationDao().saveNotification(notification);
+    public void notifySubscriber(int subscriberId, String message){
+        databaseFactory.createNotificationDao().saveNotification(new Notification(subscriberId, message));
     }
 
     public void removeSubscriber(Player player) {

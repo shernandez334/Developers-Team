@@ -86,13 +86,15 @@ public class MainMenu {
                 "2. Buy a Ticket",
                 "3. Read notifications " + player.getNotificationWarning(),
                 "4. " + (player.isSubscribed() ? "Stop receiving notifications" : "Receive notifications"),
-                "5. Logout");
+                "5. Get a Certificate",
+                "6. Logout");
         switch (option) {
             case 1 -> new RoomPlayService(databaseFactory).play(player);
             case 2 -> new TicketsService(databaseFactory).buyTickets(player);
             case 3 -> new NotificationsService(databaseFactory).readNotifications(player);
             case 4 -> toggleSubscriptionStatus(player);
-            case 5 -> MainMenu.user = null;
+            case 5 -> new CertificateService(databaseFactory).getCertificate(player);
+            case 6 -> MainMenu.user = null;
         }
     }
 
