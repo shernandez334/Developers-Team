@@ -1,54 +1,67 @@
 package org.example.services;
 
-import org.example.dao.DatabaseFactory;
+import org.example.dao.*;
+import org.example.entities.Element;
 import org.example.entities.Player;
 import org.example.entities.Room;
 import org.example.enums.ConfigurableProperty;
-import org.example.enums.Difficulty;
 import org.example.enums.Properties;
+import org.example.enums.RoomStatus;
+import org.example.exceptions.IdNotFoundException;
 import org.example.util.IOHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RoomPlayService {
 
     private final DatabaseFactory databaseFactory;
-
+    //TODO injection RoomDao and UserPlaysRoomDao
     public RoomPlayService(DatabaseFactory databaseFactory){
         this.databaseFactory = databaseFactory;
     }
 
     public void play(Player player) {
 
-        if (! new TicketsService(databaseFactory).cashTicket(player)) {
+        if (player.getTicketsSize() < 1) {
             System.out.println("Get some tickets first!");
             return;
         }
 
-        Room room = roomSelectionDialog();
+        try {
+            Room room = roomSelectionDialog();
 
-        boolean solved = playRoom(room);
+            new TicketsService(databaseFactory).cashTicket(player);
 
-        if (solved) {
-            System.out.println("Congrats, you have solved the room in time!");
-            addPlayerRoomSolved(player, room);
-        }else {
-            System.out.println("Time is up! Try again later.");
-            addPlayerRoomNotSolved(player, room);
+            boolean solved = playRoom(room);
+
+            if (solved) {
+                System.out.println("Congrats, you have solved the room in time!");
+                addPlayerRoomSolved(player, room);
+            }else {
+                System.out.println("Time is up! Try again later.");
+                addPlayerRoomNotSolved(player, room);
+            }
+
+        } catch (IdNotFoundException e) {
+            System.out.println("There is no room with such id.");
         }
+
+
     }
 
 
-
-    //TODO show available room and user selects one by id
-    private Room roomSelectionDialog() {
-        return new Room(1, "MockRoom", Difficulty.EASY, 0);
+    private Room roomSelectionDialog() throws IdNotFoundException {
+        final DisplayDao DISPLAY = new DisplayDao();
+        DISPLAY.displayAllRooms(RoomStatus.ACTIVE);
+        int roomId = IOHelper.readInt("Select the room to play: ");
+        Room room= new RoomDao().getRoomFromId(roomId);
+        if (room.getDeleted() == 1) throw new IdNotFoundException("Deleted rooms are not available to play.");
+        return room;
     }
 
-    //TODO get elements present in room
     private List<String> getElementsList(Room room) {
-        return new ArrayList<>(List.of(new String[] {"MockClue1", "MockDeco1", "MockDeco2"}));
+        List<Element> elements = new RoomDao().retrieveRoomElements(room);
+        return elements.stream().map(Element::getName).toList();
     }
 
     private boolean playRoom(Room room) {
@@ -56,18 +69,24 @@ public class RoomPlayService {
         int countdown = Integer.parseInt(Properties.getProperty(ConfigurableProperty.PLAY_TIME));
         boolean solved = false;
         while (countdown > 0 && !solved){
-            System.out.println("You inspect a " + elements.get((int) (Math.random() * elements.size())) + ".");
+            if (!elements.isEmpty()){
+                System.out.println("You inspect a " + elements.get((int) (Math.random() * elements.size())) + ".");
+            }else {
+                System.out.println("You inspect the room but it looks empty");
+            }
             solved = IOHelper.readYorN("Select (Y) to solve the room, (N) to keep playing.");
             countdown--;
         }
         return solved;
     }
 
-    //TODO add registry in Db player_plays_room ( solved)
     private void addPlayerRoomSolved(Player player, Room room) {
+        UserPlaysRoomDao userPlaysRoomDao = new UserPlaysRoomDaoMySql();
+        userPlaysRoomDao.savePlay(player, room, true);
     }
 
-    //TODO add registry in Db player_plays_room (not solved)
     private void addPlayerRoomNotSolved(Player player, Room room) {
+        UserPlaysRoomDao userPlaysRoomDao = new UserPlaysRoomDaoMySql();
+        userPlaysRoomDao.savePlay(player, room, false);
     }
 }

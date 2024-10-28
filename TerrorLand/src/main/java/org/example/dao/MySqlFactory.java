@@ -47,4 +47,9 @@ public class MySqlFactory implements DatabaseFactory {
     public PropertiesDao createPropertiesDao() {
         return new PropertiesDaoMySql();
     }
+
+    @Override
+    public UserPlaysRoomDao createUserPlaysRoomDao() {
+        return new UserPlaysRoomDaoMySql();
+    }
 }
