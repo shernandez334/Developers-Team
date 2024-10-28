@@ -1,5 +1,6 @@
 package org.example.entities;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 //TODO use for certificates or delete
@@ -7,9 +8,9 @@ public class UserPlaysRoomDto {
 
     public static class Attempt{
         private boolean success;
-        private Date timestamp;
+        private LocalDateTime timestamp;
 
-        public Attempt(boolean success, Date timestamp) {
+        public Attempt(boolean success, LocalDateTime timestamp) {
             this.success = success;
             this.timestamp = timestamp;
         }
@@ -18,7 +19,7 @@ public class UserPlaysRoomDto {
             return success;
         }
 
-        public Date getTimestamp() {
+        public LocalDateTime getTimestamp() {
             return timestamp;
         }
     }
@@ -29,6 +30,7 @@ public class UserPlaysRoomDto {
 
     public UserPlaysRoomDto(Player player) {
         this.player = player;
+        this.attempts = new HashMap<>();
     }
 
     public void addAttempt(int roomId, Attempt attempt) {
