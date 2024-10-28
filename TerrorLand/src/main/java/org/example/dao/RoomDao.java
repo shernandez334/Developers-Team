@@ -1,9 +1,15 @@
 package org.example.dao;
 
+import org.example.entities.Element;
+import org.example.entities.Player;
 import org.example.entities.Room;
+import org.example.entities.Ticket;
 import org.example.enums.Difficulty;
 import org.example.enums.RoomStatus;
+import org.example.enums.Type;
+import org.example.exceptions.IdNotFoundException;
 import org.example.factory.RoomFactory;
+import org.example.mysql.QueryResult;
 import org.example.util.IOHelper;
 import org.example.util.MenuHelper;
 import org.slf4j.Logger;
@@ -12,6 +18,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.example.mysql.MySqlHelper.createStatementAndExecuteQuery;
 import static org.example.mysql.MySqlHelper.getConnection;
 
 
@@ -71,4 +81,41 @@ public class RoomDao implements RoomFactory {
             LOGGER.error("Error updating room deleted status: {}", e.getMessage());
         }
     }
+
+    public Room getRoomFromId(int roomId) throws IdNotFoundException {
+        String sql = String.format("SELECT name, difficulty, deleted FROM room WHERE room_id = '%s'",
+                roomId);
+        try (QueryResult queryResult = createStatementAndExecuteQuery(sql)){
+            ResultSet result = queryResult.getResultSet();
+            if (result.next()){
+                String name = result.getString("name");
+                Difficulty difficulty = Difficulty.valueOf(result.getString("difficulty"));
+                int deleted = result.getInt("deleted");
+                return new Room(roomId, name, difficulty, deleted);
+            }
+            throw new IdNotFoundException("There is no room with such id");
+        } catch (SQLException e) {
+            LOGGER.error("Error retrieving room: {}", e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Element> retrieveRoomElements(Room room) {
+        List<Element> elements = new ArrayList<>();
+        String sql = String.format("SELECT e.element_id, name, price, type FROM element e JOIN room_has_element r " +
+                "ON e.element_id = r.element_id WHERE deleted = 1 AND room_id = '%d';", room.getRoomId());
+        try (QueryResult queryResult = createStatementAndExecuteQuery(sql)){
+            ResultSet resultSet = queryResult.getResultSet();
+            while (resultSet.next()){
+                elements.add(new Element(resultSet.getInt("element_id"),
+                        resultSet.getString("name"),
+                        resultSet.getDouble("price"),
+                        Type.valueOf(resultSet.getString("type"))));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return elements;
+    }
+
 }

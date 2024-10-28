@@ -12,6 +12,7 @@ public interface DatabaseFactory {
     NotificationDao createNotificationDao();
     DbInitialSetup createDbInitialSetup();
     PropertiesDao createPropertiesDao();
+    UserPlaysRoomDao createUserPlaysRoomDao();
 
     /**
      * @deprecated
