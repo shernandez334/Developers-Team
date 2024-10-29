@@ -7,12 +7,12 @@ import org.example.enums.Properties;
 public interface DatabaseFactory {
 
     UserDao createUserDao();
-    ElementDao createElementDao();
     TicketDao createTicketDao();
     PlayerDao createPlayerDao();
     NotificationDao createNotificationDao();
     DbInitialSetup createDbInitialSetup();
     PropertiesDao createPropertiesDao();
+    UserPlaysRoomDao createUserPlaysRoomDao();
 
     /**
      * @deprecated

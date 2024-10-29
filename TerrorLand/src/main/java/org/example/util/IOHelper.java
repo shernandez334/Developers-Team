@@ -13,6 +13,23 @@ public class IOHelper {
         input = new Scanner(System.in);
     }
 
+    public static byte readByte(String message) {
+        System.out.println(message);
+
+        byte b = ' ';
+        boolean validInput = false;
+        while (!validInput) {
+            try {
+                b = input.nextByte();
+                validInput = true;
+            } catch (InputMismatchException err) {
+                System.out.println("Invalid Input." + "\n" + message);
+                input.next();
+            }
+        }
+        return b;
+    }
+
     public static int readInt(String message) {
         boolean success = false;
         int myInt = 0;
@@ -79,6 +96,19 @@ public class IOHelper {
             }
         } while (!check1 || !check2);
         return num;
+    }
+  
+    public static boolean readYorN(String message){
+        while (true) {
+            char c = readChar(message);
+            if (Character.toLowerCase(c) == 'y'){
+                return true;
+            }
+            if (Character.toLowerCase(c) == 'n'){
+                return false;
+            }
+        }
+
     }
 
     public static String indentText(String rawMessage, String indent) {

@@ -63,5 +63,4 @@ public class UserDaoMySql implements UserDao {
             throw new RuntimeException(e);
         }
     }
-
 }

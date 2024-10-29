@@ -1,7 +1,7 @@
 package org.example.menu;
 
+import org.example.AdminMenu.RoomManagerMenu;
 import org.example.dao.DatabaseFactory;
-import org.example.dao.ElementDaoMySql;
 import org.example.enums.UserRole;
 import org.example.exceptions.ExistingEmailException;
 import org.example.exceptions.FormatException;
@@ -17,12 +17,12 @@ import org.slf4j.LoggerFactory;
 
 
 public class MainMenu {
-    private final ElementDaoMySql elementDaoMySql = new ElementDaoMySql();
 
     private static User user;
     private static boolean quit;
     private final DatabaseFactory databaseFactory;
     private static final Logger log = LoggerFactory.getLogger(MainMenu.class);
+    private static final RoomManagerMenu MANAGER = new RoomManagerMenu();
 
     static{
         user = null;
@@ -62,21 +62,19 @@ public class MainMenu {
         MainMenu.user = user;
     }
 
-    //TODO: Access to elementDaoMySql has to be done through this.databaseFactory.getElementDao()
     private void adminMenu() {
         Admin admin = (Admin) user;
         int option = MenuHelper.readSelection("Welcome Administrator! Select an option.", ">",
-                "1. Create Element", "2. Delete Element", "3. Set ticket price", "4. Get total income",
-                "5. Send Notification" ,"6. Logout");
+                "1. Manage Rooms", "2. Set ticket price", "3. Get total income",
+                "4. Send Notification", "5. Logout");
         switch (option) {
-            case 1 -> elementDaoMySql.createAnElement();
-            case 2 -> elementDaoMySql.deleteAnElement();
-            case 3 -> new TicketsService(databaseFactory).setTicketPrice();
-            case 4 -> System.out.printf("The total income is %.2f€.%n",
+            case 1 -> MANAGER.manageRooms();
+            case 2 -> new TicketsService(databaseFactory).setTicketPrice();
+            case 3 -> System.out.printf("The total income is %.2f€.%n",
                     new TicketsService(databaseFactory).getTotalIncome());
-            case 5 -> new NotificationsService(databaseFactory)
+            case 4 -> new NotificationsService(databaseFactory)
                     .notifySubscribers(IOHelper.readString("Insert the message: "));
-            case 6 -> MainMenu.user = null;
+            case 5 -> MainMenu.user = null;
         }
     }
 
@@ -88,13 +86,15 @@ public class MainMenu {
                 "2. Buy a Ticket",
                 "3. Read notifications " + player.getNotificationWarning(),
                 "4. " + (player.isSubscribed() ? "Stop receiving notifications" : "Receive notifications"),
-                "5. Logout");
+                "5. Get a Certificate",
+                "6. Logout");
         switch (option) {
-            case 1 -> new RoomPlayService().play(player);
+            case 1 -> new RoomPlayService(databaseFactory).play(player);
             case 2 -> new TicketsService(databaseFactory).buyTickets(player);
             case 3 -> new NotificationsService(databaseFactory).readNotifications(player);
             case 4 -> toggleSubscriptionStatus(player);
-            case 5 -> MainMenu.user = null;
+            case 5 -> new CertificateService(databaseFactory).getCertificate(player);
+            case 6 -> MainMenu.user = null;
         }
     }
 
@@ -181,6 +181,4 @@ public class MainMenu {
             System.out.println("You have subscribed successfully.");
         }
     }
-
-
 }
