@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.dao.DatabaseFactory;
 import org.example.dao.FactoryProvider;
 import org.example.enums.ProcessStatus;
 import org.example.menu.MainMenu;
@@ -11,7 +12,9 @@ public class  Main {
 
         InitializeResourcesService Setup = new InitializeResourcesService();
         if (Setup.runSetup() == ProcessStatus.EXIT) return;
-        MainMenu menu = new MainMenu(FactoryProvider.getInstance().getDbFactory());
+        DatabaseFactory databaseFactory = FactoryProvider.getInstance().getDbFactory();
+        Setup.setupRewards(databaseFactory);
+        MainMenu menu = new MainMenu(databaseFactory);
         menu.run();
     }
 }

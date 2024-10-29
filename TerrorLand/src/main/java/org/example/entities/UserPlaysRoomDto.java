@@ -6,24 +6,6 @@ import java.util.*;
 //TODO use for certificates or delete
 public class UserPlaysRoomDto {
 
-    public static class Attempt{
-        private boolean success;
-        private LocalDateTime timestamp;
-
-        public Attempt(boolean success, LocalDateTime timestamp) {
-            this.success = success;
-            this.timestamp = timestamp;
-        }
-
-        public boolean isSuccess() {
-            return success;
-        }
-
-        public LocalDateTime getTimestamp() {
-            return timestamp;
-        }
-    }
-
     Player player;
 
     Map<Integer, List<Attempt>> attempts;

@@ -20,8 +20,7 @@ USE `escape_room` ;
 CREATE TABLE IF NOT EXISTS `escape_room`.`room` (
   `room_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
-  `difficulty` ENUM('EASY', 'MEDIUM', 'HARD', 'EPIC') NOT NULL,
-  `deleted` INT NOT NULL,
+  `difficulty` ENUM('easy', 'medium', 'hard') NOT NULL,
   PRIMARY KEY (`room_id`),
   UNIQUE INDEX `room_id_UNIQUE` (`room_id` ASC) VISIBLE)
 ENGINE = InnoDB;
@@ -34,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `escape_room`.`element` (
   `element_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `price` DECIMAL(10,2) UNSIGNED NULL,
-  `type` ENUM('ROOM', 'CLUE', 'DECORATION') NOT NULL,
+  `type` ENUM('room', 'clue', 'decoration') NOT NULL,
   `deleted` TINYINT NULL DEFAULT 0,
   PRIMARY KEY (`element_id`),
   UNIQUE INDEX `element_id_UNIQUE` (`element_id` ASC) VISIBLE,
@@ -47,7 +46,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `escape_room`.`clue` (
   `element_id` INT NOT NULL,
-  `theme` ENUM('SCI_FI', 'MEDIEVAL', 'SPACE') NOT NULL,
+  `theme` ENUM('scifi', 'horror', 'fantasy') NOT NULL,
   PRIMARY KEY (`element_id`),
   UNIQUE INDEX `element_id_UNIQUE` (`element_id` ASC) VISIBLE,
   CONSTRAINT `fk_element1`
@@ -63,7 +62,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `escape_room`.`decor_item` (
   `element_id` INT NOT NULL,
-  `material` ENUM('PLASTIC', 'PAPER', 'STONE', 'GLASS', 'METAL') NOT NULL,
+  `material` ENUM('plastic', 'paper', 'stone', 'glass', 'metal') NOT NULL,
+  PRIMARY KEY (`element_id`),
   INDEX `fk_element2_idx` (`element_id` ASC) VISIBLE,
   UNIQUE INDEX `element_id_UNIQUE` (`element_id` ASC) VISIBLE,
   CONSTRAINT `fk_element2`
@@ -95,6 +95,8 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `escape_room`.`reward` (
   `reward_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
+  `description` VARCHAR(45) NOT NULL,
+  `banner` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`reward_id`),
   UNIQUE INDEX `reward_id_UNIQUE` (`reward_id` ASC) VISIBLE,
   UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)
@@ -239,6 +241,20 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+-- -----------------------------------------------------
+-- Data for table `escape_room`.`reward`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `escape_room`;
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (1, 'Welcome Onboard!', 'You have played your first room', '^!^');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (2, 'Tutti Frutti', 'One room of each difficulty played', ':O');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (3, 'Loyal Member', 'You have played 3 rooms', '**');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (4, 'Heavy Thinker', 'You have solved 2 epic rooms', '8-)');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (5, 'Bureaucrat', 'You have created a certificate', '^/^');
+
+COMMIT;
+
 
 -- -----------------------------------------------------
 -- Data for table `escape_room`.`persistent_property`

@@ -7,6 +7,7 @@ import org.example.entities.Admin;
 import org.example.exceptions.MySqlException;
 import org.example.mysql.QueryResult;
 import org.example.services.NotificationsService;
+import org.example.services.RewardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +55,8 @@ public class UserDaoMySql implements UserDao {
                         password, email);
                 new NotificationsService(FactoryProvider.getInstance().getDbFactory())
                         .refreshNotificationsFromDatabase((Player) user);
+                new RewardService(FactoryProvider.getInstance().getDbFactory())
+                        .refreshRewardsFromDatabase((Player) user);
             }else {
                 user = new Admin(result.getInt("user_id"), result.getString("name"),
                         password, email);

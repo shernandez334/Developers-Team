@@ -92,4 +92,8 @@ public class InitializeResourcesService {
     private void createDatabase(DatabaseFactory databaseFactory) {
         databaseFactory.createDbInitialSetup().createDatabase();
     }
+
+    public void setupRewards(DatabaseFactory databaseFactory) {
+        new RewardService(databaseFactory).configureChainOfResponsibility();
+    }
 }

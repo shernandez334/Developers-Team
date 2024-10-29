@@ -1,5 +1,6 @@
 package org.example.dao;
 
+import org.example.entities.Attempt;
 import org.example.entities.Player;
 import org.example.entities.Room;
 import org.example.entities.UserPlaysRoomDto;
@@ -33,7 +34,7 @@ public class UserPlaysRoomDaoMySql implements UserPlaysRoomDao {
                 String.format("SELECT room_id, solved, date FROM user_plays_room WHERE user_id = %d;", player.getId()),
                 new String[] {Integer.class.getName(), Integer.class.getName(), LocalDateTime.class.getName()});
         items.forEach(e -> response.addAttempt((Integer) e.getFirst(),
-                new UserPlaysRoomDto.Attempt((Integer) e.get(1) == 1, (LocalDateTime) e.get(2))));
+                new Attempt((Integer) e.get(1) == 1, (LocalDateTime) e.get(2))));
         return response;
     }
 
