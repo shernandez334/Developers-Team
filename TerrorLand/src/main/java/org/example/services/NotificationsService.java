@@ -1,13 +1,11 @@
 package org.example.services;
 
 import org.example.dao.DatabaseFactory;
-import org.example.dao.FactoryProvider;
 import org.example.entities.Player;
 import org.example.entities.Notification;
 import org.example.util.IOHelper;
 
 import java.util.List;
-import java.util.ListIterator;
 
 public class NotificationsService {
 
@@ -17,52 +15,46 @@ public class NotificationsService {
         this.databaseFactory = databaseFactory;
     }
 
-    //TODO: fix
     //TODO: test readNotifications()
     public void readNotifications(Player player) {
         refreshNotificationsFromDatabase(player);
-        if (player.hasNoNotifications()){
+        List<Notification> notifications = player.getNotifications();
+        if (notifications.isEmpty()) {
             System.out.println("You have no messages.");
             return;
         }
-        ListIterator<Notification> item = player.getNotifications().listIterator();
+        int i = 0;
         char option = ' ';
-        Notification notification = item.next();
-        boolean backed = false;
         do {
-            if (option == 'p' && item.previousIndex() > 0){
-                item.previous();
-                notification = item.previous();
-                backed = true;
-            }else if (option == 'n' && item.hasNext()){
-                notification = item.next();
-            }else if (option == 'd'){
-                delete(notification);
-                item.remove();
-                if (player.hasNoNotifications()) {
-                    System.out.println("You have no messages left.");
-                    return;
-                } else if (item.hasNext()){
-                    notification = item.next();
-                } else if (item.previousIndex() >= 0) {
-                    notification = item.previous();
-                    backed = true;
-                }
-            }
-            if (backed){
-                item.next();
-                backed = false;
-            }
-            System.out.printf("%n%s%n", IOHelper.indentText(notification.getMessage(), "**  "));
-            System.out.printf("Previous(p)  -- %d/%d --  Next(n), Delete(d), Quit(q)%n",
-                    item.nextIndex(), player.getNotificationsSize());
+            printNotification(notifications, i);
             do{
                 option = IOHelper.readChar(">");
             }while (!(option == 'p' || option == 'n' || option == 'd' || option == 'q'));
-        } while(option != 'q' && player.hasNoNotifications());
+            if (option == 'p' && i > 0){
+                i--;
+            } else if (option == 'n' && i < notifications.size() - 1){
+                i++;
+            } else if (option == 'd'){
+                deleteNotification(notifications.get(i));
+                notifications.remove(i);
+                if (notifications.isEmpty()){
+                    System.out.println("You have no messages left.");
+                    return;
+                }
+                if (i > notifications.size() -1) i--;
+            }
+        }while (option != 'q');
     }
 
-    private void delete(Notification notification) {
+    //TODO: make prettier
+    private void printNotification(List<Notification> notifications, int i) {
+        System.out.println(new StringBuilder().repeat(" * ", 20));
+        System.out.printf("%n%s%n", IOHelper.indentText(notifications.get(i).getMessage(), "**  "));
+        System.out.printf("Previous(p)  -- %d/%d --  Next(n), Delete(d), Quit(q)%n",
+                i + 1, notifications.size());
+    }
+
+    private void deleteNotification(Notification notification) {
         databaseFactory.createNotificationDao().deleteNotification(notification);
     }
 

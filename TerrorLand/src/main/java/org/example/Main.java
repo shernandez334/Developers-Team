@@ -5,7 +5,7 @@ import org.example.enums.ProcessStatus;
 import org.example.menu.MainMenu;
 import org.example.services.InitializeResourcesService;
 
-public class Main {
+public class  Main {
 
     public static void main(String[] args) {
 

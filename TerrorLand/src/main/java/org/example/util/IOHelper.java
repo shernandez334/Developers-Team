@@ -82,6 +82,22 @@ public class IOHelper {
         }
     }
 
+    public static int readBoundedPositiveInt(String message, int maxValue){
+        int num;
+        boolean check1, check2 = false;
+        do {
+            num = readInt(message);
+            check1 = num >= 0;
+            if (!check1) {
+                System.out.println("Wrong format: number can't be negative.");
+            }else {
+                check2 = num <= maxValue;
+                if (!check2) System.out.printf("Error: max amount accepted is %d.%n", maxValue);
+            }
+        } while (!check1 || !check2);
+        return num;
+    }
+  
     public static boolean readYorN(String message){
         while (true) {
             char c = readChar(message);
@@ -92,6 +108,7 @@ public class IOHelper {
                 return false;
             }
         }
+
     }
 
     public static String indentText(String rawMessage, String indent) {

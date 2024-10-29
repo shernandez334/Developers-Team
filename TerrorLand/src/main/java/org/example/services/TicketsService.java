@@ -37,34 +37,33 @@ public class TicketsService {
 
     public void buyTickets(Player player){
         System.out.printf("Each ticket costs %.2f.%n", getPurchasePrice());
-        int quantity = IOHelper.readInt("How Many Tickets do you wish to buy?\n>");
+        int quantity = IOHelper.readBoundedPositiveInt("How Many Tickets do you wish to buy?\n>", 20);
         for (int i = 0; i < quantity; i++){
             Ticket ticket = createTicket(player, getPurchasePrice());
             player.addTicket(ticket);
         }
     }
 
-    private static BigDecimal getPurchasePrice() {
-        return DatabaseFactory.get().createPropertiesDao().getTicketPrice();
+    private BigDecimal getPurchasePrice() {
+        return databaseFactory.createPropertiesDao().getTicketPrice();
     }
 
-    private static void setPurchasePrice(String price) {
-        DatabaseFactory.get().createPropertiesDao().setTicketPrice(price);
+    private void setPurchasePrice(String price) {
+        databaseFactory.createPropertiesDao().setTicketPrice(price);
     }
 
     public Ticket createTicket(Player player, BigDecimal price){
         Ticket ticket = new Ticket(price);
-        DatabaseFactory.get().createTicketDao().saveTicket(ticket, player);
+        databaseFactory.createTicketDao().saveTicket(ticket, player);
         return ticket;
     }
 
     public void cash(Ticket ticket){
-        DatabaseFactory.get().createTicketDao().cashTicket(ticket);
+        databaseFactory.createTicketDao().cashTicket(ticket);
     }
 
-    //TODO: Return 0 when there is no ticket
     public BigDecimal getTotalIncome(){
-        return DatabaseFactory.get().createTicketDao().getTotalIncome();
+        return databaseFactory.createTicketDao().getTotalIncome();
     }
 
     public boolean cashTicket(Player player) {

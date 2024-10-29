@@ -36,7 +36,9 @@ public class TicketDaoMySql implements TicketDao {
     public BigDecimal getTotalIncome() {
         String sql = "SELECT SUM(price) FROM ticket;";
         try {
-            return retrieveSingleValueFromDatabase(sql, BigDecimal.class);
+            BigDecimal totalIncome = retrieveSingleValueFromDatabase(sql, BigDecimal.class);
+            if (totalIncome == null) return BigDecimal.valueOf(0);
+            return totalIncome;
         } catch (MySqlEmptyResultSetException e) {
             throw new RuntimeException(String.format("The query '%s' didn't yield a result.%n", sql));
         }
