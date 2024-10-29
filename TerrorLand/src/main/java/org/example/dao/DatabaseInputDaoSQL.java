@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static org.example.mysql.MySqlHelper.getConnection;
@@ -86,5 +87,20 @@ public class DatabaseInputDaoSQL implements DatabaseInputFactory {
         } catch (SQLException e){
             LOGGER.error("Error inputting values into the room_has_elements table: {}", e.getMessage());
         }
+    }
+
+    public boolean doesRoomHaveElements(int roomId) {
+        String query = "SELECT COUNT(*) FROM room_has_element WHERE room_id = ?";
+        try (Connection conn = getConnection("escape_room");
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, roomId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            LOGGER.info("It could´t be checked if room_has_element {}", e.getMessage());
+        }
+        return false;
     }
 }
