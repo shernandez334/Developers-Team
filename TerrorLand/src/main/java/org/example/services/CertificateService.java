@@ -15,9 +15,13 @@ public class CertificateService {
     }
 
     public void getCertificate(Player player) {
-        String template = """
-                TerrorLand certifies that %s:
+        String template1 = """
+                TerrorLand certifies that **%s**:
                 Has played %d rooms with a %.2f%% rate of success.%n
+                """;
+        String template12 = """
+                TerrorLand certifies that **%s**:
+                Has no registered plays.%n
                 """;
         String template2 = "Room %d: %d plays.%n";
         UserPlaysRoomDto userPlaysRoomDto = databaseFactory.createUserPlaysRoomDao().getPlays(player);
@@ -29,11 +33,18 @@ public class CertificateService {
                         .filter(a -> a.isSuccess())
                         .count())
                 .sum();
-        StringBuilder response = new StringBuilder(String.format(template,
-                player.getName(), totalPlays, totalSuccessfulPlays * 100.0 /totalPlays));
-        roomsPlayed.forEach(p -> response.append(
-                String.format(template2, p, userPlaysRoomDto.getAttempts().get(p).size())));
+        StringBuilder response = new StringBuilder();
+        if (totalPlays > 0) {
+            response.append(String.format(template1,
+                    player.getName(), totalPlays, totalSuccessfulPlays * 100.0 / totalPlays));
+            roomsPlayed.forEach(p -> response.append(
+                    String.format(template2, p, userPlaysRoomDto.getAttempts().get(p).size())));
+        }else {
+            response.append(String.format(template12, player.getName()));
+        }
         System.out.println("Briefly you will receive a notification with your certificate. Check your inbox!");
-        new NotificationsService(databaseFactory).notifySubscriber(player.getId(), response.toString());
+        NotificationsService notificationsService = new NotificationsService(databaseFactory);
+        notificationsService.notifySubscriber(player.getId(), response.toString());
+        notificationsService.refreshNotificationsFromDatabase(player);
     }
 }
