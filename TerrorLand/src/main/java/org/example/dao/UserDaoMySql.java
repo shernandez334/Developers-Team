@@ -55,8 +55,7 @@ public class UserDaoMySql implements UserDao {
                         password, email);
                 new NotificationsService(FactoryProvider.getInstance().getDbFactory())
                         .refreshNotificationsFromDatabase((Player) user);
-                new RewardService(FactoryProvider.getInstance().getDbFactory())
-                        .refreshRewardsFromDatabase((Player) user);
+                RewardService.getInstance().refreshRewardsFromDatabase((Player) user);
             }else {
                 user = new Admin(result.getInt("user_id"), result.getString("name"),
                         password, email);

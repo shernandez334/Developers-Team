@@ -2,7 +2,6 @@ package org.example.dao;
 
 import org.example.database.DbInitialSetup;
 import org.example.database.DbInitialSetupMySql;
-import org.example.entities.Element;
 
 public class MySqlFactory implements DatabaseFactory {
 
@@ -51,5 +50,10 @@ public class MySqlFactory implements DatabaseFactory {
     @Override
     public UserPlaysRoomDao createUserPlaysRoomDao() {
         return new UserPlaysRoomDaoMySql();
+    }
+
+    @Override
+    public RewardDao createRewardDao() {
+        return new RewardDaoMySql();
     }
 }

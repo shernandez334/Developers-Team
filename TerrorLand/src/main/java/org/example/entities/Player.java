@@ -51,6 +51,10 @@ public class Player extends User {
         this.notifications.addAll(notifications);
     }
 
+    public void addNotification(Notification notification){
+        this.notifications.add(notification);
+    }
+
     public String getNotificationWarning(){
         return this.notifications.isEmpty() ? "(no messages)" : String.format("(%d Total)", this.notifications.size());
     }

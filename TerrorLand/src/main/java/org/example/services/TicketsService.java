@@ -1,9 +1,10 @@
 package org.example.services;
 
 import org.example.dao.DatabaseFactory;
-import org.example.dao.FactoryProvider;
 import org.example.entities.Player;
 import org.example.entities.Ticket;
+import org.example.services.rewards.Request;
+import org.example.services.rewards.event.BuyTicketsEvent;
 import org.example.util.IOHelper;
 
 import java.math.BigDecimal;
@@ -35,9 +36,14 @@ public class TicketsService {
         }
     }
 
-    public void buyTickets(Player player){
+    public void buyTicketsDialog(Player player){
         System.out.printf("Each ticket costs %.2f.%n", getPurchasePrice());
         int quantity = IOHelper.readBoundedPositiveInt("How Many Tickets do you wish to buy?\n>", 20);
+        createTickets(player, quantity, getPurchasePrice());
+        RewardService.getInstance().launchRewardChain(new Request(player, new BuyTicketsEvent(quantity)));
+    }
+
+    public void createTickets(Player player, int quantity, BigDecimal purchasePrice) {
         for (int i = 0; i < quantity; i++){
             Ticket ticket = createTicket(player, getPurchasePrice());
             player.addTicket(ticket);
@@ -52,13 +58,13 @@ public class TicketsService {
         databaseFactory.createPropertiesDao().setTicketPrice(price);
     }
 
-    public Ticket createTicket(Player player, BigDecimal price){
+    private Ticket createTicket(Player player, BigDecimal price){
         Ticket ticket = new Ticket(price);
         databaseFactory.createTicketDao().saveTicket(ticket, player);
         return ticket;
     }
 
-    public void cash(Ticket ticket){
+    private void cash(Ticket ticket){
         databaseFactory.createTicketDao().cashTicket(ticket);
     }
 

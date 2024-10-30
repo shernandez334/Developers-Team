@@ -3,6 +3,8 @@ package org.example.services;
 import org.example.dao.DatabaseFactory;
 import org.example.entities.Player;
 import org.example.entities.Notification;
+import org.example.services.rewards.Request;
+import org.example.services.rewards.event.MailRecievedEvent;
 import org.example.util.IOHelper;
 
 import java.util.List;
@@ -65,8 +67,14 @@ public class NotificationsService {
         }
     }
 
-    public void notifySubscriber(int subscriberId, String message){
-        databaseFactory.createNotificationDao().saveNotification(new Notification(subscriberId, message));
+    private Notification notifySubscriber(int subscriberId, String message){
+        return databaseFactory.createNotificationDao().saveNotification(new Notification(subscriberId, message));
+    }
+
+    public void notifyAndUpdateSubscriber(Player player, String message){
+        Notification notification = notifySubscriber(player.getId(), message);
+        player.addNotification(notification);
+        RewardService.getInstance().launchRewardChain(new Request(player, new MailRecievedEvent()));
     }
 
     public void removeSubscriber(Player player) {

@@ -3,6 +3,8 @@ package org.example.services;
 import org.example.dao.DatabaseFactory;
 import org.example.entities.Player;
 import org.example.entities.UserPlaysRoomDto;
+import org.example.services.rewards.Request;
+import org.example.services.rewards.event.CreateCertificateEvent;
 
 import java.util.Set;
 
@@ -17,11 +19,11 @@ public class CertificateService {
     public void getCertificate(Player player) {
         String template1 = """
                 TerrorLand certifies that **%s**:
-                Has played %d rooms with a %.2f%% rate of success.%n
+                Has played %d rooms with a %.2f%% rate of success.
                 """;
         String template12 = """
                 TerrorLand certifies that **%s**:
-                Has no registered plays.%n
+                Has no registered plays.
                 """;
         String template2 = "Room %d: %d plays.%n";
         UserPlaysRoomDto userPlaysRoomDto = databaseFactory.createUserPlaysRoomDao().getPlays(player);
@@ -44,7 +46,7 @@ public class CertificateService {
         }
         System.out.println("Briefly you will receive a notification with your certificate. Check your inbox!");
         NotificationsService notificationsService = new NotificationsService(databaseFactory);
-        notificationsService.notifySubscriber(player.getId(), response.toString());
-        notificationsService.refreshNotificationsFromDatabase(player);
+        notificationsService.notifyAndUpdateSubscriber(player, response.toString());
+        RewardService.getInstance().launchRewardChain(new Request(player, new CreateCertificateEvent()));
     }
 }

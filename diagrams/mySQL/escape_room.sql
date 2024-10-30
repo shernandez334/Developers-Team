@@ -20,7 +20,8 @@ USE `escape_room` ;
 CREATE TABLE IF NOT EXISTS `escape_room`.`room` (
   `room_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
-  `difficulty` ENUM('easy', 'medium', 'hard') NOT NULL,
+  `difficulty` ENUM('EASY', 'MEDIUM', 'HARD', 'EPIC') NOT NULL,
+  `deleted` INT NOT NULL,
   PRIMARY KEY (`room_id`),
   UNIQUE INDEX `room_id_UNIQUE` (`room_id` ASC) VISIBLE)
 ENGINE = InnoDB;
@@ -33,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `escape_room`.`element` (
   `element_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `price` DECIMAL(10,2) UNSIGNED NULL,
-  `type` ENUM('room', 'clue', 'decoration') NOT NULL,
+  `type` ENUM('ROOM', 'CLUE', 'DECORATION') NOT NULL,
   `deleted` TINYINT NULL DEFAULT 0,
   PRIMARY KEY (`element_id`),
   UNIQUE INDEX `element_id_UNIQUE` (`element_id` ASC) VISIBLE,
@@ -46,7 +47,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `escape_room`.`clue` (
   `element_id` INT NOT NULL,
-  `theme` ENUM('scifi', 'horror', 'fantasy') NOT NULL,
+  `theme` ENUM('SCI_FI', 'MEDIEVAL', 'SPACE') NOT NULL,
   PRIMARY KEY (`element_id`),
   UNIQUE INDEX `element_id_UNIQUE` (`element_id` ASC) VISIBLE,
   CONSTRAINT `fk_element1`
@@ -62,7 +63,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `escape_room`.`decor_item` (
   `element_id` INT NOT NULL,
-  `material` ENUM('plastic', 'paper', 'stone', 'glass', 'metal') NOT NULL,
+  `material` ENUM('PLASTIC', 'PAPER', 'STONE', 'GLASS', 'METAL') NOT NULL,
   PRIMARY KEY (`element_id`),
   INDEX `fk_element2_idx` (`element_id` ASC) VISIBLE,
   UNIQUE INDEX `element_id_UNIQUE` (`element_id` ASC) VISIBLE,
@@ -247,11 +248,16 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `escape_room`;
-INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (1, 'Welcome Onboard!', 'You have played your first room', '^!^');
-INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (2, 'Tutti Frutti', 'One room of each difficulty played', ':O');
-INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (3, 'Loyal Member', 'You have played 3 rooms', '**');
-INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (4, 'Heavy Thinker', 'You have solved 2 epic rooms', '8-)');
-INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (5, 'Bureaucrat', 'You have created a certificate', '^/^');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (1, 'Welcome Onboard!', 'You have played your first room', '🎉');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (2, 'Tutti Frutti', 'One room of each difficulty played', '🍎🍉🍓🍌');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (3, 'Loyal Member', 'You have played 3 rooms', '🙌');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (4, 'Heavy Thinker', 'You have solved 2 epic rooms', '🔍');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (5, 'Bureaucrat', 'You have created a certificate', '📃');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (6, 'Messy', 'Have 5 messages in the inbox', '📫');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (7, 'Stubborn', 'Complete a room after 2 failed attempts', '💪');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (8, 'U\'re a Looser', 'Fail to complete a room 5 times in a row', '💩');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (9, 'Investor', 'Buy a bunch of tickets', '💸💸');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (10, 'Easy Peasy!', 'You have checked your rewards', '🍋');
 
 COMMIT;
 

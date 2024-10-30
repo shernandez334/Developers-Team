@@ -8,6 +8,7 @@ import org.example.exceptions.MySqlEmptyResultSetException;
 import org.example.mysql.QueryResult;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -72,16 +73,6 @@ public class PlayerDaoMySql implements PlayerDao {
     @Override
     public List<Notification> retrieveNotifications(int playerId) {
         List<Notification> response = new ArrayList<>();
-        List<List<Object>> items = retrieveMultipleColumnsFromDatabase(
-                String.format("SELECT notification_id, message FROM notification WHERE user_id = %d;", playerId),
-                new String[] {Integer.class.getName(), String.class.getName()});
-        items.forEach(e -> response.add(new Notification((int) e.getFirst(), playerId, (String) e.get(1))));
-        return response;
-    }
-
-    @Override
-    public Set<Reward> retrieveRewards(int playerId) {
-        Set<Reward> response = new HashSet<>();
         List<List<Object>> items = retrieveMultipleColumnsFromDatabase(
                 String.format("SELECT notification_id, message FROM notification WHERE user_id = %d;", playerId),
                 new String[] {Integer.class.getName(), String.class.getName()});

@@ -15,16 +15,17 @@ public class NotificationDaoMySql implements NotificationDao {
     }
 
     @Override
-    public void saveNotification(Notification notification){
+    public Notification saveNotification(Notification notification){
         String message = notification.getMessage().replaceAll("'", "''");
         String sql = String.format("INSERT INTO notification (user_id, message) VALUES (%d, '%s');",
                 notification.getUserId(), message);
         try {
-            createStatementAndExecute(sql);
-            //notification.setId(getLastInsertedId());
+            int id = executeInsertStatementAndGetId(sql);
+            notification.setId(id);
         } catch (SQLIntegrityConstraintViolationException e) {
             throw new RuntimeException(e);
         }
+        return notification;
     }
 
     @Override

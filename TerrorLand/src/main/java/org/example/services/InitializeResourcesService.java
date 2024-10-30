@@ -94,6 +94,6 @@ public class InitializeResourcesService {
     }
 
     public void setupRewards(DatabaseFactory databaseFactory) {
-        new RewardService(databaseFactory).configureChainOfResponsibility();
+        RewardService.getInstance().setChainOfResponsibility(databaseFactory);
     }
 }

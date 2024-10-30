@@ -8,6 +8,8 @@ import org.example.enums.ConfigurableProperty;
 import org.example.enums.Properties;
 import org.example.enums.RoomStatus;
 import org.example.exceptions.IdNotFoundException;
+import org.example.services.rewards.Request;
+import org.example.services.rewards.event.RoomPlayedEvent;
 import org.example.util.IOHelper;
 
 import java.util.List;
@@ -41,6 +43,8 @@ public class RoomPlayService {
                 System.out.println("Time is up! Try again later.");
                 addPlayerRoomNotSolved(player, room);
             }
+
+            RewardService.getInstance().launchRewardChain(new Request(player, new RoomPlayedEvent(solved, room)));
 
         } catch (IdNotFoundException e) {
             System.out.println("There is no room with such id.");
