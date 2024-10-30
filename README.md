@@ -1,10 +1,39 @@
-# Enunciat
+# Escape Room
 
-## Nivell 1 ⭐
+---
+
+## Design Patterns
+
+---
+
+One of the goals of this project was to implement different design patterns. Some of the patterns used include:
+
+- **DAO:** abstract the data retrieval and storage from the business logic following the principle of separation concerns.
+- **Abstract Factory:** switch between different database providers (MySQL and MongoDB) with minimum code changes.
+- **Singleton:** ensure a class has only one instance and provide a global point of acces to that instance throughout the app execution.
+- **Observer:** player may subscribe and unsubscribe to receive notifications.
+- **Chain of responsibility:** rewards and badges attainment conditions are passed along a chain of Reward Handlers that either process the request of pass it to the next handler in the chain.
+- **Template:** a template Reward Handler class provides a basic structure for other reward handlers, promoting code reusability and simplifying the creation of new rewards.
+
+---
+## Technology/libraries
+
+---
+
+- #### Testing: JUnit and Mockito
+- #### Database: JDBC Driver for MySQL (Connector/J)
+- #### Logging: SLF4J (logback implementation)
+
+---
+## Assignment
+
+---
+
+### Nivell 1 ⭐
 
 Hem de desenvolupar una aplicació per gestionar un **Escape Room virtual**, on els usuaris puguin gaudir d'aventures emocionants i resoldre enigmes desafiant. En el nivell 1, com a persistència **MySQL**.
 
-### L'aplicació ha de complir amb els següents requisits:
+#### L'aplicació ha de complir amb els següents requisits:
 
 - En el nostre Escape Room virtual, que té un nom específic, oferim una varietat de **sales** temàtiques, **pistes** intrigants i **objectes de decoració** únics.
 - Cada sala té assignat un **nivell de dificultat** per proporcionar una experiència equilibrada i desafiadora
@@ -16,7 +45,7 @@ Hem de desenvolupar una aplicació per gestionar un **Escape Room virtual**, on 
 - L'aplicació oferirà una funcionalitat per emetre **certificats** de superació d'enigmes, on es registraran els assoliments aconseguits pels jugadors durant la seva experiència a l'Escape Room.
 - A més, se'ls podran atorgar possibles **regals o recompenses** com a reconeixement per la seva habilitat i destresa en resoldre els reptes plantejats.
 
-### Pel que fa a les funcionalitats a mostrar per pantalla, s'espera que inclogui com a mínim les següents:
+#### Pel que fa a les funcionalitats a mostrar per pantalla, s'espera que inclogui com a mínim les següents:
 
 - Crear un nou Escape Room virtual.
 - Afegir una nova sala amb el seu respectiu nivell de dificultat.
@@ -30,22 +59,10 @@ Hem de desenvolupar una aplicació per gestionar un **Escape Room virtual**, on 
 - Notificar als usuaris sobre esdeveniments importants a l'Escape Room, com l'addició de noves pistes, la finalització d'una sala, etc.
 - Els usuaris interessats en aquests esdeveniments podran sol·licitar registrar-se per poder rebre notificacions quan es produeixin esdeveniments rellevants.
 
-## Nivell 2 ⭐⭐
+### Nivell 2 ⭐⭐
 
 Tèsting.
 
-## Nivell 3 ⭐⭐⭐
+### Nivell 3 ⭐⭐⭐
 
 Usa com a persistència MongoDB.
-
-# Patrons
-- Singleton
-- Abstract Factory
-- Observer
-
-# Tecnologia emprada
-
-- JUnit
-- Mockito
-- MySQL
-- logback
