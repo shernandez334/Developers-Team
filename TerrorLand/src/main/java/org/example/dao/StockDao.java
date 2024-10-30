@@ -16,7 +16,7 @@ public class StockDao implements StockFactory {
     private static final OutputBuilder OUTPUT_BUILDER = new OutputBuilder();
 
     public void displayTotalPriceOfAllElementsInRooms() {
-        String query = Queries.buildCalculateStockValue(); // Ensure this retrieves the query above
+        String query = Queries.buildCalculateStockValue();
         try (Connection conn = getConnection("escape_room");
              PreparedStatement psmt = conn.prepareStatement(query);
              ResultSet rs = psmt.executeQuery()) {

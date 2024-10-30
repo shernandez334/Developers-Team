@@ -35,10 +35,10 @@ public class Queries {
 
     public static String buildCalculateStockValue(){
         return """
-                SELECT SUM(e.price * rhe.quantity) AS total_price
+                SELECT IFNULL(SUM(e.price * rhe.quantity), 0) AS total_price
                 FROM room r
-                JOIN room_has_element rhe ON r.room_id = rhe.room_id
-                JOIN element e ON e.element_id = rhe.element_id
+                LEFT JOIN room_has_element rhe ON r.room_id = rhe.room_id
+                LEFT JOIN element e ON e.element_id = rhe.element_id
                 WHERE r.deleted = 0;
                """;
     }
