@@ -21,7 +21,7 @@ public class BuyManyTicketsReward extends PatternReward {
             if (quantity > 5) {
                 super.grantReward(request.getPlayer());
                 new TicketsService(super.getDatabaseFactory()).createTickets(request.getPlayer(), 5, new BigDecimal(0));
-                new NotificationsService(super.getDatabaseFactory()).notifyAndUpdateSubscriber(request.getPlayer(),
+                new NotificationsService(super.getDatabaseFactory()).notifyAndUpdatePlayer(request.getPlayer(),
                         "Here's your prize!\nYou have received 5 free tickets for winning the 'Investor' Badge.");
             }
         }

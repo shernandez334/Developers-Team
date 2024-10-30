@@ -49,7 +49,7 @@ public abstract class PatternReward implements RewardHandler {
         player.addReward(reward);
         databaseFactory.createRewardDao().saveReward(reward, player);
         new NotificationsService(databaseFactory)
-                .notifyAndUpdateSubscriber(player, "You have earned a badge!");
+                .notifyAndUpdatePlayer(player, "You have earned a badge!");
     }
 
     private Reward getReward(int rewardId){

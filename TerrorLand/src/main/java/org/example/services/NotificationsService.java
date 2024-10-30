@@ -61,16 +61,16 @@ public class NotificationsService {
     public void notifySubscribers(String message) {
         List<Integer> subscribersIds = databaseFactory.createNotificationDao().getSubscribersIds();
         for (Integer subscriberId : subscribersIds){
-            notifySubscriber(subscriberId, message);
+            notifyPlayer(subscriberId, message);
         }
     }
 
-    private Notification notifySubscriber(int subscriberId, String message){
-        return databaseFactory.createNotificationDao().saveNotification(new Notification(subscriberId, message));
+    private Notification notifyPlayer(int playerId, String message){
+        return databaseFactory.createNotificationDao().saveNotification(new Notification(playerId, message));
     }
 
-    public void notifyAndUpdateSubscriber(Player player, String message){
-        Notification notification = notifySubscriber(player.getId(), message);
+    public void notifyAndUpdatePlayer(Player player, String message){
+        Notification notification = notifyPlayer(player.getId(), message);
         player.addNotification(notification);
         RewardsService.getInstance().launchRewardChain(new Request(player, new MailRecievedEvent()));
     }

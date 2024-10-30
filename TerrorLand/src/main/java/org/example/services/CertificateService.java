@@ -46,7 +46,7 @@ public class CertificateService {
         }
         System.out.println("Briefly you will receive a notification with your certificate. Check your inbox!");
         NotificationsService notificationsService = new NotificationsService(databaseFactory);
-        notificationsService.notifyAndUpdateSubscriber(player, response.toString());
+        notificationsService.notifyAndUpdatePlayer(player, response.toString());
         RewardsService.getInstance().launchRewardChain(new Request(player, new CreateCertificateEvent()));
     }
 }
