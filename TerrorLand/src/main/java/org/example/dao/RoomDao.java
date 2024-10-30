@@ -33,7 +33,6 @@ public class RoomDao implements RoomFactory {
         Difficulty difficulty = MenuHelper.readDifficultySelection("Choose a level of difficulty: ");
         DATABASEINPUT.inputRoomIntoTable(name, difficulty, 0);
         int room_id = getCurrentRoomId();
-        System.out.println(room_id);
         return new Room(room_id, name, difficulty, 0);
     }
 

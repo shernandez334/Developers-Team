@@ -24,7 +24,7 @@ public class ElementCreator {
         int op;
         Room room = ROOMCREATOR.createElementRoom();
         do {
-            op = MenuHelper.readSelection("You must create at least one element: ",
+            op = MenuHelper.readSelection("Elements you want to create: ",
                     ">", "1. Decoration", "2. Clue", "3. Exit");
 
             switch (op) {
@@ -55,6 +55,7 @@ public class ElementCreator {
         DATABASEINPUT.inputDecorationIntoTable(decor.getElementId(), decor.getMaterial());
         int quantity = IOHelper.readInt("Quantity: ");
         DATABASEINPUT.inputRoomHasElementIntoTable(room.getRoomId(), decor.getElementId(), quantity);
+        System.out.print("Decoration created.");
     }
 
     public void addClueToRoomHasElement(Room room){
@@ -62,6 +63,7 @@ public class ElementCreator {
         DATABASEINPUT.inputClueIntoTable(clue.getElementId(), clue.getTheme());
         int quantity = IOHelper.readInt("Quantity: ");
         DATABASEINPUT.inputRoomHasElementIntoTable(room.getRoomId(), clue.getElementId(), quantity);
+        System.out.println("Clue created.");
     }
 
     public int checkIfRoomHasElement(Room room) {
@@ -69,7 +71,7 @@ public class ElementCreator {
         int op = 3;
         boolean hasElement = DATABASEINPUT.doesRoomHaveElements(roomId);
         if (!hasElement) {
-            LOGGER.warn("No elements found in this room. You have to assign an element to the room...");
+            System.out.println("No elements found in this room. You have to assign an element to the room.");
             op = 0;
         }
         return op;
