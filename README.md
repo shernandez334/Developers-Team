@@ -6,10 +6,11 @@ One of the goals of this project was to implement different design patterns. Som
 
 - **DAO:** abstract the data retrieval and storage from the business logic following the principle of separation concerns.
 - **Abstract Factory:** switch between different database providers (MySQL and MongoDB) with minimum code changes.
-- **Singleton:** ensure a class has only one instance and provide a global point of acces to that instance throughout the app execution.
+- **Singleton:** ensure a class has only one instance and provide a global point of access to that instance throughout the app execution.
 - **Observer:** player may subscribe and unsubscribe to receive notifications.
 - **Chain of responsibility:** rewards and badges attainment conditions are passed along a chain of Reward Handlers that either process the request of pass it to the next handler in the chain.
 - **Template:** a template Reward Handler class provides a basic structure for other reward handlers, promoting code reusability and simplifying the creation of new rewards.
+- **Service Layer Pattern:** organize code in different services to simplify maintenance and increase code reusability.
 
 ## Technology/libraries
 
