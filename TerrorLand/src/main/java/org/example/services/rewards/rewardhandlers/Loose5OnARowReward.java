@@ -4,7 +4,7 @@ import org.example.dao.UserPlaysRoomDao;
 import org.example.services.rewards.Request;
 import org.example.services.rewards.event.RoomPlayedEvent;
 
-public class Loose5OnARowReward extends BaseReward {
+public class Loose5OnARowReward extends PatternReward {
 
 
     public Loose5OnARowReward(int id) {

@@ -59,16 +59,8 @@ public class Player extends User {
         return this.notifications.isEmpty() ? "(no messages)" : String.format("(%d Total)", this.notifications.size());
     }
 
-    public boolean hasNoNotifications() {
-        return this.notifications.isEmpty();
-    }
-
     public List<Notification> getNotifications() {
         return this.notifications;
-    }
-
-    public int getNotificationsSize() {
-        return this.notifications.size();
     }
 
     public void addTicket(Ticket ticket) {
@@ -81,10 +73,6 @@ public class Player extends User {
 
     public void addReward(Reward reward){
         this.rewards.add(reward);
-    }
-
-    public boolean hasReward(Reward reward){
-        return this.rewards.contains(reward);
     }
 
     public void setRewards(Set<Reward> rewards) {

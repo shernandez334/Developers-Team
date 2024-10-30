@@ -1,8 +1,8 @@
 package org.example.services;
 
-import org.example.dao.DatabaseFactory;
+import org.example.database.DatabaseFactory;
 import org.example.entities.Player;
-import org.example.entities.UserPlaysRoomDto;
+import org.example.dto.UserPlaysRoomDto;
 import org.example.services.rewards.Request;
 import org.example.services.rewards.event.CreateCertificateEvent;
 
@@ -47,6 +47,6 @@ public class CertificateService {
         System.out.println("Briefly you will receive a notification with your certificate. Check your inbox!");
         NotificationsService notificationsService = new NotificationsService(databaseFactory);
         notificationsService.notifyAndUpdateSubscriber(player, response.toString());
-        RewardService.getInstance().launchRewardChain(new Request(player, new CreateCertificateEvent()));
+        RewardsService.getInstance().launchRewardChain(new Request(player, new CreateCertificateEvent()));
     }
 }

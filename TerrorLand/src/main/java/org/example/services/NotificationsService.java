@@ -1,6 +1,6 @@
 package org.example.services;
 
-import org.example.dao.DatabaseFactory;
+import org.example.database.DatabaseFactory;
 import org.example.entities.Player;
 import org.example.entities.Notification;
 import org.example.services.rewards.Request;
@@ -17,7 +17,6 @@ public class NotificationsService {
         this.databaseFactory = databaseFactory;
     }
 
-    //TODO: test readNotifications()
     public void readNotifications(Player player) {
         refreshNotificationsFromDatabase(player);
         List<Notification> notifications = player.getNotifications();
@@ -48,7 +47,6 @@ public class NotificationsService {
         }while (option != 'q');
     }
 
-    //TODO: make prettier
     private void printNotification(List<Notification> notifications, int i) {
         System.out.println(new StringBuilder().repeat(" * ", 20));
         System.out.printf("%n%s%n", IOHelper.indentText(notifications.get(i).getMessage(), "**  "));
@@ -74,7 +72,7 @@ public class NotificationsService {
     public void notifyAndUpdateSubscriber(Player player, String message){
         Notification notification = notifySubscriber(player.getId(), message);
         player.addNotification(notification);
-        RewardService.getInstance().launchRewardChain(new Request(player, new MailRecievedEvent()));
+        RewardsService.getInstance().launchRewardChain(new Request(player, new MailRecievedEvent()));
     }
 
     public void removeSubscriber(Player player) {

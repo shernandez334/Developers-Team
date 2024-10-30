@@ -3,7 +3,7 @@ package org.example.services.rewards.rewardhandlers;
 import org.example.services.rewards.Request;
 import org.example.services.rewards.event.RoomPlayedEvent;
 
-public class ThreeRoomsPlayedReward extends BaseReward {
+public class ThreeRoomsPlayedReward extends PatternReward {
 
 
     public ThreeRoomsPlayedReward(int id) {

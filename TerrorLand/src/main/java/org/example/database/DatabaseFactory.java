@@ -1,8 +1,6 @@
-package org.example.dao;
+package org.example.database;
 
-import org.example.database.DbInitialSetup;
-import org.example.enums.ConfigurableProperty;
-import org.example.enums.Properties;
+import org.example.dao.*;
 
 public interface DatabaseFactory {
 

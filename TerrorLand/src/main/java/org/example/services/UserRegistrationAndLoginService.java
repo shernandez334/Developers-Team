@@ -1,7 +1,8 @@
 package org.example.services;
 
 import com.google.common.hash.Hashing;
-import org.example.dao.DatabaseFactory;
+import org.example.database.DatabaseFactory;
+import org.example.database.FactoryProvider;
 import org.example.enums.UserRole;
 import org.example.entities.Admin;
 import org.example.entities.Player;
@@ -9,6 +10,7 @@ import org.example.entities.User;
 import org.example.exceptions.ExistingEmailException;
 import org.example.exceptions.FormatException;
 import org.example.exceptions.MySqlException;
+import org.example.exceptions.WrongCredentialsException;
 
 import java.nio.charset.StandardCharsets;
 
@@ -88,7 +90,13 @@ public class UserRegistrationAndLoginService {
         return databaseFactory.createUserDao().saveUser(user);
     }
 
-    public User getUserFromCredentials(String email, String password){
-        return databaseFactory.createUserDao().getUser(email, password);
+    public User getUserFromCredentials(String email, String password) throws WrongCredentialsException {
+        User user = databaseFactory.createUserDao().getUser(email, password);
+        if (user instanceof Player){
+            new NotificationsService(FactoryProvider.getInstance().getDbFactory())
+                    .refreshNotificationsFromDatabase((Player) user);
+            RewardsService.getInstance().refreshRewardsFromDatabase((Player) user);
+        }
+        return user;
     }
 }

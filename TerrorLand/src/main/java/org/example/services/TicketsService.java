@@ -1,6 +1,6 @@
 package org.example.services;
 
-import org.example.dao.DatabaseFactory;
+import org.example.database.DatabaseFactory;
 import org.example.entities.Player;
 import org.example.entities.Ticket;
 import org.example.services.rewards.Request;
@@ -40,7 +40,7 @@ public class TicketsService {
         System.out.printf("Each ticket costs %.2f.%n", getPurchasePrice());
         int quantity = IOHelper.readBoundedPositiveInt("How Many Tickets do you wish to buy?\n>", 20);
         createTickets(player, quantity, getPurchasePrice());
-        RewardService.getInstance().launchRewardChain(new Request(player, new BuyTicketsEvent(quantity)));
+        RewardsService.getInstance().launchRewardChain(new Request(player, new BuyTicketsEvent(quantity)));
     }
 
     public void createTickets(Player player, int quantity, BigDecimal purchasePrice) {

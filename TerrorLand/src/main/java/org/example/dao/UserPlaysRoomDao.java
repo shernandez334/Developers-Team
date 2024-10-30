@@ -2,7 +2,7 @@ package org.example.dao;
 
 import org.example.entities.Player;
 import org.example.entities.Room;
-import org.example.entities.UserPlaysRoomDto;
+import org.example.dto.UserPlaysRoomDto;
 import org.example.enums.Difficulty;
 
 public interface UserPlaysRoomDao {

@@ -5,7 +5,7 @@ import org.example.enums.Difficulty;
 import org.example.services.rewards.Request;
 import org.example.services.rewards.event.RoomPlayedEvent;
 
-public class TwoEpicRoomsSolvedReward extends BaseReward {
+public class TwoEpicRoomsSolvedReward extends PatternReward {
 
 
     public TwoEpicRoomsSolvedReward(int id) {

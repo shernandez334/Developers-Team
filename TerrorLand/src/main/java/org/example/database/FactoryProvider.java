@@ -1,5 +1,6 @@
-package org.example.dao;
+package org.example.database;
 
+import org.example.dao.MySqlFactory;
 import org.example.enums.ConfigurableProperty;
 import org.example.enums.Properties;
 
