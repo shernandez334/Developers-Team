@@ -1,13 +1,14 @@
 package org.example.dao;
 
+import org.example.database.FactoryProvider;
 import org.example.entities.Player;
 import org.example.entities.User;
 import org.example.exceptions.ExistingEmailException;
 import org.example.entities.Admin;
 import org.example.exceptions.MySqlException;
+import org.example.exceptions.WrongCredentialsException;
 import org.example.mysql.QueryResult;
 import org.example.services.NotificationsService;
-import org.example.services.RewardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,25 +43,21 @@ public class UserDaoMySql implements UserDao {
     }
 
     @Override
-    public User getUser(String email, String password) {
-        User user;
+    public User getUser(String email, String password) throws WrongCredentialsException {
         String sql = String.format("SELECT user_id, name, role FROM user WHERE email = '%s' AND password = '%s';",
                 email, password);
         try (QueryResult queryResult = createStatementAndExecuteQuery(sql)){
             ResultSet result = queryResult.getResultSet();
             if (!result.next()){
-                user = null;
-            } else if (result.getString("role").equalsIgnoreCase("player")){
-                user = new Player(result.getInt("user_id"), result.getString("name"),
+                throw new WrongCredentialsException("No user found with such name and password.");
+            }
+            if (result.getString("role").equalsIgnoreCase("player")){
+                return new Player(result.getInt("user_id"), result.getString("name"),
                         password, email);
-                new NotificationsService(FactoryProvider.getInstance().getDbFactory())
-                        .refreshNotificationsFromDatabase((Player) user);
-                RewardService.getInstance().refreshRewardsFromDatabase((Player) user);
             }else {
-                user = new Admin(result.getInt("user_id"), result.getString("name"),
+                return new Admin(result.getInt("user_id"), result.getString("name"),
                         password, email);
             }
-        return user;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

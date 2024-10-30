@@ -1,18 +1,8 @@
 package org.example.entities;
 
 import org.example.enums.Difficulty;
-import org.example.enums.Type;
-import org.example.util.IOHelper;
-import org.example.util.MenuHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import static org.example.mysql.MySqlHelper.getConnection;
 
 public class Room{
     private final int room_id;

@@ -1,6 +1,7 @@
 package org.example.services;
 
 import org.example.dao.*;
+import org.example.database.DatabaseFactory;
 import org.example.entities.Element;
 import org.example.entities.Player;
 import org.example.entities.Room;
@@ -17,7 +18,6 @@ import java.util.List;
 public class RoomPlayService {
 
     private final DatabaseFactory databaseFactory;
-    //TODO injection RoomDao and UserPlaysRoomDao
     public RoomPlayService(DatabaseFactory databaseFactory){
         this.databaseFactory = databaseFactory;
     }
@@ -44,7 +44,7 @@ public class RoomPlayService {
                 addPlayerRoomNotSolved(player, room);
             }
 
-            RewardService.getInstance().launchRewardChain(new Request(player, new RoomPlayedEvent(solved, room)));
+            RewardsService.getInstance().launchRewardChain(new Request(player, new RoomPlayedEvent(solved, room)));
 
         } catch (IdNotFoundException e) {
             System.out.println("There is no room with such id.");
@@ -85,12 +85,10 @@ public class RoomPlayService {
     }
 
     private void addPlayerRoomSolved(Player player, Room room) {
-        UserPlaysRoomDao userPlaysRoomDao = new UserPlaysRoomDaoMySql();
-        userPlaysRoomDao.savePlay(player, room, true);
+        databaseFactory.createUserPlaysRoomDao().savePlay(player, room, true);
     }
 
     private void addPlayerRoomNotSolved(Player player, Room room) {
-        UserPlaysRoomDao userPlaysRoomDao = new UserPlaysRoomDaoMySql();
-        userPlaysRoomDao.savePlay(player, room, false);
+        databaseFactory.createUserPlaysRoomDao().savePlay(player, room, false);
     }
 }

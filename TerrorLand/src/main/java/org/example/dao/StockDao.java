@@ -1,9 +1,8 @@
 package org.example.dao;
 
-import org.example.AdminMenu.RoomManagerMenu;
 import org.example.factory.StockFactory;
 import org.example.util.OutputBuilder;
-import org.example.util.Queries;
+import org.example.mysql.Queries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.sql.Connection;

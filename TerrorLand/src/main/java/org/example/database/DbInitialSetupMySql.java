@@ -1,6 +1,5 @@
 package org.example.database;
 
-import org.example.enums.ScriptMode;
 import org.example.mysql.MySqlHelper;
 import org.example.enums.SystemProperty;
 import org.example.exceptions.ExecuteScriptIOException;

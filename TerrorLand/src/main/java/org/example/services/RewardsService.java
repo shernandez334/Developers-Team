@@ -1,6 +1,6 @@
 package org.example.services;
 
-import org.example.dao.DatabaseFactory;
+import org.example.database.DatabaseFactory;
 import org.example.entities.Player;
 import org.example.services.rewards.*;
 import org.example.services.rewards.event.CheckedRewardsEvent;
@@ -8,18 +8,18 @@ import org.example.services.rewards.rewardhandlers.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RewardService {
+public class RewardsService {
 
-    private final Logger log = LoggerFactory.getLogger(RewardService.class);
+    private final Logger log = LoggerFactory.getLogger(RewardsService.class);
     private RewardHandler firstReward;
     private DatabaseFactory databaseFactory;
-    private static RewardService instance;
+    private static RewardsService instance;
 
-    private RewardService() {
+    private RewardsService() {
     }
 
-    public static RewardService getInstance(){
-        if (instance == null) instance = new RewardService();
+    public static RewardsService getInstance(){
+        if (instance == null) instance = new RewardsService();
         return instance;
     }
 
@@ -27,7 +27,7 @@ public class RewardService {
         this.databaseFactory = databaseFactory;
         log.debug("Configuring rewards chain of responsibility.");
         this.firstReward = new PlayedFirstRoomReward(1);
-        this.firstReward.setNext(new OneOfEachReward(2))
+        this.firstReward.setNext(new OneOfEachDifficultyReward(2))
                 .setNext(new ThreeRoomsPlayedReward(3))
                 .setNext(new TwoEpicRoomsSolvedReward(4))
                 .setNext(new CreateCertificateReward(5))

@@ -3,7 +3,7 @@ package org.example.services.rewards.rewardhandlers;
 import org.example.services.rewards.Request;
 import org.example.services.rewards.event.MailRecievedEvent;
 
-public class InboxWith5MessagesReward extends BaseReward {
+public class InboxWith5MessagesReward extends PatternReward {
 
 
     public InboxWith5MessagesReward(int id) {

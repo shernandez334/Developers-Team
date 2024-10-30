@@ -1,7 +1,7 @@
 package org.example.services;
 
 import com.google.common.hash.Hashing;
-import org.example.dao.DatabaseFactory;
+import org.example.database.DatabaseFactory;
 import org.example.dao.MySqlFactory;
 import org.example.dao.UserDao;
 import org.example.entities.Admin;

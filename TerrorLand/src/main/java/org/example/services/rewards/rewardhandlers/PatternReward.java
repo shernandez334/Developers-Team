@@ -1,20 +1,20 @@
 package org.example.services.rewards.rewardhandlers;
 
-import org.example.dao.DatabaseFactory;
-import org.example.dao.FactoryProvider;
+import org.example.database.DatabaseFactory;
+import org.example.database.FactoryProvider;
 import org.example.entities.Player;
 import org.example.entities.Reward;
 import org.example.services.NotificationsService;
 import org.example.services.rewards.Request;
 import org.example.services.rewards.RewardHandler;
 
-public abstract class BaseReward implements RewardHandler {
+public abstract class PatternReward implements RewardHandler {
 
     private int id;
     private RewardHandler next;
     private DatabaseFactory databaseFactory;
 
-    public BaseReward(int id) {
+    public PatternReward(int id) {
         this.id = id;
         this.databaseFactory = FactoryProvider.getInstance().getDbFactory();
     }

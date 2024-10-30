@@ -7,7 +7,7 @@ import org.example.services.rewards.event.BuyTicketsEvent;
 
 import java.math.BigDecimal;
 
-public class BuyManyTicketsReward extends BaseReward {
+public class BuyManyTicketsReward extends PatternReward {
 
 
     public BuyManyTicketsReward(int id) {

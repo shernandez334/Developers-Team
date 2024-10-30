@@ -1,7 +1,7 @@
 package org.example.services;
 
-import org.example.dao.DatabaseFactory;
-import org.example.dao.FactoryProvider;
+import org.example.database.DatabaseFactory;
+import org.example.database.FactoryProvider;
 import org.example.enums.SystemProperty;
 import org.example.enums.ConfigurableProperty;
 import org.example.enums.ProcessStatus;
@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
 
-//TODO throw generic database exceptions instead of sql exceptions.
 public class InitializeResourcesService {
     private static final Logger log = LoggerFactory.getLogger(InitializeResourcesService.class);
 
@@ -93,7 +92,7 @@ public class InitializeResourcesService {
         databaseFactory.createDbInitialSetup().createDatabase();
     }
 
-    public void setupRewards(DatabaseFactory databaseFactory) {
-        RewardService.getInstance().setChainOfResponsibility(databaseFactory);
+    public void initiateRewardsService(DatabaseFactory databaseFactory) {
+        RewardsService.getInstance().setChainOfResponsibility(databaseFactory);
     }
 }

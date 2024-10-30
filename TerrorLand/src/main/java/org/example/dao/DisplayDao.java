@@ -4,7 +4,7 @@ import org.example.enums.RoomStatus;
 import org.example.factory.DisplayFactory;
 import org.example.util.IOHelper;
 import org.example.util.OutputBuilder;
-import org.example.util.Queries;
+import org.example.mysql.Queries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.sql.Connection;

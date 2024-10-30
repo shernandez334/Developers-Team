@@ -5,10 +5,10 @@ import org.example.enums.Difficulty;
 import org.example.services.rewards.Request;
 import org.example.services.rewards.event.RoomPlayedEvent;
 
-public class OneOfEachReward extends BaseReward {
+public class OneOfEachDifficultyReward extends PatternReward {
 
 
-    public OneOfEachReward(int id) {
+    public OneOfEachDifficultyReward(int id) {
         super(id);
     }
 

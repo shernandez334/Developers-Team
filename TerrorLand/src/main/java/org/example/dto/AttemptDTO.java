@@ -1,16 +1,16 @@
-package org.example.entities;
+package org.example.dto;
 
 import org.example.enums.Difficulty;
 
 import java.time.LocalDateTime;
 
-public class Attempt {
+public class AttemptDTO {
 
     private boolean success;
     private LocalDateTime dateTime;
     private Difficulty difficulty;
 
-    public Attempt(boolean success, LocalDateTime dateTime, Difficulty difficulty) {
+    public AttemptDTO(boolean success, LocalDateTime dateTime, Difficulty difficulty) {
         this.success = success;
         this.dateTime = dateTime;
         this.difficulty = difficulty;
@@ -18,10 +18,6 @@ public class Attempt {
 
     public boolean isSuccess() {
         return success;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
     }
 
 }

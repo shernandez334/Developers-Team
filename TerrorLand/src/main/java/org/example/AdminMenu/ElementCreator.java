@@ -1,6 +1,6 @@
 package org.example.AdminMenu;
 
-import org.example.dao.FactoryProvider;
+import org.example.database.FactoryProvider;
 import org.example.dao.RoomDao;
 import org.example.entities.Clue;
 import org.example.entities.Decoration;

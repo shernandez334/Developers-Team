@@ -1,9 +1,7 @@
 package org.example.dao;
 
 import org.example.entities.Element;
-import org.example.entities.Player;
 import org.example.entities.Room;
-import org.example.entities.Ticket;
 import org.example.enums.Difficulty;
 import org.example.enums.RoomStatus;
 import org.example.enums.Type;

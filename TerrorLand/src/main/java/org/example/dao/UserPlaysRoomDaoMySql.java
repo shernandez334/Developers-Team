@@ -1,9 +1,9 @@
 package org.example.dao;
 
-import org.example.entities.Attempt;
+import org.example.dto.AttemptDTO;
 import org.example.entities.Player;
 import org.example.entities.Room;
-import org.example.entities.UserPlaysRoomDto;
+import org.example.dto.UserPlaysRoomDto;
 import org.example.enums.Difficulty;
 import org.example.exceptions.MySqlEmptyResultSetException;
 import org.example.mysql.MySqlHelper;
@@ -39,7 +39,7 @@ public class UserPlaysRoomDaoMySql implements UserPlaysRoomDao {
                 new String[] {Integer.class.getName(), Integer.class.getName(), LocalDateTime.class.getName(),
                 String.class.getName()});
         items.forEach(e -> response.addAttempt((Integer) e.getFirst(),
-                new Attempt((Integer) e.get(1) == 1, (LocalDateTime) e.get(2),
+                new AttemptDTO((Integer) e.get(1) == 1, (LocalDateTime) e.get(2),
                         Difficulty.valueOf((String) e.get(3)))));
         return response;
     }

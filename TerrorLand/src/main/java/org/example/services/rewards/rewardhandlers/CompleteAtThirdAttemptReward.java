@@ -4,7 +4,7 @@ import org.example.dao.UserPlaysRoomDao;
 import org.example.services.rewards.Request;
 import org.example.services.rewards.event.RoomPlayedEvent;
 
-public class CompleteAtThirdAttemptReward extends BaseReward {
+public class CompleteAtThirdAttemptReward extends PatternReward {
 
 
     public CompleteAtThirdAttemptReward(int id) {

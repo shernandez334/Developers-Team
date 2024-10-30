@@ -1,7 +1,7 @@
 package org.example.menu;
 
 import org.example.AdminMenu.RoomManagerMenu;
-import org.example.dao.DatabaseFactory;
+import org.example.database.DatabaseFactory;
 import org.example.enums.UserRole;
 import org.example.exceptions.ExistingEmailException;
 import org.example.exceptions.FormatException;
@@ -9,6 +9,7 @@ import org.example.exceptions.MySqlException;
 import org.example.entities.Admin;
 import org.example.entities.Player;
 import org.example.entities.User;
+import org.example.exceptions.WrongCredentialsException;
 import org.example.services.*;
 import org.example.services.rewards.Request;
 import org.example.services.rewards.event.MailRecievedEvent;
@@ -48,22 +49,25 @@ public class MainMenu {
         System.out.println("bye");
     }
 
-    //TODO? userLoginDialog() should throw an exception instead of null return when unsuccessful login
     private void loginOrRegisterMenu() {
         User user = null;
         int option = MenuHelper.readSelection("Welcome to the login menu! Select an option.", ">",
                 "1. Login", "2. Register", "3. Quit");
         switch (option){
             case 1 -> {
-                user = userLoginDialog();
-                System.out.println(user == null ? "Wrong credentials." : "You successfully logged as " + user.getName());
+                try {
+                    user = userLoginDialog();
+                    System.out.println("You successfully logged as " + user.getName());
+                } catch (WrongCredentialsException e) {
+                    System.out.println("No user found with provided credentials.");
+                }
             }
             case 2 -> userRegistrationDialog();
             case 3 -> quit = true;
         }
         MainMenu.user = user;
         if (user instanceof Player) {
-            RewardService.getInstance().launchRewardChain(new Request((Player) user, new MailRecievedEvent()));
+            RewardsService.getInstance().launchRewardChain(new Request((Player) user, new MailRecievedEvent()));
         }
     }
 
@@ -99,7 +103,7 @@ public class MainMenu {
             case 2 -> new TicketsService(databaseFactory).buyTicketsDialog(player);
             case 3 -> new NotificationsService(databaseFactory).readNotifications(player);
             case 4 -> toggleSubscriptionStatus(player);
-            case 5 -> RewardService.getInstance().seeRewards(player);
+            case 5 -> RewardsService.getInstance().seeRewards(player);
             case 6 -> new CertificateService(databaseFactory).getCertificate(player);
             case 7 -> MainMenu.user = null;
         }
@@ -155,7 +159,7 @@ public class MainMenu {
         }
     }
 
-    private User userLoginDialog() {
+    private User userLoginDialog() throws WrongCredentialsException {
         UserRegistrationAndLoginService service = new UserRegistrationAndLoginService(databaseFactory);
         String password;
         String email;
