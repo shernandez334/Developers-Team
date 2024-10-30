@@ -1,10 +1,6 @@
 # Escape Room
 
----
-
 ## Design Patterns
-
----
 
 One of the goals of this project was to implement different design patterns. Some of the patterns used include:
 
@@ -15,19 +11,13 @@ One of the goals of this project was to implement different design patterns. Som
 - **Chain of responsibility:** rewards and badges attainment conditions are passed along a chain of Reward Handlers that either process the request of pass it to the next handler in the chain.
 - **Template:** a template Reward Handler class provides a basic structure for other reward handlers, promoting code reusability and simplifying the creation of new rewards.
 
----
 ## Technology/libraries
-
----
 
 - #### Testing: JUnit and Mockito
 - #### Database: JDBC Driver for MySQL (Connector/J)
 - #### Logging: SLF4J (logback implementation)
 
----
 ## Assignment
-
----
 
 ### Nivell 1 ⭐
 
