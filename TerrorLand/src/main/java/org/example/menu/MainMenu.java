@@ -10,6 +10,8 @@ import org.example.entities.Admin;
 import org.example.entities.Player;
 import org.example.entities.User;
 import org.example.services.*;
+import org.example.services.rewards.Request;
+import org.example.services.rewards.event.MailRecievedEvent;
 import org.example.util.IOHelper;
 import org.example.util.MenuHelper;
 import org.slf4j.Logger;
@@ -60,6 +62,9 @@ public class MainMenu {
             case 3 -> quit = true;
         }
         MainMenu.user = user;
+        if (user instanceof Player) {
+            RewardService.getInstance().launchRewardChain(new Request((Player) user, new MailRecievedEvent()));
+        }
     }
 
     private void adminMenu() {
@@ -86,15 +91,17 @@ public class MainMenu {
                 "2. Buy a Ticket",
                 "3. Read notifications " + player.getNotificationWarning(),
                 "4. " + (player.isSubscribed() ? "Stop receiving notifications" : "Receive notifications"),
-                "5. Get a Certificate",
-                "6. Logout");
+                "5. See Rewards",
+                "6. Get a Certificate",
+                "7. Logout");
         switch (option) {
             case 1 -> new RoomPlayService(databaseFactory).play(player);
-            case 2 -> new TicketsService(databaseFactory).buyTickets(player);
+            case 2 -> new TicketsService(databaseFactory).buyTicketsDialog(player);
             case 3 -> new NotificationsService(databaseFactory).readNotifications(player);
             case 4 -> toggleSubscriptionStatus(player);
-            case 5 -> new CertificateService(databaseFactory).getCertificate(player);
-            case 6 -> MainMenu.user = null;
+            case 5 -> RewardService.getInstance().seeRewards(player);
+            case 6 -> new CertificateService(databaseFactory).getCertificate(player);
+            case 7 -> MainMenu.user = null;
         }
     }
 

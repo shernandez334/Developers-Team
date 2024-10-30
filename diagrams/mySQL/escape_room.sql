@@ -64,6 +64,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `escape_room`.`decor_item` (
   `element_id` INT NOT NULL,
   `material` ENUM('PLASTIC', 'PAPER', 'STONE', 'GLASS', 'METAL') NOT NULL,
+  PRIMARY KEY (`element_id`),
   INDEX `fk_element2_idx` (`element_id` ASC) VISIBLE,
   UNIQUE INDEX `element_id_UNIQUE` (`element_id` ASC) VISIBLE,
   CONSTRAINT `fk_element2`
@@ -95,6 +96,8 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `escape_room`.`reward` (
   `reward_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
+  `description` VARCHAR(45) NOT NULL,
+  `banner` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`reward_id`),
   UNIQUE INDEX `reward_id_UNIQUE` (`reward_id` ASC) VISIBLE,
   UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)
@@ -239,6 +242,25 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+-- -----------------------------------------------------
+-- Data for table `escape_room`.`reward`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `escape_room`;
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (1, 'Welcome Onboard!', 'You have played your first room', '🎉');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (2, 'Tutti Frutti', 'One room of each difficulty played', '🍎🍉🍓🍌');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (3, 'Loyal Member', 'You have played 3 rooms', '🙌');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (4, 'Heavy Thinker', 'You have solved 2 epic rooms', '🔍');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (5, 'Bureaucrat', 'You have created a certificate', '📃');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (6, 'Messy', 'Have 5 messages in the inbox', '📫');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (7, 'Stubborn', 'Complete a room after 2 failed attempts', '💪');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (8, 'U\'re a Looser', 'Fail to complete a room 5 times in a row', '💩');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (9, 'Investor', 'Buy a bunch of tickets', '💸💸');
+INSERT INTO `escape_room`.`reward` (`reward_id`, `name`, `description`, `banner`) VALUES (10, 'Easy Peasy!', 'You have checked your rewards', '🍋');
+
+COMMIT;
+
 
 -- -----------------------------------------------------
 -- Data for table `escape_room`.`persistent_property`

@@ -2,13 +2,17 @@ package org.example.dao;
 
 import org.example.entities.Notification;
 import org.example.entities.Player;
+import org.example.entities.Reward;
 import org.example.entities.Ticket;
 import org.example.exceptions.MySqlEmptyResultSetException;
 import org.example.mysql.QueryResult;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.example.mysql.MySqlHelper.*;
 

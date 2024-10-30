@@ -16,4 +16,5 @@ public interface PlayerDao {
     List<Ticket> retrieveTickets(Player player, boolean onlyNotCashed);
 
     List<Notification> retrieveNotifications(int playerId);
+
 }
